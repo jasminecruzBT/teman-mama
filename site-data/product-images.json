@@ -1,5 +1,5 @@
 {
-  "_note": "Shopee product photos (thumbnails load from Shopee's image server). Not used for Step 1/2 infant formula on purpose. Item codes = KPDN PriceCatcher item_code.",
+  "_note": "Shopee product photos (thumbnails load from Shopee's image server). Item codes = KPDN PriceCatcher item_code. Infant/follow-on formula photos added 25 Nov at the owner's request (photos only - still no shop links, ads or commission for formula). Some pictures show a different pack size of the same product.",
   "1904": "my-11134201-820lb-mv3tumjkk8ht23",
   "1963": "my-11134207-820lg-mnwpfalkvqio2c",
   "2009": "my-11134207-820lb-mpdgl1x3hs7i4e",
@@ -16,5 +16,12 @@
   "1145": "my-11134201-7r98r-lqvlqwksxtxo83",
   "1515": "my-11134207-820l5-monqgi0c7j0scc",
   "1628": "my-11134207-820li-mh9xw3y38mq3e9",
-  "1966": "my-11134207-820lg-ms5d9ckxwwzk85"
+  "1966": "my-11134207-820lg-ms5d9ckxwwzk85",
+  "299": "my-11134207-820l5-mt4sryi9mdqh1a",
+  "300": "my-11134207-820l7-mt4sc92d1f61c4",
+  "2031": "my-11134207-7rasd-masa4r61i3e274",
+  "2062": "my-11134207-7ras8-m5i9yz7f0k89f6",
+  "2027": "my-11134207-820l7-ml0cobn0x5vn50",
+  "2030": "my-11134207-820lg-muke5ibapouc76",
+  "2001": "my-11134207-7r98w-loxiop7n7q8g07"
 }

@@ -46,6 +46,29 @@ NAV = [
     ("nursery.html", "Taska & tadika", "Taska & tadika", "🧸", "t-nursery"),
 ]
 
+# Product groups on the prices page (icon, English, Malay) - also listed in the "Prices" drop-down.
+GROUPS = {
+    "mum": ("🤰", "Milk for mums", "Susu untuk ibu"),
+    "infant": ("🍼", "Infant formula (Step 1)", "Rumusan bayi (Langkah 1)"),
+    "followon": ("🍼", "Follow-on formula (Step 2)", "Rumusan susulan (Langkah 2)"),
+    "growing": ("🥛", "Growing-up milk (1 year +)", "Susu pertumbuhan (1 tahun +)"),
+    "diaper": ("🧷", "Diapers", "Lampin pakai buang"),
+    "food": ("🥣", "Baby food", "Makanan bayi"),
+}
+
+
+def _price_groups():
+    """Groups that actually have prices this month (so the drop-down never links to an empty section)."""
+    try:
+        with open(os.path.join(HERE, "site-data", "prices-summary.json"), encoding="utf-8") as f:
+            have = {it["g"] for it in json.load(f)["items"].values()}
+    except (OSError, ValueError, KeyError):
+        have = set(GROUPS)
+    return [g for g in GROUPS if g in have]
+
+
+PRICE_GROUPS = _price_groups()
+
 # Strings used by assets/app.js
 JS_STR = {
     "en": {
@@ -97,6 +120,10 @@ JS_STR = {
         "showing": "Showing prices for: {area}", "fewShops": "Few shops in this area - prices may not be typical.",
         "nuTaska": "Taska in {area}", "nuTadika": "Tadika in {area}",
         "nuArea": "your area",
+        "noMatch": "No products match \"{q}\" here.", "clearSearch": "Show all products",
+        "preTypical": "Typical packages (anywhere in Malaysia)", "preCentres": "Confinement centres - {state}", "qFrom": "from",
+        "preCentreNote": "Published price for {d} days: {price}. Checked {date}. Prices change - confirm with the centre.",
+        "preSource": "Centre's website", "preTypicalNote": "Typical price - change it to match your quote.",
     },
     "ms": {
         "pickDate": "Sila pilih tarikh dahulu.",
@@ -147,6 +174,10 @@ JS_STR = {
         "showing": "Harga untuk: {area}", "fewShops": "Sedikit kedai di kawasan ini - harga mungkin tidak mewakili.",
         "nuTaska": "Taska di {area}", "nuTadika": "Tadika di {area}",
         "nuArea": "kawasan anda",
+        "noMatch": "Tiada produk sepadan dengan \"{q}\" di sini.", "clearSearch": "Tunjuk semua produk",
+        "preTypical": "Pakej biasa (seluruh Malaysia)", "preCentres": "Pusat berpantang - {state}", "qFrom": "dari",
+        "preCentreNote": "Harga yang diterbitkan untuk {d} hari: {price}. Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
+        "preSource": "Laman web pusat", "preTypicalNote": "Harga biasa - ubah supaya sama dengan sebut harga anda.",
     },
 }
 
@@ -323,7 +354,21 @@ def write_page(lang, path, title, desc, body, data=None):
     for href, en, ms, ico, cls in NAV:
         active = href == path or (href == "weeks/index.html" and path.startswith("weeks/"))
         cur = ' aria-current="page"' if active else ""
+        if href == "prices.html":  # "Prices" opens a drop-down of product groups + search
+            nav.append(f'<a class="tab {cls} has-sub" href="{lroot}{href}"{cur} aria-haspopup="true" aria-expanded="false" '
+                       f'aria-controls="subnav-prices"><span aria-hidden="true">{ico}</span> {x("Prices", "Harga")}'
+                       f'<span class="caret" aria-hidden="true">▼</span></a>')
+            continue
         nav.append(f'<a class="tab {cls}" href="{lroot}{href}"{cur}><span aria-hidden="true">{ico}</span> {esc(x(en, ms))}</a>')
+    sub_links = "".join(
+        f'<a href="{lroot}prices.html#grp-{g}"><span aria-hidden="true">{GROUPS[g][0]}</span> {esc(x(GROUPS[g][1], GROUPS[g][2]))}</a>'
+        for g in PRICE_GROUPS)
+    subnav = f"""<div class="subnav" id="subnav-prices" hidden><div class="wrap subnav-inner">
+      <a href="{lroot}prices.html"><span aria-hidden="true">📋</span> {x("All prices", "Semua harga")}</a>{sub_links}
+      <form class="search-row" action="{lroot}prices.html" method="get" role="search">
+        <input type="search" name="q" placeholder="{x("Search products, e.g. Drypers", "Cari produk, cth. Drypers")}" aria-label="{x("Search products", "Cari produk")}">
+        <button type="submit" class="btn">{x("Search", "Cari")}</button>
+      </form></div></div>"""
 
     tm = {"lang": lang, "root": root, "s": JS_STR[lang],
           "wk": {n: wk.get(n, lang)["size"] for n in wk.W}}  # for the helper bot's week answers
@@ -354,6 +399,7 @@ def write_page(lang, path, title, desc, body, data=None):
     <a class="lang" href="{root}{other}/{path}" hreflang="{other}" lang="{other}">{"Bahasa Melayu" if other == "ms" else "English"}</a>
   </div>
   <nav class="nav" aria-label="{x("Main", "Utama")}"><div class="wrap nav-row">{"".join(nav)}</div></nav>
+  {subnav}
 </header>
 <main id="main" class="wrap">
 {body}
@@ -638,6 +684,9 @@ def p_cost(lang):
     for i in range(1, 5):
         checks = "".join(f'<label class="check"><input type="checkbox" name="inc" value="{k}"> {esc(x(en, ms))}</label>' for k, en, ms in extras)
         quotes.append(f"""<fieldset class="quote" data-q="{i}"><legend>{x("Quote", "Sebut harga")} {i}</legend>
+<label class="field">{x("Pick a centre or package (fills in the rest)", "Pilih pusat atau pakej (isi yang lain secara automatik)")}<select name="preset">
+<option value="">{x("- or type your own quote below -", "- atau taip sebut harga anda di bawah -")}</option></select></label>
+<p class="hint preset-note" hidden></p>
 <label class="field">{x("Name of centre or nanny", "Nama pusat atau pengasuh")}<input type="text" name="name" maxlength="60" autocomplete="off"></label>
 <div class="row3">
 <label class="field">{x("Total price (RM)", "Jumlah harga (RM)")}<input type="number" name="price" min="0" step="1" inputmode="decimal"></label>
@@ -681,8 +730,8 @@ def p_cost(lang):
 <a href="https://malaysia4u.com/confinement-guide" target="_blank" rel="noopener">{x("Source", "Sumber")}</a></p></section>
 {ad("in_content", x)}
 <section id="quote-tool"><h2>{x("Compare your quotes", "Banding sebut harga anda")}</h2>
-<p>{x("Type in up to 4 quotes. We work out the price per day so you can compare fairly. Saved only on this phone.",
-       "Masukkan sehingga 4 sebut harga. Kami kira harga sehari supaya anda boleh membandingkan dengan adil. Disimpan dalam telefon ini sahaja.")}</p>
+<p>{x("Pick a confinement centre or a typical package and we fill in the price, days and what's included - or type your own quote. Change anything to match what you were offered. We work out the price per day so you can compare fairly. Saved only on this phone.",
+       "Pilih pusat berpantang atau pakej biasa dan kami isi harga, bilangan hari dan apa yang termasuk - atau taip sebut harga anda sendiri. Ubah apa-apa supaya sama dengan tawaran anda. Kami kira harga sehari supaya anda boleh membandingkan dengan adil. Disimpan dalam telefon ini sahaja.")}</p>
 <div class="quotes">{"".join(quotes)}</div>
 <div id="q-result" aria-live="polite"></div>
 <button type="button" class="btn ghost small-btn" id="q-clear">{x("Clear all quotes", "Padam semua sebut harga")}</button>
@@ -800,9 +849,19 @@ def p_prices(lang):
 <h1>{x("Baby milk & diaper prices near you", "Harga susu bayi & lampin berhampiran anda")}</h1>
 <p class="lead">{x("Shop prices from the government's price survey (KPDN PriceCatcher). Choose your state and district to see prices near you, and the cheapest shops.",
                    "Harga kedai daripada tinjauan harga kerajaan (KPDN PriceCatcher). Pilih negeri dan daerah untuk melihat harga berhampiran, dan kedai yang paling murah.")}</p>
-<section class="card area-pick">
-  <label class="field">{x("State", "Negeri")}<select id="pr-state"></select></label>
-  <label class="field">{x("District", "Daerah")}<select id="pr-district" disabled></select></label>
+<section class="card">
+  <form class="search-row" id="pr-search" role="search">
+    <input type="search" id="pr-q" placeholder="{x("Search products, e.g. Drypers or Dutch Lady", "Cari produk, cth. Drypers atau Dutch Lady")}" aria-label="{x("Search products", "Cari produk")}">
+    <button type="submit" class="btn">{x("Search", "Cari")}</button>
+  </form>
+  <div class="area-pick" style="margin-top:12px">
+    <label class="field full">{x("Product type", "Jenis produk")}<select id="pr-group">
+      <option value="">{x("All products", "Semua produk")}</option>
+      {"".join(f'<option value="{g}">{GROUPS[g][0]} {esc(x(GROUPS[g][1], GROUPS[g][2]))}</option>' for g in PRICE_GROUPS)}
+    </select></label>
+    <label class="field">{x("State", "Negeri")}<select id="pr-state"></select></label>
+    <label class="field">{x("District", "Daerah")}<select id="pr-district" disabled></select></label>
+  </div>
 </section>
 <p class="small muted" id="pr-updated"></p>
 <aside class="box note"><p>{x("Breast milk is the best food for babies. The Ministry of Health and WHO recommend only breast milk for the first 6 months. If you use formula, ask your doctor or nurse which type suits your baby. We don't sell or advertise infant formula.",

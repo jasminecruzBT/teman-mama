@@ -1,0 +1,22 @@
+{
+  "_note": "Choices for the confinement quote comparer. 'typical' = package types with typical 2026 prices (malaysia4u.com/confinement-guide). 'centres' = real centres with their own published prices; re-check every few months.",
+  "typical": [
+    {"id": "t-nanny", "en": "Live-in confinement nanny (typical)", "ms": "Pengasuh berpantang tinggal bersama (biasa)",
+     "price": 7000, "days": 28, "ratio": 1,
+     "inc": {"care24": true, "lact": false, "massage": false, "partner": true, "laundry": true},
+     "note_en": "Typical 2026 range RM5,000-9,000 for 28 days.", "note_ms": "Julat biasa 2026: RM5,000-9,000 untuk 28 hari."},
+    {"id": "t-budget", "en": "Confinement centre - budget (typical)", "ms": "Pusat berpantang - bajet (biasa)",
+     "price": 10500, "days": 28, "ratio": null,
+     "inc": {"care24": true, "lact": false, "massage": false, "partner": false, "laundry": true},
+     "note_en": "Typical outside central KL (e.g. Johor): about RM9,000-12,000.", "note_ms": "Biasa di luar pusat KL (cth. Johor): lebih kurang RM9,000-12,000."},
+    {"id": "t-mid", "en": "Confinement centre - mid-range (typical)", "ms": "Pusat berpantang - pertengahan (biasa)",
+     "price": 15000, "days": 28, "ratio": 4,
+     "inc": {"care24": true, "lact": false, "massage": false, "partner": false, "laundry": true},
+     "note_en": "Typical 2026 range RM12,000-18,000; the standard tier is often 1 nurse to 4 babies.", "note_ms": "Julat biasa 2026: RM12,000-18,000; peringkat standard selalunya 1 jururawat untuk 4 bayi."},
+    {"id": "t-lux", "en": "Confinement centre - luxury (typical)", "ms": "Pusat berpantang - mewah (biasa)",
+     "price": 28000, "days": 28, "ratio": null,
+     "inc": {"care24": true, "lact": true, "massage": false, "partner": false, "laundry": true},
+     "note_en": "Luxury suites are about RM20,000 to RM40,000 or more.", "note_ms": "Suite mewah lebih kurang RM20,000 hingga RM40,000 atau lebih."}
+  ],
+  "centres": []
+}

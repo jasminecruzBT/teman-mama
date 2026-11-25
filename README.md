@@ -19,7 +19,11 @@ It earns money from ads (Google AdSense) and from Shopee affiliate links on the 
 | Feedback | Embedded Google Form ("Teman Mama feedback", answers in a Google Sheet) |
 | Helper bot (every page) | "Ask Teman" button: keyword matching in EN/BM (`BOT_KW`/`BOT_ANS` in build.py), no AI; warning-sign words always get the go-to-hospital / 999 answer |
 
-Product photos on the prices page come from Shopee's image server; the chosen photos are in `site-data/product-images.json` (none for Step 1/2 infant formula).
+Product photos on the prices page come from Shopee's image server; the chosen photos are in `site-data/product-images.json`. Formula gets photos only - never shop links, ads or commission.
+
+The "Prices / Harga" tab opens a drop-down (product groups + search); the prices page has a search box and a product-type filter (`?q=` and `#grp-<group>` work as links).
+
+The confinement quote comparer's drop-down reads `site-data/confinement.json`: typical package types plus real centres with their own published prices (source link + date checked). Re-check the centres every few months.
 
 Nothing a visitor types leaves their phone: it's kept in the browser's local storage. There are no accounts and no server.
 

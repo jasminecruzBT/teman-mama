@@ -153,9 +153,61 @@
       ["name", "price", "days", "ratio"].forEach(function (k) { if (q[k] !== undefined && q[k] !== "") c.querySelector('[name="' + k + '"]').value = q[k]; });
       $$('input[name="inc"]', c).forEach(function (cb) { cb.checked = (q.inc || []).indexOf(cb.value) >= 0; });
     });
+    // Drop-down of typical packages + real centres; picking one fills in the card (still editable).
+    var presets = {};
+    function showNote(c, p) {
+      var note = $(".preset-note", c);
+      if (!p) { note.hidden = true; return; }
+      if (p.kind === "typical") {
+        note.textContent = (LANG === "ms" ? p.note_ms : p.note_en) + " " + S.preTypicalNote;
+      } else {
+        var price = rm(p.price_from_rm).replace(".00", "") + (p.price_to_rm ? " - " + rm(p.price_to_rm).replace(".00", "") : "");
+        note.innerHTML = esc(fill(S.preCentreNote, { d: p.days, price: price, date: fmt(parseDate(p.checked)) })) +
+          ' <a href="' + esc(p.source_url) + '" target="_blank" rel="noopener">' + esc(S.preSource) + " ↗</a>";
+      }
+      note.hidden = false;
+    }
+    function applyPreset(c, p) {
+      c.querySelector('[name="name"]').value = p.kind === "typical" ? (LANG === "ms" ? p.ms : p.en) : p.name;
+      c.querySelector('[name="price"]').value = p.kind === "typical" ? p.price : p.price_from_rm;
+      c.querySelector('[name="days"]').value = p.days || 28;
+      var ratio = p.kind === "typical" ? p.ratio : p.babies_per_nurse;
+      c.querySelector('[name="ratio"]').value = ratio || "";
+      var inc = (p.kind === "typical" ? p.inc : p.includes) || {};
+      $$('input[name="inc"]', c).forEach(function (cb) { cb.checked = inc[cb.value] === true; });
+      showNote(c, p);
+    }
+    fetch(TM.root + "data/confinement.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d) return;
+      var html = '<optgroup label="' + esc(S.preTypical) + '">' + d.typical.map(function (t) {
+        presets[t.id] = Object.assign({ kind: "typical" }, t);
+        return '<option value="' + esc(t.id) + '">' + esc(LANG === "ms" ? t.ms : t.en) + "</option>";
+      }).join("") + "</optgroup>";
+      var byState = {};
+      (d.centres || []).forEach(function (c, i) {
+        var id = "c" + i;
+        presets[id] = Object.assign({ kind: "centre" }, c);
+        (byState[c.state] = byState[c.state] || []).push(
+          '<option value="' + id + '">' + esc(c.name + " (" + c.area + ") - " + S.qFrom + " " + rm(c.price_from_rm).replace(".00", "")) + "</option>");
+      });
+      Object.keys(byState).sort().forEach(function (st) {
+        html += '<optgroup label="' + esc(fill(S.preCentres, { state: st })) + '">' + byState[st].join("") + "</optgroup>";
+      });
+      cards.forEach(function (c, i) {
+        var sel = c.querySelector('[name="preset"]');
+        sel.insertAdjacentHTML("beforeend", html);
+        var q = saved[i] || {};
+        if (q.preset && presets[q.preset]) { sel.value = q.preset; showNote(c, presets[q.preset]); }
+        sel.addEventListener("change", function () {
+          if (presets[sel.value]) applyPreset(c, presets[sel.value]); else showNote(c, null);
+          render();
+        });
+      });
+    }).catch(function () { /* drop-down is optional */ });
     function read() {
       return cards.map(function (c) {
         return {
+          preset: c.querySelector('[name="preset"]').value,
           name: c.querySelector('[name="name"]').value.trim(),
           price: c.querySelector('[name="price"]').value,
           days: c.querySelector('[name="days"]').value,
@@ -194,6 +246,8 @@
       cards.forEach(function (c) {
         $$('input[type="text"], input[name="price"], input[name="ratio"]', c).forEach(function (i) { i.value = ""; });
         c.querySelector('[name="days"]').value = 28;
+        c.querySelector('[name="preset"]').value = "";
+        showNote(c, null);
         $$('input[type="checkbox"]', c).forEach(function (cb) { cb.checked = false; });
       });
       render();
@@ -293,25 +347,63 @@
             it._unit = it.gr ? a[0] / it.gr * 100 : (it.pc ? a[0] / it.pc : 0);
           });
           codes.sort(function (x, y) { return data.items[x]._unit - data.items[y]._unit; });
-          html += '<section class="price-group"><h2>' + esc(S.grp[g]) + '</h2><div class="table-wrap"><table><thead><tr><th>' + esc(S.cProduct) +
+          html += '<section class="price-group" id="grp-' + g + '" data-g="' + g + '"><h2>' + esc(S.grp[g]) + '</h2><div class="table-wrap"><table><thead><tr><th>' + esc(S.cProduct) +
             '</th><th class="num">' + esc(S.cTypical) + '</th><th class="num hide-sm">' + esc(S.cFrom) + '</th><th class="num">' + esc(S.cUnit) +
             '</th><th class="num hide-sm">' + esc(S.cShops) + "</th></tr></thead><tbody>";
           codes.forEach(function (c) {
             var it = data.items[c], a = area[c];
             var pack = it.pc ? it.u + " · " + (it.t === "pants" ? S.pants : S.tape) : it.u;
             var unit = rm(it._unit) + '<small class="per">' + esc(it.gr ? S.per100 : S.perPiece) + "</small>";
-            // No pictures for infant / follow-on formula (our no-formula-promotion rule).
-            var pic = (g !== "infant" && g !== "followon" && pics[c]) ?
+            // Photos only - formula still gets no shop links, ads or commission.
+            var pic = pics[c] ?
               '<img class="thumb" src="https://down-my.img.susercontent.com/file/' + encodeURIComponent(pics[c]) + '_tn" alt="" loading="lazy" width="48" height="48">' : "";
-            html += '<tr data-code="' + c + '"><td class="prod"><div class="prod-row">' + pic + "<div>" + esc(it.n) + "<small>" + esc(pack) +
+            html += '<tr data-code="' + c + '" data-name="' + esc((it.n + " " + S.grp[g]).toLowerCase()) + '"><td class="prod"><div class="prod-row">' + pic + "<div>" + esc(it.n) + "<small>" + esc(pack) +
               (a[2] < 3 ? " · " + esc(S.fewShops) : "") + '</small><button type="button" class="where-btn">' + esc(S.where) +
               '</button></div></div></td><td class="num">' + rm(a[0]) + '</td><td class="num hide-sm">' + rm(a[1]) + '</td><td class="num">' + unit +
               '</td><td class="num hide-sm">' + a[2] + "</td></tr>";
           });
           html += "</tbody></table></div></section>";
         });
-        tables.innerHTML = html;
+        tables.innerHTML = html + '<p class="no-match" id="pr-none" hidden></p>';
+        applyFilter();
       }
+
+      // search box + product-type filter (also fed by the "Prices" drop-down: ?q=... and #grp-...)
+      var qIn = $("#pr-q"), grpSel = $("#pr-group");
+      function applyFilter() {
+        var q = (qIn.value || "").toLowerCase().trim(), g = grpSel.value, shown = 0;
+        $$(".price-group", tables).forEach(function (sec) {
+          var n = 0;
+          $$("tr[data-code]", sec).forEach(function (tr) {
+            var ok = !q || q.split(/\s+/).every(function (w) { return tr.getAttribute("data-name").indexOf(w) >= 0; });
+            tr.hidden = !ok;
+            var nx = tr.nextElementSibling;
+            if (nx && nx.classList.contains("shops")) nx.hidden = !ok;
+            if (ok) n++;
+          });
+          sec.hidden = !n || (g && sec.getAttribute("data-g") !== g);
+          if (!sec.hidden) shown += n;
+        });
+        var none = $("#pr-none");
+        if (none) {
+          none.hidden = shown > 0;
+          none.innerHTML = esc(fill(S.noMatch, { q: qIn.value })) + ' <button type="button" class="where-btn" id="pr-clear">' + esc(S.clearSearch) + "</button>";
+        }
+      }
+      var params = new URLSearchParams(location.search);
+      if (params.get("q")) qIn.value = params.get("q").slice(0, 60);
+      var hashG = (location.hash.match(/^#grp-(\w+)$/) || [])[1];
+      if (hashG) grpSel.value = hashG;
+      qIn.addEventListener("input", applyFilter);
+      $("#pr-search").addEventListener("submit", function (e) { e.preventDefault(); applyFilter(); tables.scrollIntoView({ behavior: "smooth", block: "start" }); });
+      grpSel.addEventListener("change", applyFilter);
+      tables.addEventListener("click", function (e) {
+        if (e.target.id === "pr-clear") { qIn.value = ""; grpSel.value = ""; applyFilter(); }
+      });
+      window.addEventListener("hashchange", function () {
+        var h = (location.hash.match(/^#grp-(\w+)$/) || [])[1];
+        if (h) { grpSel.value = h; applyFilter(); }
+      });
 
       tables.addEventListener("click", function (e) {
         var btn = e.target.closest(".where-btn"); if (!btn) return;
@@ -364,10 +456,27 @@
     }).catch(function () { /* near-me buttons still work */ });
   }
 
-  // ---------- keep the current menu tab in view on small screens
+  // ---------- keep the current menu tab in view on small screens (phones scroll the menu sideways)
   function navScroll() {
     var nav = $(".nav"), cur = $('.nav [aria-current="page"]');
-    if (nav && cur && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = cur.offsetLeft - (nav.clientWidth - cur.offsetWidth) / 2;
+    if (nav && cur && nav.scrollWidth > nav.clientWidth + 2) nav.scrollLeft = cur.offsetLeft - (nav.clientWidth - cur.offsetWidth) / 2;
+    else if (nav) nav.scrollLeft = 0;
+  }
+
+  // ---------- "Prices" tab opens its drop-down instead of jumping straight to the page
+  function subnav() {
+    var tab = $(".tab.has-sub"), panel = $("#subnav-prices");
+    if (!tab || !panel) return;
+    tab.addEventListener("click", function (e) {
+      e.preventDefault();
+      var open = panel.hidden;
+      panel.hidden = !open;
+      tab.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) { var f = $("input", panel); if (f && window.innerWidth >= 700) f.focus(); }
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) { panel.hidden = true; tab.setAttribute("aria-expanded", "false"); tab.focus(); } });
+    // on the prices page the drop-down's group links only change the filter, so close it after a pick
+    $$("a", panel).forEach(function (a) { a.addEventListener("click", function () { panel.hidden = true; tab.setAttribute("aria-expanded", "false"); }); });
   }
 
   // ---------- helper bot: keyword matching over a small list of topics, no AI, nothing leaves the phone
@@ -442,5 +551,6 @@
     $(".chat-form", panel).addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); input.value = ""; });
   }
 
-  dueTool(); weekMarkers(); pantang(); quotes(); bag(); leave(); prices(); nursery(); navScroll(); bot();
+  dueTool(); weekMarkers(); pantang(); quotes(); bag(); leave(); prices(); nursery(); navScroll(); subnav(); bot();
+  window.addEventListener("resize", navScroll);
 })();
