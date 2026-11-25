@@ -811,6 +811,8 @@ def main():
         shutil.rmtree(OUT)
     os.makedirs(OUT)
     shutil.copytree(os.path.join(HERE, "static"), os.path.join(OUT, "assets"))
+    # Files that must sit at the site root, e.g. Google Search Console's verification file. Keep them.
+    shutil.copytree(os.path.join(HERE, "root-files"), OUT, dirs_exist_ok=True)
     data_src = os.path.join(HERE, "site-data")
     if os.path.isdir(data_src):
         shutil.copytree(data_src, os.path.join(OUT, "data"))
