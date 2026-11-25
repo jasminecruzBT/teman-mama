@@ -1,0 +1,59 @@
+name: Build and publish
+# On every push: build the site and publish it to GitHub Pages.
+# Every Monday (and on manual run): first fetch the newest government price survey and commit it.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 1 * * 1"   # Monday 09:00 Malaysia time
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh prices (Mondays / manual runs only)
+        if: github.event_name != 'push'
+        run: |
+          pip install pandas pyarrow
+          mkdir -p /tmp/pc
+          base=https://storage.data.gov.my/pricecatcher
+          curl -sSf -o /tmp/pc/lookup_item.parquet $base/lookup_item.parquet
+          curl -sSf -o /tmp/pc/lookup_premise.parquet $base/lookup_premise.parquet
+          for m in $(date -u +%Y-%m) $(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m); do
+            curl -sSf -o /tmp/pc/pricecatcher_$m.parquet $base/pricecatcher_$m.parquet || echo "no file for $m yet"
+          done
+          python scripts/update_prices.py /tmp/pc
+          git config user.name "price-bot"
+          git config user.email "price-bot@users.noreply.github.com"
+          git add site-data
+          git diff --cached --quiet || (git commit -m "Refresh baby milk and diaper prices" && git push)
+
+      - run: python build.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
