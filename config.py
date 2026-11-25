@@ -21,6 +21,23 @@ AD_SLOTS = {"in_content": "", "bottom": ""}
 # After joining the Shopee Affiliate Programme, paste your affiliate links here
 # (key = the item key used in content/pages.py), and they replace the plain search links.
 SHOP_SEARCH_URL = "https://shopee.com.my/search?keyword={q}"
+# Made 25 Nov 2026 in the Shopee Affiliate dashboard (Offer > Custom Link), tagged
+# Sub_id1=temanmama, Sub_id2=hospitalbag. Each points at a Shopee CATEGORY page
+# (search pages don't earn commission). Shopee's tree is only 2 levels deep, so some
+# items share a category.
 AFFILIATE_LINKS = {
-    # "maternity_pads": "https://s.shopee.com.my/xxxxxx",
+    "nursing_tops": "https://s.shopee.com.my/5LDkUZdhXe",          # Women Clothes > Maternity Wear
+    "nursing_bra": "https://s.shopee.com.my/5LDkUZdhXe",           # Women Clothes > Maternity Wear
+    "maternity_pads": "https://s.shopee.com.my/5VXAgsd4Ch",        # Baby & Toys > Maternity Care
+    "disposable_underwear": "https://s.shopee.com.my/5VXAgsd4Ch",  # Baby & Toys > Maternity Care
+    "nipple_cream": "https://s.shopee.com.my/6L6HgPZtVs",          # Baby & Toys > Feeding & Nursing
+    "straw_bottle": "https://s.shopee.com.my/6VPhsiZGAv",          # Home & Living > Kitchen & Dining
+    "newborn_clothes": "https://s.shopee.com.my/60TRHnbABq",       # Baby & Kids Fashion > Baby Clothing
+    "mittens": "https://s.shopee.com.my/60TRHnbABq",               # Baby & Kids Fashion > Baby Clothing
+    "swaddle": "https://s.shopee.com.my/1LhbjFf3l8",               # Baby & Toys > Nursery
+    "blanket": "https://s.shopee.com.my/1LhbjFf3l8",               # Baby & Toys > Nursery
+    "newborn_diapers": "https://s.shopee.com.my/1W11vYeQQB",       # Baby & Toys > Diapers & Potties
+    "wipes": "https://s.shopee.com.my/9AQT3eBErg",                 # Baby & Toys > Bath & Toiletries
+    "car_seat": "https://s.shopee.com.my/9072rLBsCf",              # Baby & Toys > Baby Gear
+    "powerbank": "https://s.shopee.com.my/8pncf2CVXe",             # Mobile & Accessories > Powerbanks
 }
