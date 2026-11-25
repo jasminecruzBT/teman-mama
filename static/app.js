@@ -264,7 +264,11 @@
   function prices() {
     var tables = $("#pr-tables"); if (!tables) return;
     var shopCache = {};
-    fetch(TM.root + "data/prices-summary.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (data) {
+    var pics = {};
+    var picsReady = fetch(TM.root + "data/product-images.json").then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (j) { pics = j || {}; }).catch(function () { /* pictures are optional */ });
+    Promise.all([fetch(TM.root + "data/prices-summary.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }), picsReady]).then(function (res) {
+      var data = res[0];
       $("#pr-updated").textContent = fill(S.updated, { a: fmt(parseDate(data.from)), b: fmt(parseDate(data.to)), n: data.shops.toLocaleString("en-MY") });
       var states = {};
       Object.keys(data.areas).forEach(function (k) {
@@ -295,10 +299,13 @@
           codes.forEach(function (c) {
             var it = data.items[c], a = area[c];
             var pack = it.pc ? it.u + " · " + (it.t === "pants" ? S.pants : S.tape) : it.u;
-            var unit = it.gr ? rm(it._unit) + S.per100 : rm(it._unit) + S.perPiece;
-            html += '<tr data-code="' + c + '"><td class="prod">' + esc(it.n) + "<small>" + esc(pack) +
+            var unit = rm(it._unit) + '<small class="per">' + esc(it.gr ? S.per100 : S.perPiece) + "</small>";
+            // No pictures for infant / follow-on formula (our no-formula-promotion rule).
+            var pic = (g !== "infant" && g !== "followon" && pics[c]) ?
+              '<img class="thumb" src="https://down-my.img.susercontent.com/file/' + encodeURIComponent(pics[c]) + '_tn" alt="" loading="lazy" width="48" height="48">' : "";
+            html += '<tr data-code="' + c + '"><td class="prod"><div class="prod-row">' + pic + "<div>" + esc(it.n) + "<small>" + esc(pack) +
               (a[2] < 3 ? " · " + esc(S.fewShops) : "") + '</small><button type="button" class="where-btn">' + esc(S.where) +
-              '</button></td><td class="num">' + rm(a[0]) + '</td><td class="num hide-sm">' + rm(a[1]) + '</td><td class="num">' + unit +
+              '</button></div></div></td><td class="num">' + rm(a[0]) + '</td><td class="num hide-sm">' + rm(a[1]) + '</td><td class="num">' + unit +
               '</td><td class="num hide-sm">' + a[2] + "</td></tr>";
           });
           html += "</tbody></table></div></section>";
@@ -357,5 +364,83 @@
     }).catch(function () { /* near-me buttons still work */ });
   }
 
-  dueTool(); weekMarkers(); pantang(); quotes(); bag(); leave(); prices(); nursery();
+  // ---------- keep the current menu tab in view on small screens
+  function navScroll() {
+    var nav = $(".nav"), cur = $('.nav [aria-current="page"]');
+    if (nav && cur && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = cur.offsetLeft - (nav.clientWidth - cur.offsetWidth) / 2;
+  }
+
+  // ---------- helper bot: keyword matching over a small list of topics, no AI, nothing leaves the phone
+  function bot() {
+    var B = S.bot; if (!B) return;
+    var page = function (p) { return TM.root + LANG + "/" + p; };
+    var fab = document.createElement("button");
+    fab.type = "button"; fab.className = "chat-fab"; fab.setAttribute("aria-expanded", "false");
+    fab.innerHTML = '<span aria-hidden="true">💬</span> ' + esc(B.open);
+    var panel = document.createElement("section");
+    panel.className = "chat-panel"; panel.hidden = true; panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", B.title);
+    panel.innerHTML = '<header class="chat-head"><strong>' + esc(B.title) + '</strong><button type="button" class="chat-x" aria-label="' + esc(B.close) + '">✕</button></header>' +
+      '<div class="chat-log" aria-live="polite"></div>' +
+      '<div class="chat-chips">' + B.chips.map(function (c) { return '<button type="button" data-q="' + esc(c[1]) + '">' + esc(c[0]) + "</button>"; }).join("") + "</div>" +
+      '<form class="chat-form"><input type="text" maxlength="200" autocomplete="off" placeholder="' + esc(B.placeholder) + '" aria-label="' + esc(B.placeholder) +
+      '"><button type="submit" class="btn small-btn">' + esc(B.send) + "</button></form>" +
+      '<p class="chat-note">' + esc(B.note) + "</p>";
+    document.body.appendChild(fab); document.body.appendChild(panel);
+    var log = $(".chat-log", panel), input = $(".chat-form input", panel), started = false;
+
+    function say(text, who, link) {
+      var d = document.createElement("div");
+      d.className = "msg " + who;
+      d.innerHTML = esc(text) + (link ? '<a class="msg-link" href="' + esc(link[0]) + '">' + esc(link[1]) + " →</a>" : "");
+      log.appendChild(d); log.scrollTop = log.scrollHeight;
+    }
+    function norm(t) { return " " + t.toLowerCase().replace(/[^a-z0-9+]+/g, " ").trim() + " "; }
+    function hits(text, kw) {
+      if (kw.charAt(0) === "=") return text.indexOf(" " + kw.slice(1) + " ") >= 0;
+      return text.indexOf(" " + kw) >= 0;  // start of a word or phrase
+    }
+    function answer(q) {
+      var t = norm(q), byId = {};
+      B.intents.forEach(function (it) { byId[it.id] = it; });
+      var danger = byId.danger.k.some(function (k) { return hits(t, k); });
+      if (danger) return say(byId.danger.a, "bot");
+      var m = /(?:week|minggu)\s*(?:ke\s*)?(\d{1,2})\b/.exec(t);
+      if (m && +m[1] >= 4 && +m[1] <= 40 && TM.wk) {
+        return say(fill(B.weekAns, { w: m[1], size: TM.wk[m[1]] }), "bot", [page("weeks/" + m[1] + ".html"), fill(B.weekLink, { w: m[1] })]);
+      }
+      var best = null, bestScore = 0;
+      B.intents.forEach(function (it) {
+        if (it.id === "danger") return;
+        var s = 0;
+        it.k.forEach(function (k) { if (hits(t, k)) s += k.replace("=", "").length; });
+        if (s > bestScore) { best = it; bestScore = s; }
+      });
+      if (!best) return say(B.fallback, "bot", [page("feedback.html"), B.chips[B.chips.length - 1][0]]);
+      if (best.id === "week") {
+        var due = parseDate(get("tm_due", ""));
+        if (due) {
+          var ga = 280 - diffDays(today(), due), w = Math.floor(ga / 7);
+          if (ga >= 0 && w <= 44) {
+            var pw = Math.min(Math.max(w, 4), 40);
+            return say(fill(B.myWeek, { w: w, d: ga % 7 }) + " " + fill(B.weekAns, { w: pw, size: TM.wk[pw] }), "bot",
+              [page("weeks/" + pw + ".html"), fill(B.weekLink, { w: pw })]);
+          }
+        }
+      }
+      say(best.a, "bot", best.p ? [page(best.p), best.lt] : null);
+    }
+    function ask(q) { q = q.trim(); if (!q) return; say(q, "me"); answer(q); }
+    function open(on) {
+      panel.hidden = !on; fab.setAttribute("aria-expanded", on ? "true" : "false");
+      if (on && !started) { started = true; say(B.greet, "bot"); }
+      if (on) input.focus(); else fab.focus();
+    }
+    fab.addEventListener("click", function () { open(panel.hidden); });
+    $(".chat-x", panel).addEventListener("click", function () { open(false); });
+    panel.addEventListener("keydown", function (e) { if (e.key === "Escape") open(false); });
+    $(".chat-chips", panel).addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) ask(b.getAttribute("data-q")); });
+    $(".chat-form", panel).addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); input.value = ""; });
+  }
+
+  dueTool(); weekMarkers(); pantang(); quotes(); bag(); leave(); prices(); nursery(); navScroll(); bot();
 })();

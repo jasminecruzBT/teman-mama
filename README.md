@@ -16,6 +16,10 @@ It earns money from ads (Google AdSense) and from Shopee affiliate links on the 
 | Milk & diaper prices | Official government prices (KPDN PriceCatcher) by state and district, with the 5 cheapest shops |
 | Taska & tadika | Google Maps search near you or by district, what to check, registration and tax-relief notes |
 | About, Privacy | Disclaimer, sources, ads and affiliate disclosure |
+| Feedback | Embedded Google Form ("Teman Mama feedback", answers in a Google Sheet) |
+| Helper bot (every page) | "Ask Teman" button: keyword matching in EN/BM (`BOT_KW`/`BOT_ANS` in build.py), no AI; warning-sign words always get the go-to-hospital / 999 answer |
+
+Product photos on the prices page come from Shopee's image server; the chosen photos are in `site-data/product-images.json` (none for Step 1/2 infant formula).
 
 Nothing a visitor types leaves their phone: it's kept in the browser's local storage. There are no accounts and no server.
 

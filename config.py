@@ -11,6 +11,10 @@ BASE_URL = "https://jasminecruzbt.github.io/teman-mama"
 # Leave empty to hide those buttons.
 CONTACT_EMAIL = ""
 
+# Google Form for visitors' ideas ("Teman Mama feedback" in jasminecruz808@gmail.com's Drive;
+# answers go to the "Teman Mama feedback (Responses)" Google Sheet). Empty = no feedback page.
+FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSewxoy7o94ZNm-SHx7gfL28mLz7VyCFgVZvcX9OZTU3Kggq6A/viewform"
+
 # Google AdSense publisher id, e.g. "ca-pub-1234567890123456". Empty = no ads at all.
 ADSENSE_CLIENT = ""
 # Optional manual ad units (slot ids from your AdSense account). With none set,
@@ -31,6 +35,7 @@ AFFILIATE_LINKS = {
     "maternity_pads": "https://s.shopee.com.my/5VXAgsd4Ch",        # Baby & Toys > Maternity Care
     "disposable_underwear": "https://s.shopee.com.my/5VXAgsd4Ch",  # Baby & Toys > Maternity Care
     "nipple_cream": "https://s.shopee.com.my/6L6HgPZtVs",          # Baby & Toys > Feeding & Nursing
+    "baby_bottles": "https://s.shopee.com.my/6L6HgPZtVs",          # Baby & Toys > Feeding & Nursing (bottles)
     "straw_bottle": "https://s.shopee.com.my/6VPhsiZGAv",          # Home & Living > Kitchen & Dining
     "newborn_clothes": "https://s.shopee.com.my/60TRHnbABq",       # Baby & Kids Fashion > Baby Clothing
     "mittens": "https://s.shopee.com.my/60TRHnbABq",               # Baby & Kids Fashion > Baby Clothing

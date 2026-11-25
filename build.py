@@ -35,14 +35,15 @@ def tr(lang):
 
 
 NAV = [
-    ("index.html", "Home", "Utama"),
-    ("weeks/index.html", "Week by week", "Minggu demi minggu"),
-    ("pantang.html", "Pantang planner", "Perancang pantang"),
-    ("confinement-cost.html", "Confinement cost", "Kos berpantang"),
-    ("hospital-bag.html", "Hospital bag", "Beg hospital"),
-    ("leave.html", "Maternity leave", "Cuti bersalin"),
-    ("prices.html", "Milk & diaper prices", "Harga susu & lampin"),
-    ("nursery.html", "Taska & tadika", "Taska & tadika"),
+    # (page, English, Malay, icon, colour class)
+    ("index.html", "Home", "Utama", "🏠", "t-home"),
+    ("weeks/index.html", "Week by week", "Minggu demi minggu", "📅", "t-weeks"),
+    ("pantang.html", "Pantang planner", "Perancang pantang", "🍲", "t-pantang"),
+    ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
+    ("hospital-bag.html", "Hospital bag", "Beg hospital", "👜", "t-bag"),
+    ("leave.html", "Maternity leave", "Cuti bersalin", "🗓️", "t-leave"),
+    ("prices.html", "Milk & diaper prices", "Harga susu & lampin", "🍼", "t-prices"),
+    ("nursery.html", "Taska & tadika", "Taska & tadika", "🧸", "t-nursery"),
 ]
 
 # Strings used by assets/app.js
@@ -149,6 +150,106 @@ JS_STR = {
     },
 }
 
+# ---------------------------------------------------------------- helper bot (no AI: keyword matching)
+# Keywords work in both languages. A keyword starting with "=" must match a whole word
+# (so "hi" doesn't match "which"); others match the start of a word or a phrase.
+BOT_KW = {
+    "danger": ["bleed", "blood", "darah", "pendarahan", "emergency", "kecemasan", "999", "waters broke", "water broke",
+               "air ketuban", "ketuban pecah", "pecah ketuban", "not moving", "less movement", "kurang bergerak",
+               "tak bergerak", "tidak bergerak", "fits", "seizure", "sawan", "fever", "demam", "faint", "pengsan",
+               "severe pain", "sakit teruk", "sakit perut", "headache", "sakit kepala", "blurred", "kabur", "swollen",
+               "bengkak", "warning sign", "tanda bahaya", "danger"],
+    "week": ["which week", "what week", "minggu ke berapa", "minggu berapa", "due date", "tarikh jangkaan", "=edd",
+             "hamil berapa", "how far along", "kira minggu", "week calculator"],
+    "pantang": ["pantang", "confinement period", "confinement food", "44 hari", "44 days", "urut", "bertungku", "tungku",
+                "bengkung", "barut", "zuo yue", "jamu", "after birth", "lepas bersalin", "selepas bersalin", "postnatal",
+                "postpartum"],
+    "cost": ["confinement centre", "confinement center", "pusat berpantang", "nanny", "pengasuh", "confinement cost",
+             "kos berpantang", "deposit", "confinement lady", "mak bidan"],
+    "bag": ["hospital bag", "beg hospital", "what to bring", "what to pack", "apa nak bawa", "apa perlu bawa",
+            "barang hospital", "bawa ke hospital", "=pack"],
+    "leave": ["maternity leave", "cuti bersalin", "paternity", "paterniti", "cuti", "98 days", "98 hari", "=leave",
+              "employer", "majikan", "=hr"],
+    "prices": ["milk", "susu", "formula", "diaper", "lampin", "pampers", "drypers", "huggies", "petpet", "mamypoko",
+               "price", "harga", "murah", "cheap", "cerelac", "kedai"],
+    "nursery": ["taska", "tadika", "nursery", "kindergarten", "childcare", "child care", "daycare", "day care",
+                "prasekolah", "preschool", "tabika", "kemas", "babysit"],
+    "breastfeed": ["breastfeed", "breast feed", "breastmilk", "breast milk", "susu ibu", "menyusu", "penyusuan",
+                   "lactation", "pam susu", "breast pump", "nipple", "puting"],
+    "vaccine": ["vaccin", "vaksin", "imunisasi", "immunis", "immuniz", "=jab", "suntikan", "=bcg", "hepatitis"],
+    "birthreg": ["register", "daftar", "birth certificate", "sijil lahir", "sijil kelahiran", "=jpn", "mykid"],
+    "feedback": ["feedback", "cadangan", "suggest", "improve", "tambah baik", "complain", "aduan", "contact", "hubungi",
+                 "=bug", "salah", "wrong"],
+    "hello": ["=hi", "=hello", "=hai", "=helo", "=hey", "salam", "assalamualaikum", "good morning", "selamat pagi"],
+    "thanks": ["thank", "terima kasih", "=tq", "=tqvm", "=ty"],
+}
+BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text, Malay link text)
+    "danger": ("", "If you have bleeding, leaking fluid, a bad headache or blurred vision, sudden swelling, severe tummy pain, fever, fits, or your baby is moving less than usual - go to the nearest clinic or hospital now, or call 999. I can't give medical advice.",
+               "Jika anda mengalami pendarahan, air keluar dari faraj, sakit kepala teruk atau pandangan kabur, bengkak mengejut, sakit perut teruk, demam, sawan, atau bayi kurang bergerak - pergi segera ke klinik atau hospital terdekat, atau hubungi 999. Saya tidak boleh memberi nasihat perubatan.", "", ""),
+    "week": ("index.html", "Enter your due date (or the first day of your last period) on the home page and I'll show your week.",
+             "Masukkan tarikh jangkaan bersalin (atau hari pertama haid terakhir) di halaman utama untuk melihat minggu anda.",
+             "Open the week calculator", "Buka kalkulator minggu"),
+    "pantang": ("pantang.html", "The pantang planner gives you a dated timeline for Malay (44 days), Chinese (30) or Indian (40) traditions, plus safety tips.",
+                "Perancang pantang memberi jadual bertarikh untuk tradisi Melayu (44 hari), Cina (30) atau India (40), serta tip keselamatan.",
+                "Open pantang planner", "Buka perancang pantang"),
+    "cost": ("confinement-cost.html", "Confinement nannies are about RM5,000-9,000 for 28 days; mid-range centres about RM12,000-18,000. You can compare your quotes per day here.",
+             "Pengasuh berpantang lebih kurang RM5,000-9,000 untuk 28 hari; pusat pertengahan lebih kurang RM12,000-18,000. Anda boleh banding sebut harga sehari di sini.",
+             "Compare confinement costs", "Banding kos berpantang"),
+    "bag": ("hospital-bag.html", "Pack by about 36 weeks. Our checklist covers documents, mum, baby and your partner, and saves your ticks on this phone.",
+            "Siapkan sebelum lebih kurang 36 minggu. Senarai semak kami merangkumi dokumen, ibu, bayi dan pasangan, dan menyimpan tanda anda dalam telefon ini.",
+            "Open hospital bag checklist", "Buka senarai semak beg hospital"),
+    "leave": ("leave.html", "Mothers get 98 days of paid maternity leave and married fathers 7 days of paternity leave under the Employment Act. The calculator works out your dates.",
+              "Ibu layak 98 hari cuti bersalin bergaji dan bapa yang berkahwin 7 hari cuti paterniti di bawah Akta Kerja. Kalkulator mengira tarikh anda.",
+              "Open leave calculator", "Buka kalkulator cuti"),
+    "prices": ("prices.html", "See typical baby milk, diaper and baby food prices for your state and district, and the cheapest shops, from the government's price survey.",
+               "Lihat harga biasa susu bayi, lampin dan makanan bayi di negeri dan daerah anda, serta kedai termurah, daripada tinjauan harga kerajaan.",
+               "See milk & diaper prices", "Lihat harga susu & lampin"),
+    "nursery": ("nursery.html", "Find a taska (under 4) or tadika (4-6) near you on Google Maps, plus the questions to ask before you choose.",
+                "Cari taska (bawah 4 tahun) atau tadika (4-6 tahun) berhampiran di Google Maps, serta soalan yang perlu ditanya sebelum memilih.",
+                "Find taska & tadika", "Cari taska & tadika"),
+    "breastfeed": ("hospital-bag.html", "Breast milk is the best food for babies - the Ministry of Health recommends only breast milk for the first 6 months. For latching or supply worries, ask your clinic's or hospital's lactation nurse.",
+                   "Susu ibu ialah makanan terbaik untuk bayi - Kementerian Kesihatan mengesyorkan susu ibu sahaja untuk 6 bulan pertama. Jika ada masalah penyusuan, tanya jururawat laktasi di klinik atau hospital.",
+                   "Breastfeeding items for your bag", "Barang penyusuan untuk beg anda"),
+    "vaccine": ("pantang.html", "Babies usually get their first vaccines (BCG and Hepatitis B) at birth. After that, follow the schedule in your baby's health book at your klinik kesihatan.",
+                "Bayi biasanya menerima vaksin pertama (BCG dan Hepatitis B) semasa lahir. Selepas itu, ikut jadual dalam buku kesihatan bayi di klinik kesihatan.",
+                "See your after-birth timeline", "Lihat jadual selepas bersalin"),
+    "birthreg": ("pantang.html", "Register the birth with JPN - in Peninsular Malaysia within 60 days (many hospitals have a JPN counter). Bring both parents' MyKad and your marriage certificate.",
+                 "Daftar kelahiran di JPN - di Semenanjung dalam tempoh 60 hari (banyak hospital ada kaunter JPN). Bawa MyKad kedua-dua ibu bapa dan sijil nikah.",
+                 "See your after-birth timeline", "Lihat jadual selepas bersalin"),
+    "feedback": ("feedback.html", "Thank you! Tell us what to fix or add - it takes a minute.",
+                 "Terima kasih! Beritahu kami apa yang perlu dibaiki atau ditambah - hanya seminit.",
+                 "Suggest an improvement", "Hantar cadangan"),
+    "hello": ("", "Hi! Ask me about your pregnancy week, pantang, confinement costs, maternity leave, milk prices or taska.",
+              "Hai! Tanya saya tentang minggu kehamilan, pantang, kos berpantang, cuti bersalin, harga susu atau taska.", "", ""),
+    "thanks": ("", "You're welcome! Take care.", "Sama-sama! Jaga diri.", "", ""),
+}
+BOT_UI = {
+    "en": {"open": "Ask Teman", "title": "Teman helper", "close": "Close", "placeholder": "Type a question...",
+           "send": "Send", "greet": "Hi! I'm a simple helper (not a doctor). Ask me about your pregnancy week, pantang, confinement costs, maternity leave, milk prices or taska.",
+           "fallback": "Sorry, I didn't understand - I'm a simple helper. Try one of these topics, or tell us what's missing.",
+           "note": "Not medical advice. Emergency: 999.",
+           "weekAns": "At week {w}, your baby is about the size of {size}.", "weekLink": "Read week {w}",
+           "myWeek": "From your saved due date, you are {w} weeks {d} days pregnant.",
+           "chips": [["Which week am I?", "which week"], ["Pantang", "pantang"], ["Confinement cost", "confinement cost"],
+                     ["Hospital bag", "hospital bag"], ["Maternity leave", "maternity leave"], ["Milk & diaper prices", "milk price"],
+                     ["Taska & tadika", "taska"], ["Warning signs", "warning sign"], ["Suggest an idea", "feedback"]]},
+    "ms": {"open": "Tanya Teman", "title": "Pembantu Teman", "close": "Tutup", "placeholder": "Taip soalan...",
+           "send": "Hantar", "greet": "Hai! Saya pembantu ringkas (bukan doktor). Tanya saya tentang minggu kehamilan, pantang, kos berpantang, cuti bersalin, harga susu atau taska.",
+           "fallback": "Maaf, saya kurang faham - saya hanya pembantu ringkas. Cuba salah satu topik ini, atau beritahu kami apa yang tiada.",
+           "note": "Bukan nasihat perubatan. Kecemasan: 999.",
+           "weekAns": "Pada minggu ke-{w}, saiz bayi anda lebih kurang {size}.", "weekLink": "Baca minggu {w}",
+           "myWeek": "Berdasarkan tarikh jangkaan yang disimpan, anda hamil {w} minggu {d} hari.",
+           "chips": [["Minggu ke berapa?", "minggu ke berapa"], ["Pantang", "pantang"], ["Kos berpantang", "pusat berpantang"],
+                     ["Beg hospital", "beg hospital"], ["Cuti bersalin", "cuti bersalin"], ["Harga susu & lampin", "harga susu"],
+                     ["Taska & tadika", "taska"], ["Tanda bahaya", "tanda bahaya"], ["Beri cadangan", "cadangan"]]},
+}
+for _lang in ("en", "ms"):
+    _ui = dict(BOT_UI[_lang])
+    _ui["intents"] = [{"id": i, "k": BOT_KW[i], "p": BOT_ANS[i][0],
+                       "a": BOT_ANS[i][2 if _lang == "ms" else 1], "lt": BOT_ANS[i][4 if _lang == "ms" else 3]}
+                      for i in BOT_KW]
+    JS_STR[_lang]["bot"] = _ui
+
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E"
         "%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%B0%3C/text%3E%3C/svg%3E")
 
@@ -219,12 +320,13 @@ def write_page(lang, path, title, desc, body, data=None):
                f'{esc(config.ADSENSE_CLIENT)}" crossorigin="anonymous"></script>')
 
     nav = []
-    for href, en, ms in NAV:
+    for href, en, ms, ico, cls in NAV:
         active = href == path or (href == "weeks/index.html" and path.startswith("weeks/"))
         cur = ' aria-current="page"' if active else ""
-        nav.append(f'<a href="{lroot}{href}"{cur}>{esc(x(en, ms))}</a>')
+        nav.append(f'<a class="tab {cls}" href="{lroot}{href}"{cur}><span aria-hidden="true">{ico}</span> {esc(x(en, ms))}</a>')
 
-    tm = {"lang": lang, "root": root, "s": JS_STR[lang]}
+    tm = {"lang": lang, "root": root, "s": JS_STR[lang],
+          "wk": {n: wk.get(n, lang)["size"] for n in wk.W}}  # for the helper bot's week answers
     if data:
         tm.update(data)
     tm_json = json.dumps(tm, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
@@ -261,7 +363,7 @@ def write_page(lang, path, title, desc, body, data=None):
         "Maklumat umum sahaja - bukan nasihat perubatan. Sentiasa ikut nasihat doktor, jururawat atau bidan anda.")}</p>
   <p>{x("Some shop links are affiliate links: we may earn a small commission at no extra cost to you. We never earn from infant formula.",
         "Sesetengah pautan kedai ialah pautan afiliasi: kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda. Kami tidak pernah mendapat komisen daripada susu formula bayi.")}</p>
-  <p class="foot-links"><a href="{lroot}about.html">{x("About", "Tentang kami")}</a> · <a href="{lroot}privacy.html">{x("Privacy", "Privasi")}</a></p>
+  <p class="foot-links"><a href="{lroot}about.html">{x("About", "Tentang kami")}</a> · <a href="{lroot}privacy.html">{x("Privacy", "Privasi")}</a>{f' · <a href="{lroot}feedback.html">{x("Suggest an improvement", "Hantar cadangan")}</a>' if config.FEEDBACK_FORM_URL else ""}</p>
   <p class="small">© {TODAY.year} {esc(site)}</p>
 </div></footer>
 <script>window.TM={tm_json}</script>
@@ -276,7 +378,90 @@ def write_page(lang, path, title, desc, body, data=None):
     WRITTEN.append((lang, path))
 
 
+# Home page picture: baby clothes on a washing line with bunga raya. Drawn here (no licence issues),
+# colours follow the light/dark theme.
+HERO_SVG = """<svg class="hero-art" viewBox="0 0 640 200" role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="200" rx="18" style="fill:var(--brand-soft)"/>
+  <circle cx="566" cy="46" r="24" fill="#ffcf6e" opacity=".9"/>
+  <path d="M0 158 Q120 122 240 150 T480 140 T640 148 V200 H0 Z" style="fill:var(--accent-soft)"/>
+  <path d="M0 176 Q160 142 320 170 T640 164 V200 H0 Z" style="fill:var(--accent)" opacity=".22"/>
+  <line x1="40" y1="50" x2="40" y2="168" style="stroke:var(--muted)" stroke-width="4" stroke-linecap="round"/>
+  <line x1="600" y1="50" x2="600" y2="168" style="stroke:var(--muted)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M40 52 Q320 92 600 52" fill="none" style="stroke:var(--muted)" stroke-width="2"/>
+  <g transform="translate(150 64)">
+    <path d="M-14 0 Q0 10 14 0 L34 8 L44 26 L30 32 L24 24 L24 58 Q24 66 14 68 L6 70 L-6 70 L-14 68 Q-24 66 -24 58 L-24 24 L-30 32 L-44 26 L-34 8 Z" fill="#f7a8c4"/>
+    <circle cx="-5" cy="63" r="2.2" fill="#fff"/><circle cx="5" cy="63" r="2.2" fill="#fff"/>
+    <path d="M0 34 l-6 -6 a4 4 0 0 1 6 -5 a4 4 0 0 1 6 5 z" fill="#fff" opacity=".85"/>
+    <rect x="-17" y="-5" width="6" height="12" rx="2" fill="#c98b5e"/><rect x="11" y="-5" width="6" height="12" rx="2" fill="#c98b5e"/>
+  </g>
+  <g transform="translate(232 70)">
+    <path d="M0 0 H16 V30 Q16 38 24 40 L32 42 Q40 44 38 52 Q36 58 28 57 L8 54 Q0 52 0 44 Z" fill="#7fd1c3"/>
+    <rect x="0" y="0" width="16" height="7" fill="#fff" opacity=".6"/><rect x="5" y="-5" width="6" height="11" rx="2" fill="#c98b5e"/>
+  </g>
+  <g transform="translate(262 71) rotate(6)">
+    <path d="M0 0 H16 V30 Q16 38 24 40 L32 42 Q40 44 38 52 Q36 58 28 57 L8 54 Q0 52 0 44 Z" fill="#7fd1c3"/>
+    <rect x="0" y="0" width="16" height="7" fill="#fff" opacity=".6"/><rect x="5" y="-5" width="6" height="11" rx="2" fill="#c98b5e"/>
+  </g>
+  <g transform="translate(345 70)">
+    <path d="M-26 44 Q-26 8 0 6 Q26 8 26 44 Z" fill="#ffd36e"/>
+    <rect x="-28" y="40" width="56" height="11" rx="5" fill="#f4b942"/>
+    <circle cx="0" cy="5" r="7" fill="#fff3c4"/>
+    <rect x="-3" y="-4" width="6" height="10" rx="2" fill="#c98b5e"/>
+  </g>
+  <g transform="translate(418 68)">
+    <rect x="0" y="4" width="20" height="34" rx="10" fill="#c7b6f2"/><rect x="14" y="14" width="11" height="14" rx="5.5" fill="#c7b6f2"/>
+    <rect x="0" y="4" width="20" height="7" rx="3" fill="#fff" opacity=".55"/><rect x="7" y="-4" width="6" height="11" rx="2" fill="#c98b5e"/>
+  </g>
+  <g transform="translate(448 67)">
+    <rect x="0" y="4" width="20" height="34" rx="10" fill="#c7b6f2"/><rect x="-5" y="14" width="11" height="14" rx="5.5" fill="#c7b6f2"/>
+    <rect x="0" y="4" width="20" height="7" rx="3" fill="#fff" opacity=".55"/><rect x="7" y="-4" width="6" height="11" rx="2" fill="#c98b5e"/>
+  </g>
+  <g transform="translate(522 60)">
+    <path d="M0 4 Q-24 6 -24 32 Q-24 58 0 58 Q24 58 24 32 Q24 6 0 4 Z" fill="#9cc8f2"/>
+    <path d="M0 40 l-8 -8 a5.5 5.5 0 0 1 8 -7 a5.5 5.5 0 0 1 8 7 z" fill="#fff" opacity=".9"/>
+    <rect x="-3" y="-4" width="6" height="11" rx="2" fill="#c98b5e"/>
+  </g>
+  <g transform="translate(86 150)">
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#e2445c"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#e2445c" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#e2445c" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#e2445c" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#e2445c" transform="rotate(288)"/>
+    <circle r="6" fill="#b0213a"/>
+    <path d="M0 0 L12 -26" stroke="#ffd36e" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="12" cy="-27" r="3" fill="#ffd36e"/><circle cx="16" cy="-23" r="2.4" fill="#ffd36e"/><circle cx="8" cy="-30" r="2.4" fill="#ffd36e"/>
+    <ellipse cx="-30" cy="18" rx="16" ry="7" fill="#4caf7d" transform="rotate(-25 -30 18)"/>
+  </g>
+  <g transform="translate(600 172) scale(.65)">
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#f06b80"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#f06b80" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#f06b80" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#f06b80" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-18" rx="14" ry="20" fill="#f06b80" transform="rotate(288)"/>
+    <circle r="6" fill="#b0213a"/>
+  </g>
+  <path d="M300 30 l-7 -7 a5 5 0 0 1 7 -6 a5 5 0 0 1 7 6 z" style="fill:var(--brand)" opacity=".45"/>
+  <path d="M478 22 l-5 -5 a3.6 3.6 0 0 1 5 -4.3 a3.6 3.6 0 0 1 5 4.3 z" style="fill:var(--brand)" opacity=".4"/>
+  <path d="M96 34 l-5 -5 a3.6 3.6 0 0 1 5 -4.3 a3.6 3.6 0 0 1 5 4.3 z" style="fill:var(--brand)" opacity=".35"/>
+</svg>"""
+
+
 # ---------------------------------------------------------------- pages
+
+def p_feedback(lang):
+    x = tr(lang)
+    url = config.FEEDBACK_FORM_URL
+    body = f"""
+<h1>{x("Help us improve", "Bantu kami menambah baik")}</h1>
+<p class="lead">{x("Something missing, wrong or confusing? Tell us - every idea is read. Please don't share medical details here.",
+                   "Ada yang tiada, salah atau mengelirukan? Beritahu kami - setiap cadangan dibaca. Jangan kongsi butiran perubatan di sini.")}</p>
+<div class="form-frame"><iframe src="{esc(url)}?embedded=true" title="{x("Feedback form", "Borang cadangan")}">{x("Loading...", "Memuatkan...")}</iframe></div>
+<p class="small muted">{x("Form not showing?", "Borang tidak keluar?")} <a href="{esc(url)}" target="_blank" rel="noopener">{x("Open it in a new tab", "Buka dalam tab baharu")} ↗</a></p>
+"""
+    write_page(lang, "feedback.html", x("Help us improve", "Bantu kami menambah baik"),
+               x("Send ideas to improve this free pregnancy and pantang site.", "Hantar cadangan untuk menambah baik laman kehamilan dan pantang percuma ini."),
+               body)
+
 
 def p_home(lang):
     x = tr(lang)
@@ -303,6 +488,7 @@ def p_home(lang):
         for h, i, te, tm, de, dm in tools)
     body = f"""
 <section class="hero">
+  {HERO_SVG}
   <h1>{x("Your pregnancy & pantang companion", "Teman kehamilan & berpantang anda")}</h1>
   <p class="lead">{x("A week-by-week guide, pantang planner, confinement costs, baby milk prices and more - free, in English and Bahasa Melayu.",
                      "Panduan minggu demi minggu, perancang pantang, kos berpantang, harga susu bayi dan banyak lagi - percuma, dalam Bahasa Melayu dan English.")}</p>
@@ -540,6 +726,7 @@ BAG = [
         ("wipes", "Baby wipes or cotton wool", "Tisu basah bayi atau kapas", "baby wipes"),
         ("mittens", "Mittens, socks and a cap", "Sarung tangan, stokin dan topi", "sarung tangan kaki bayi"),
         ("blanket", "Baby blanket", "Selimut bayi", "selimut bayi"),
+        ("baby_bottles", "Baby feeding bottles (if you plan to use them)", "Botol susu bayi (jika perlu)", "botol susu bayi"),
         ("car_seat", "Infant car seat, fitted before the birth", "Kerusi keselamatan kereta bayi, dipasang sebelum bersalin", "infant car seat"),
     ]),
     ("For your partner", "Untuk pasangan", [
@@ -730,9 +917,12 @@ def p_privacy(lang):
 <h2>{x("Shop links", "Pautan kedai")}</h2>
 <p>{x("Some shop links are affiliate links. If you buy through them we may earn a small commission, at no extra cost to you. We never earn from infant formula.",
        "Sesetengah pautan kedai ialah pautan afiliasi. Jika anda membeli melaluinya, kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda. Kami tidak pernah mendapat komisen daripada susu formula bayi.")}</p>
+<h2>{x("Feedback form", "Borang cadangan")}</h2>
+<p>{x("Ideas you send through our feedback form are collected by Google Forms. Only leave your email if you want a reply, and please don't share medical details there.",
+       "Cadangan yang dihantar melalui borang kami dikumpul oleh Google Forms. Tinggalkan e-mel hanya jika mahu balasan, dan jangan kongsi butiran perubatan di sana.")}</p>
 <h2>{x("Other sites", "Laman lain")}</h2>
-<p>{x("Links to Google Maps, Shopee and government sites follow those sites' own privacy policies.",
-       "Pautan ke Google Maps, Shopee dan laman kerajaan tertakluk kepada dasar privasi laman tersebut.")}</p>
+<p>{x("Product pictures on the prices page load from Shopee's image servers. Links to Google Maps, Shopee and government sites follow those sites' own privacy policies.",
+       "Gambar produk di halaman harga dimuatkan dari pelayan gambar Shopee. Pautan ke Google Maps, Shopee dan laman kerajaan tertakluk kepada dasar privasi laman tersebut.")}</p>
 <h2>{x("Contact", "Hubungi")}</h2>
 <p>{x("Questions about privacy? Write to", "Soalan tentang privasi? Tulis kepada")} {email}.</p>
 """
@@ -832,6 +1022,8 @@ def main():
         p_nursery(lang)
         p_privacy(lang)
         p_about(lang)
+        if config.FEEDBACK_FORM_URL:
+            p_feedback(lang)
     root_files()
     print(f"built {len(WRITTEN)} pages into {OUT}" + (" (ad preview)" if AD_PREVIEW else ""))
 
