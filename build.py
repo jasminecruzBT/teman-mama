@@ -124,6 +124,7 @@ JS_STR = {
         "preTypical": "Typical packages (anywhere in Malaysia)", "preCentres": "Confinement centres - {state}", "qFrom": "from",
         "preCentreNote": "Published price for {d} days: {price}. Checked {date}. Prices change - confirm with the centre.",
         "preSource": "Centre's website", "preTypicalNote": "Typical price - change it to match your quote.",
+        "preCentreNoteNoDays": "Published price: {price} (stay length not stated). Checked {date}. Prices change - confirm with the centre.",
     },
     "ms": {
         "pickDate": "Sila pilih tarikh dahulu.",
@@ -178,6 +179,7 @@ JS_STR = {
         "preTypical": "Pakej biasa (seluruh Malaysia)", "preCentres": "Pusat berpantang - {state}", "qFrom": "dari",
         "preCentreNote": "Harga yang diterbitkan untuk {d} hari: {price}. Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
         "preSource": "Laman web pusat", "preTypicalNote": "Harga biasa - ubah supaya sama dengan sebut harga anda.",
+        "preCentreNoteNoDays": "Harga yang diterbitkan: {price} (tempoh tidak dinyatakan). Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
     },
 }
 

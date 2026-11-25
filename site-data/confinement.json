@@ -1,22 +1,295 @@
 {
-  "_note": "Choices for the confinement quote comparer. 'typical' = package types with typical 2026 prices (malaysia4u.com/confinement-guide). 'centres' = real centres with their own published prices; re-check every few months.",
+  "_note": "Choices for the confinement quote comparer. 'typical' = package types with typical 2026 prices (malaysia4u.com/confinement-guide). 'centres' = real centres with their own published prices; re-check every few months. Centres: only those publishing a price on their own site (10 of ~60 checked on 25 Nov 2026); every price re-confirmed on the centre's page that day.",
   "typical": [
-    {"id": "t-nanny", "en": "Live-in confinement nanny (typical)", "ms": "Pengasuh berpantang tinggal bersama (biasa)",
-     "price": 7000, "days": 28, "ratio": 1,
-     "inc": {"care24": true, "lact": false, "massage": false, "partner": true, "laundry": true},
-     "note_en": "Typical 2026 range RM5,000-9,000 for 28 days.", "note_ms": "Julat biasa 2026: RM5,000-9,000 untuk 28 hari."},
-    {"id": "t-budget", "en": "Confinement centre - budget (typical)", "ms": "Pusat berpantang - bajet (biasa)",
-     "price": 10500, "days": 28, "ratio": null,
-     "inc": {"care24": true, "lact": false, "massage": false, "partner": false, "laundry": true},
-     "note_en": "Typical outside central KL (e.g. Johor): about RM9,000-12,000.", "note_ms": "Biasa di luar pusat KL (cth. Johor): lebih kurang RM9,000-12,000."},
-    {"id": "t-mid", "en": "Confinement centre - mid-range (typical)", "ms": "Pusat berpantang - pertengahan (biasa)",
-     "price": 15000, "days": 28, "ratio": 4,
-     "inc": {"care24": true, "lact": false, "massage": false, "partner": false, "laundry": true},
-     "note_en": "Typical 2026 range RM12,000-18,000; the standard tier is often 1 nurse to 4 babies.", "note_ms": "Julat biasa 2026: RM12,000-18,000; peringkat standard selalunya 1 jururawat untuk 4 bayi."},
-    {"id": "t-lux", "en": "Confinement centre - luxury (typical)", "ms": "Pusat berpantang - mewah (biasa)",
-     "price": 28000, "days": 28, "ratio": null,
-     "inc": {"care24": true, "lact": true, "massage": false, "partner": false, "laundry": true},
-     "note_en": "Luxury suites are about RM20,000 to RM40,000 or more.", "note_ms": "Suite mewah lebih kurang RM20,000 hingga RM40,000 atau lebih."}
+    {
+      "id": "t-nanny",
+      "en": "Live-in confinement nanny (typical)",
+      "ms": "Pengasuh berpantang tinggal bersama (biasa)",
+      "price": 7000,
+      "days": 28,
+      "ratio": 1,
+      "inc": {
+        "care24": true,
+        "lact": false,
+        "massage": false,
+        "partner": true,
+        "laundry": true
+      },
+      "note_en": "Typical 2026 range RM5,000-9,000 for 28 days.",
+      "note_ms": "Julat biasa 2026: RM5,000-9,000 untuk 28 hari."
+    },
+    {
+      "id": "t-budget",
+      "en": "Confinement centre - budget (typical)",
+      "ms": "Pusat berpantang - bajet (biasa)",
+      "price": 10500,
+      "days": 28,
+      "ratio": null,
+      "inc": {
+        "care24": true,
+        "lact": false,
+        "massage": false,
+        "partner": false,
+        "laundry": true
+      },
+      "note_en": "Typical outside central KL (e.g. Johor): about RM9,000-12,000.",
+      "note_ms": "Biasa di luar pusat KL (cth. Johor): lebih kurang RM9,000-12,000."
+    },
+    {
+      "id": "t-mid",
+      "en": "Confinement centre - mid-range (typical)",
+      "ms": "Pusat berpantang - pertengahan (biasa)",
+      "price": 15000,
+      "days": 28,
+      "ratio": 4,
+      "inc": {
+        "care24": true,
+        "lact": false,
+        "massage": false,
+        "partner": false,
+        "laundry": true
+      },
+      "note_en": "Typical 2026 range RM12,000-18,000; the standard tier is often 1 nurse to 4 babies.",
+      "note_ms": "Julat biasa 2026: RM12,000-18,000; peringkat standard selalunya 1 jururawat untuk 4 bayi."
+    },
+    {
+      "id": "t-lux",
+      "en": "Confinement centre - luxury (typical)",
+      "ms": "Pusat berpantang - mewah (biasa)",
+      "price": 28000,
+      "days": 28,
+      "ratio": null,
+      "inc": {
+        "care24": true,
+        "lact": true,
+        "massage": false,
+        "partner": false,
+        "laundry": true
+      },
+      "note_en": "Luxury suites are about RM20,000 to RM40,000 or more.",
+      "note_ms": "Suite mewah lebih kurang RM20,000 hingga RM40,000 atau lebih."
+    }
   ],
-  "centres": []
+  "centres": [
+    {
+      "name": "Terra Confinement Care",
+      "area": "Petaling Jaya",
+      "state": "Selangor",
+      "price_from_rm": 16888,
+      "price_to_rm": 26888,
+      "days": 28,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": true,
+        "massage": null,
+        "partner": true,
+        "laundry": true
+      },
+      "halal": null,
+      "source_url": "https://terraconfinement.com.my/deluxe/",
+      "checked": "2026-11-25",
+      "caveat_en": "Price depends on room type; postnatal massage is a separate service.",
+      "caveat_ms": "Harga ikut jenis bilik; urutan selepas bersalin ialah perkhidmatan berasingan."
+    },
+    {
+      "name": "Sunway Sanctuary Postnatal Care",
+      "area": "Bandar Sunway",
+      "state": "Selangor",
+      "price_from_rm": 26800,
+      "price_to_rm": null,
+      "days": 28,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": null,
+        "massage": true,
+        "partner": null,
+        "laundry": true
+      },
+      "halal": null,
+      "source_url": "https://sunwaypostnatal.com.my/packages/",
+      "checked": "2026-11-25",
+      "caveat_en": "Only the cheapest room's price is published.",
+      "caveat_ms": "Hanya harga bilik termurah diterbitkan."
+    },
+    {
+      "name": "Roseville Confinement Villa & Spa",
+      "area": "Bangi",
+      "state": "Selangor",
+      "price_from_rm": 18000,
+      "price_to_rm": 20600,
+      "days": 28,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": false,
+        "massage": true,
+        "partner": null,
+        "laundry": false
+      },
+      "halal": null,
+      "source_url": "https://rosevilleconfinement.com/en/harga-pakej-berpantang/",
+      "checked": "2026-11-25",
+      "caveat_en": "Promo price until 31 Dec 2026 (normally from RM24,000). Breastfeeding help and laundry cost extra.",
+      "caveat_ms": "Harga promosi hingga 31 Dis 2026 (biasanya dari RM24,000). Bantuan penyusuan dan dobi dikenakan caj tambahan."
+    },
+    {
+      "name": "Orchid Villa Confinement Centre",
+      "area": "Shah Alam",
+      "state": "Selangor",
+      "price_from_rm": 23700,
+      "price_to_rm": 29400,
+      "days": 30,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": false,
+        "lact": false,
+        "massage": true,
+        "partner": null,
+        "laundry": null
+      },
+      "halal": true,
+      "source_url": "https://orchid-villa.com/service/",
+      "checked": "2026-11-25",
+      "caveat_en": "Halal meals, Syariah-compliant. Night care for baby (10pm-7am) costs extra.",
+      "caveat_ms": "Makanan halal, patuh Syariah. Jagaan bayi waktu malam (10mlm-7pg) dikenakan caj tambahan."
+    },
+    {
+      "name": "De Joy's Confinement",
+      "area": "Kuchai Lama",
+      "state": "W.P. Kuala Lumpur",
+      "price_from_rm": 14888,
+      "price_to_rm": 22888,
+      "days": 28,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": true,
+        "massage": null,
+        "partner": null,
+        "laundry": true
+      },
+      "halal": null,
+      "source_url": "https://dejoys.com.my/confinement-stay",
+      "checked": "2026-11-25",
+      "caveat_en": "Menu includes pork. Massage and husband-stay details are still 'to be confirmed' on their site.",
+      "caveat_ms": "Menu termasuk babi. Butiran urutan dan suami tinggal masih 'akan disahkan' di laman mereka."
+    },
+    {
+      "name": "San Lyra Postnatal Rejuvenation Centre",
+      "area": "Desa Sri Hartamas",
+      "state": "W.P. Kuala Lumpur",
+      "price_from_rm": 19000,
+      "price_to_rm": 45900,
+      "days": 28,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": null,
+        "massage": null,
+        "partner": true,
+        "laundry": null
+      },
+      "halal": null,
+      "source_url": "https://www.sanlyra.com/ourpackages",
+      "checked": "2026-11-25",
+      "caveat_en": "Starting prices - the final price depends on room, length of stay and treatments.",
+      "caveat_ms": "Harga permulaan - harga akhir bergantung pada bilik, tempoh dan rawatan."
+    },
+    {
+      "name": "Byond28 Confinement Care",
+      "area": "Cheras",
+      "state": "Selangor",
+      "price_from_rm": 22888,
+      "price_to_rm": null,
+      "days": 28,
+      "days_unstated": true,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": true,
+        "massage": true,
+        "partner": null,
+        "laundry": null
+      },
+      "halal": null,
+      "source_url": "https://byond28.com.my/",
+      "checked": "2026-11-25",
+      "caveat_en": "The stay length isn't stated next to the price - confirm it's 28 days.",
+      "caveat_ms": "Tempoh penginapan tidak dinyatakan bersama harga - sahkan sama ada 28 hari."
+    },
+    {
+      "name": "Harvest Confinement Centre (Johor Bahru)",
+      "area": "Johor Bahru",
+      "state": "Johor",
+      "price_from_rm": 10888,
+      "price_to_rm": null,
+      "days": 28,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": null,
+        "massage": null,
+        "partner": true,
+        "laundry": null
+      },
+      "halal": null,
+      "source_url": "https://harvestconfinement.com.my/johor-bahru/",
+      "checked": "2026-11-25",
+      "caveat_en": "'From' price - the exact price is confirmed on WhatsApp.",
+      "caveat_ms": "Harga 'dari' - harga tepat disahkan melalui WhatsApp."
+    },
+    {
+      "name": "Harvest Confinement Centre (Kulai & Senai)",
+      "area": "Kulai / Senai",
+      "state": "Johor",
+      "price_from_rm": 9288,
+      "price_to_rm": null,
+      "days": 28,
+      "days_unstated": false,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": null,
+        "massage": null,
+        "partner": true,
+        "laundry": null
+      },
+      "halal": null,
+      "source_url": "https://harvestconfinement.com.my/kulai/",
+      "checked": "2026-11-25",
+      "caveat_en": "'From' price - the exact price is confirmed on WhatsApp.",
+      "caveat_ms": "Harga 'dari' - harga tepat disahkan melalui WhatsApp."
+    },
+    {
+      "name": "Carnation Confinement Home",
+      "area": "George Town",
+      "state": "Pulau Pinang",
+      "price_from_rm": 9399,
+      "price_to_rm": 11399,
+      "days": 28,
+      "days_unstated": true,
+      "babies_per_nurse": null,
+      "includes": {
+        "care24": true,
+        "lact": true,
+        "massage": null,
+        "partner": false,
+        "laundry": true
+      },
+      "halal": null,
+      "source_url": "https://www.carnation-confinement.com/penang-confinement-center-packages.html",
+      "checked": "2026-11-25",
+      "caveat_en": "Stay length isn't stated on the price page - confirm it. Dad can stay overnight in every room except the cheapest.",
+      "caveat_ms": "Tempoh tidak dinyatakan di halaman harga - sahkan. Bapa boleh bermalam di semua bilik kecuali yang termurah."
+    }
+  ]
 }

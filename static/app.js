@@ -162,7 +162,9 @@
         note.textContent = (LANG === "ms" ? p.note_ms : p.note_en) + " " + S.preTypicalNote;
       } else {
         var price = rm(p.price_from_rm).replace(".00", "") + (p.price_to_rm ? " - " + rm(p.price_to_rm).replace(".00", "") : "");
-        note.innerHTML = esc(fill(S.preCentreNote, { d: p.days, price: price, date: fmt(parseDate(p.checked)) })) +
+        var cav = p["caveat_" + LANG] || p.caveat_en || "";
+        note.innerHTML = esc(fill(p.days_unstated ? S.preCentreNoteNoDays : S.preCentreNote, { d: p.days, price: price, date: fmt(parseDate(p.checked)) })) +
+          (cav ? " <strong>" + esc(cav) + "</strong>" : "") +
           ' <a href="' + esc(p.source_url) + '" target="_blank" rel="noopener">' + esc(S.preSource) + " ↗</a>";
       }
       note.hidden = false;
