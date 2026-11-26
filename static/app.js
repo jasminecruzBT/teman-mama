@@ -952,6 +952,9 @@
     document.addEventListener("click", function (e) { if (!wide.matches && m.open && !m.contains(e.target)) m.open = false; });
     document.addEventListener("keydown", function (e) { if (!wide.matches && e.key === "Escape" && m.open) { m.open = false; $("summary", m).focus(); } });
     $$(".menu-panel a", m).forEach(function (a) { a.addEventListener("click", function () { if (!wide.matches) m.open = false; }); });
+    // one section open at a time (older browsers ignore <details name>)
+    var grps = $$(".menu-grp", m);
+    grps.forEach(function (d) { d.addEventListener("toggle", function () { if (d.open) grps.forEach(function (o) { if (o !== d) o.open = false; }); }); });
   }
 
   // ---------- ⓘ tips: hover on computers, tap on phones; one open at a time, kept on screen

@@ -536,10 +536,20 @@ def write_page(lang, path, title, desc, body, data=None):
                f'{esc(config.ADSENSE_CLIENT)}" crossorigin="anonymous"></script>')
 
     # Menu: one button on the left that drops down the list of sections (built on <details>, works without JS).
-    items, current = [], x("Menu", "Menu")
+    # Sections (Before pregnancy, Pregnant, ...) are collapsible: only their titles show until tapped;
+    # the section holding the current page starts open.
+    current = x("Menu", "Menu")
+    top, sections = [], []
+
+    def add(html, act):
+        if sections:
+            sections[-1][2].append(html)
+            sections[-1][3] = sections[-1][3] or act
+        else:
+            top.append(html)
     for href, en, ms, ico, cls in NAV:
         if href.startswith("#"):
-            items.append(f'<li class="menu-group"><span aria-hidden="true">{ico}</span> {esc(x(en, ms))}</li>')
+            sections.append([ico, x(en, ms), [], False])
             continue
         active = href == path or (href == "weeks/index.html" and path.startswith("weeks/"))
         label = x(en, ms) if href != "prices.html" else x("Prices", "Harga barang keperluan")
@@ -550,16 +560,20 @@ def write_page(lang, path, title, desc, body, data=None):
             subs = "".join(
                 f'<li><a href="{lroot}prices.html#grp-{g}"><span class="mi-ico" aria-hidden="true">{GROUPS[g][0]}</span>'
                 f'{esc(x(GROUPS[g][1], GROUPS[g][2]))}</a></li>' for g in PRICE_GROUPS)
-            items.append(f"""<li><details class="menu-sub"{" open" if active else ""}>
+            add(f"""<li><details class="menu-sub"{" open" if active else ""}>
   <summary class="mi {cls}"{cur}><span class="mi-ico" aria-hidden="true">{ico}</span>{esc(label)}<span class="chev" aria-hidden="true"></span></summary>
   <ul>
     <li><a href="{lroot}prices.html"><span class="mi-ico" aria-hidden="true">📋</span>{x("All prices", "Semua harga")}</a></li>{subs}
     <li><form class="search-row" action="{lroot}prices.html" method="get" role="search">
       <input type="search" name="q" placeholder="{x("Search, e.g. Drypers", "Cari, cth. Drypers")}" aria-label="{x("Search products", "Cari produk")}">
       <button type="submit" class="btn">{x("Search", "Cari")}</button></form></li>
-  </ul></details></li>""")
+  </ul></details></li>""", active)
             continue
-        items.append(f'<li><a class="mi {cls}" href="{lroot}{href}"{cur}><span class="mi-ico" aria-hidden="true">{ico}</span>{esc(label)}</a></li>')
+        add(f'<li><a class="mi {cls}" href="{lroot}{href}"{cur}><span class="mi-ico" aria-hidden="true">{ico}</span>{esc(label)}</a></li>', active)
+    items = top + [
+        f'<li class="menu-sec"><details class="menu-grp" name="menu-grp"{" open" if act else ""}>'
+        f'<summary class="menu-group"><span aria-hidden="true">{gico}</span> {esc(title)}<span class="chev" aria-hidden="true"></span></summary>'
+        f'<ul>{"".join(its)}</ul></details></li>' for gico, title, its, act in sections]
     extra = (f'<li class="menu-foot"><a href="{lroot}feedback.html">💬 {x("Suggest an improvement", "Hantar cadangan")}</a></li>'
              if config.FEEDBACK_FORM_URL else "")
     menu = f"""<details class="menu">

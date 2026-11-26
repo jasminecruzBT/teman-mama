@@ -759,3 +759,14 @@ html.pinned .chat-panel { right: 24px; }
 .az-bar button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
 .nm-list li.nm-letter { grid-column: 1 / -1; background: none; padding: 10px 2px 0; font-weight: 800; font-size: 1.1rem; color: var(--brand); border: 0; }
 .card-sort { margin: 6px 0 2px; }
+
+/* ---------- menu sections fold away: only titles show until tapped */
+.menu-sec { margin: 0; }
+.menu-grp > summary { list-style: none; cursor: pointer; border-radius: 12px; padding: 13px 10px; margin-top: 2px; }
+.menu-grp > summary::-webkit-details-marker { display: none; }
+.menu-grp > summary:hover { background: var(--faint); }
+.menu-grp > summary > .chev { margin-left: auto; }
+.menu-grp[open] > summary > .chev { transform: rotate(-135deg); }
+.menu-grp[open] > summary { color: var(--brand); }
+.menu-grp > ul { padding: 0 0 6px !important; }
+.menu-panel > ul > li:first-child + .menu-sec .menu-group { border-top: 0; }
