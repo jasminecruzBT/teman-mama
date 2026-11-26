@@ -1005,10 +1005,10 @@
   }
 
   // ---------- menu (a <details> drop-down on the left): close on outside click, Escape or after picking
-  // On laptops (>= 1100px wide) the menu is pinned open as a sidebar on the left; on phones it's the ☰ drop-down.
+  // On laptops and tablets held sideways (>= 900px wide) the menu is pinned open as a sidebar on the left; on phones it's the ☰ drop-down.
   function menu() {
     var m = $("details.menu"); if (!m) return;
-    var wide = window.matchMedia("(min-width: 1100px)");
+    var wide = window.matchMedia("(min-width: 900px)");
     function pin() {
       document.documentElement.classList.toggle("pinned", wide.matches);
       if (wide.matches) m.open = true; else m.open = false;
