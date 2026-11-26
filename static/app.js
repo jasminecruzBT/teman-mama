@@ -1347,7 +1347,92 @@
     show();
   }
 
+  // ---------- baby's daily log: feeds, nappies, sleep (saved on this phone only, last 60 days)
+  function babyLog() {
+    var box = $("#log-tool"); if (!box) return;
+    var list = get("tm_babylog", []), out = $("#log-list"), sum = $("#log-sum"), dayLbl = $("#log-day"), since = $("#log-since");
+    var dayOff = 0, ICON = { fl: "🤱", fr: "🤱", fb: "🍼", wet: "💧", dirty: "💩", sleep: "😴", wake: "🌤️" };
+    function save() {
+      var cut = Date.now() - 60 * DAY;
+      list = list.filter(function (e) { return e.t >= cut; });
+      set("tm_babylog", list);
+    }
+    function dayStart(off) { var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + off); return d.getTime(); }
+    function hm(t) { return new Date(t).toLocaleTimeString(LOCALE, { hour: "numeric", minute: "2-digit" }); }
+    function label(k) { return S["log_" + k] || k; }
+    function sleeping() { var s = list.filter(function (e) { return e.k === "sleep" || e.k === "wake"; }).sort(function (a, b) { return a.t - b.t; }); return s.length && s[s.length - 1].k === "sleep" ? s[s.length - 1] : null; }
+    function render() {
+      var a = dayStart(dayOff), b = a + DAY, day = list.filter(function (e) { return e.t >= a && e.t < b; }).sort(function (x, y) { return y.t - x.t; });
+      dayLbl.textContent = dayOff === 0 ? S.logToday : dayOff === -1 ? S.logYesterday : new Date(a).toLocaleDateString(LOCALE, { weekday: "short", day: "numeric", month: "short" });
+      $("#log-next").disabled = dayOff >= 0;
+      var feeds = day.filter(function (e) { return e.k.charAt(0) === "f"; }).length, wet = day.filter(function (e) { return e.k === "wet"; }).length,
+          dirty = day.filter(function (e) { return e.k === "dirty"; }).length;
+      // sleep minutes inside this day (pair each 'sleep' with the next 'wake')
+      var all = list.slice().sort(function (x, y) { return x.t - y.t; }), mins = 0, start = null;
+      all.forEach(function (e) {
+        if (e.k === "sleep") start = e.t;
+        else if (e.k === "wake" && start !== null) { mins += Math.max(0, Math.min(e.t, b) - Math.max(start, a)) / 60000; start = null; }
+      });
+      if (start !== null && dayOff === 0) mins += Math.max(0, Math.min(Date.now(), b) - Math.max(start, a)) / 60000;
+      sum.innerHTML = '<div class="stat t1"><p class="stat-label">' + esc(S.logFeeds) + '</p><p class="stat-big">' + feeds + "</p></div>" +
+        '<div class="stat t2"><p class="stat-label">' + esc(S.logWet) + '</p><p class="stat-big">' + wet + "</p></div>" +
+        '<div class="stat"><p class="stat-label">' + esc(S.logDirty) + '</p><p class="stat-big">' + dirty + "</p></div>" +
+        '<div class="stat"><p class="stat-label">' + esc(S.logSleep) + '</p><p class="stat-big">' + ((mins >= 60 ? Math.floor(mins / 60) + S.logH + " " : "") + Math.round(mins % 60) + "m") + "</p></div>";
+      out.innerHTML = day.length ? day.map(function (e) {
+        return '<li><span class="log-time">' + esc(hm(e.t)) + '</span><span class="log-what">' + ICON[e.k] + " " + esc(label(e.k)) + '</span><button type="button" class="link-btn muted" data-del="' + e.t + '" aria-label="' + esc(S.logDel) + '">✕</button></li>';
+      }).join("") : '<li class="muted">' + esc(S.logEmpty) + "</li>";
+      var lastFeed = list.filter(function (e) { return e.k.charAt(0) === "f"; }).sort(function (x, y) { return y.t - x.t; })[0];
+      var sl = sleeping();
+      function ago(ms) { var m = Math.floor(ms / 60000); return m < 1 ? null : (m >= 60 ? Math.floor(m / 60) + S.logH + " " : "") + (m % 60) + "m"; }
+      var fa = lastFeed ? ago(Date.now() - lastFeed.t) : null;
+      since.textContent = (lastFeed ? (fa ? fill(S.logSince, { t: fa }) : S.logJustNow) : "") +
+        (sl ? (lastFeed ? " · " : "") + fill(S.logAsleep, { t: hm(sl.t) }) : "");
+      $$('.log-btn[data-k="sleep"]', box).forEach(function (bt) { bt.hidden = !!sl; });
+      $$('.log-btn[data-k="wake"]', box).forEach(function (bt) { bt.hidden = !sl; });
+    }
+    box.addEventListener("click", function (e) {
+      var bt = e.target.closest(".log-btn");
+      if (bt) { list.push({ t: Date.now(), k: bt.getAttribute("data-k") }); save(); dayOff = 0; render(); bt.classList.add("done-flash"); setTimeout(function () { bt.classList.remove("done-flash"); }, 500); return; }
+      var del = e.target.closest("[data-del]");
+      if (del) { var t = +del.getAttribute("data-del"); list = list.filter(function (x) { return x.t !== t; }); save(); render(); return; }
+      if (e.target.closest("#log-prev")) { dayOff--; render(); }
+      if (e.target.closest("#log-next") && dayOff < 0) { dayOff++; render(); }
+    });
+    render();
+    setInterval(function () { if (dayOff === 0) render(); }, 60000);
+  }
+
+  // ---------- pregnancy weight gain: BMI before pregnancy -> recommended total gain (TM.wg rows: [bmiUpTo, totalLo, totalHi, wkLo, wkHi, labelKey])
+  function weightGain() {
+    var box = $("#wg-tool"); if (!box || !TM.wg) return;
+    var h = $("#wg-h"), w0 = $("#wg-w0"), wk = $("#wg-wk"), w1 = $("#wg-w1"), out = $("#wg-result");
+    var st = get("tm_wg", {});
+    if (st.h) h.value = st.h; if (st.w0) w0.value = st.w0; if (st.w1) w1.value = st.w1;
+    var due = parseDate(get("tm_due", ""));
+    if (due) { var ga = Math.floor((280 - diffDays(today(), due)) / 7); if (ga >= 4 && ga <= 42) wk.value = ga; }
+    if (st.wk && !wk.value) wk.value = st.wk;
+    function render() {
+      var hv = parseFloat(h.value) / 100, a = parseFloat(w0.value), week = parseInt(wk.value, 10), b = parseFloat(w1.value);
+      st = { h: h.value, w0: w0.value, wk: wk.value, w1: w1.value }; set("tm_wg", st);
+      if (!(hv > 1.2 && hv < 2.2) || !(a > 30 && a < 200)) { out.innerHTML = ""; return; }
+      var bmi = a / (hv * hv), row = TM.wg.filter(function (r) { return bmi < r[0]; })[0] || TM.wg[TM.wg.length - 1];
+      var html = '<div class="stats"><div class="stat t1"><p class="stat-label">' + esc(S.wgBmi) + '</p><p class="stat-big">' + bmi.toFixed(1) + '</p><p class="stat-small">' + esc(S["wgCat_" + row[5]]) + "</p></div>" +
+        '<div class="stat t2"><p class="stat-label">' + esc(S.wgTotal) + '</p><p class="stat-big">' + row[1] + "–" + row[2] + ' kg</p><p class="stat-small">' + esc(S.wgWholePreg) + "</p></div>" +
+        '<div class="stat"><p class="stat-label">' + esc(S.wgWeekly) + '</p><p class="stat-big">' + row[3] + "–" + row[4] + ' kg</p><p class="stat-small">' + esc(S.wgPerWeek) + "</p></div></div>";
+      if (week >= 4 && week <= 42 && b > 30 && b < 220) {
+        var gained = b - a, lo = 0.5 + Math.max(0, week - 12) * row[3], hi = 2 + Math.max(0, week - 12) * row[4];
+        if (week <= 12) { lo = 0; hi = 2; }
+        var verdict = gained < lo - 0.5 ? S.wgBelow : gained > hi + 0.5 ? S.wgAbove : S.wgOk;
+        html += '<p class="wg-now"><strong>' + esc(fill(S.wgSoFar, { g: (gained >= 0 ? "+" : "") + gained.toFixed(1), w: week })) + "</strong> " +
+          esc(fill(S.wgExpect, { lo: lo.toFixed(1), hi: hi.toFixed(1) })) + " " + esc(verdict) + "</p>";
+      }
+      out.innerHTML = html;
+    }
+    box.addEventListener("input", render);
+    render();
+  }
+
   freshness(); tips(); menu(); dueTool(); homeTabs(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery();
   themeSwitch(); vaccines(); afterBirth(); deliveryCost(); stateChips(); cardSort(); tabGroups(); milk(); names(); fertility(); labour(); bot();
-  antenatal(); budget(); epds(); aqiqah(); solids(); growth();
+  antenatal(); budget(); epds(); aqiqah(); solids(); growth(); babyLog(); weightGain();
 })();
