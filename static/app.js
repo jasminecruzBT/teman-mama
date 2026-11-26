@@ -436,14 +436,41 @@
     }
     var list = $("#hosp-list");
     if (list) {
-      var chips = $$(".state-chips .chip-btn");
+      var chips = $$(".state-chips .chip-btn"), askBox = $("#priv-ask");
       chips.forEach(function (c) {
         c.addEventListener("click", function () {
           var s = c.getAttribute("data-state");
           chips.forEach(function (o) { o.setAttribute("aria-pressed", o === c ? "true" : "false"); });
           $$(".hosp", list).forEach(function (h) { h.hidden = !!s && h.getAttribute("data-state") !== s; });
+          if (askBox) {
+            var any = false;
+            $$("li", askBox).forEach(function (li) { li.hidden = !!s && li.getAttribute("data-state") !== s; if (!li.hidden) any = true; });
+            askBox.hidden = !any;
+          }
         });
       });
+    }
+    // three tabs (government / university / private): only the chosen one is shown, so there's little to scroll
+    var dtabs = $$(".dtab");
+    if (dtabs.length) {
+      var keys = dtabs.map(function (t) { return t.getAttribute("data-tab"); });
+      function showTab(k) {
+        dtabs.forEach(function (t) { var on = t.getAttribute("data-tab") === k; t.setAttribute("aria-selected", on ? "true" : "false"); t.tabIndex = on ? 0 : -1; });
+        $$(".dpanel").forEach(function (p) { p.hidden = p.getAttribute("data-tab") !== k; });
+        set("tm_deliv_tab", k);
+      }
+      dtabs.forEach(function (t, i) {
+        t.addEventListener("click", function () {
+          var k = t.getAttribute("data-tab"); showTab(k);
+          try { history.replaceState(null, "", "#" + k); } catch (e) { /* file:// */ }
+        });
+        t.addEventListener("keydown", function (e) {
+          var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!d) return;
+          var n = dtabs[(i + d + dtabs.length) % dtabs.length]; n.focus(); n.click(); e.preventDefault();
+        });
+      });
+      var h = location.hash.replace("#", "");
+      showTab(keys.indexOf(h) >= 0 ? h : (keys.indexOf(get("tm_deliv_tab", "")) >= 0 ? get("tm_deliv_tab", "") : keys[0]));
     }
   }
 

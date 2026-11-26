@@ -668,3 +668,27 @@ html.pinned .chat-panel { right: 24px; }
   .theme-btn { width: 36px; height: 36px; }
   .lang { padding: 7px 11px; }
 }
+
+/* ---------- delivery cost: three tabs instead of one long page */
+.dtabs-q { margin: 0 0 8px; font-weight: 700; font-size: .95rem; }
+.dtabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 16px; }
+.dtab { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; font: inherit; color: var(--ink); cursor: pointer; min-width: 0;
+  border: 0; border-radius: 16px; padding: 12px 14px; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); transition: box-shadow .12s ease, transform .12s ease; }
+.dtab:hover { transform: translateY(-1px); }
+.dtab[aria-selected="true"] { box-shadow: inset 0 0 0 2.5px var(--brand), var(--shadow); }
+.dtab.dt-gov[aria-selected="true"] { background: var(--accent-soft); }
+.dtab.dt-uni[aria-selected="true"] { background: var(--faint); }
+.dtab.dt-priv[aria-selected="true"] { background: var(--brand-soft); }
+.dt-lbl { font-size: .74rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.dtab[aria-selected="true"] .dt-lbl { color: var(--brand); }
+.dt-big { font-size: 1.25rem; font-weight: 800; letter-spacing: -.01em; line-height: 1.25; }
+.dt-small { font-size: .8rem; color: var(--muted); line-height: 1.35; }
+.dp-intro { color: var(--muted); margin: 0 0 12px; }
+.dpanel > .card:first-child, .dpanel > .box:first-child { margin-top: 0; }
+@media (max-width: 560px) {
+  .dtabs { gap: 6px; }
+  .dtab { padding: 10px 9px; border-radius: 14px; }
+  .dt-lbl { font-size: .66rem; letter-spacing: .03em; }
+  .dt-big { font-size: .98rem; }
+  .dt-small { font-size: .72rem; }
+}

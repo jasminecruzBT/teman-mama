@@ -924,6 +924,13 @@ def p_delivery(lang):
   <p class="hosp-note">{esc(x(hctm["note_en"], hctm["note_ms"]))}</p>
   <p class="hosp-src"><a href="{esc(hctm["source_url"])}" target="_blank" rel="noopener">{x("HCTM charge book (PDF, pages 37-38)", "Buku Caj HCTM (PDF, muka surat 37-38)")} ↗</a> · {x("checked", "disemak")} {_dmy(hctm["checked"], lang)}</p></article>"""
     ask = "".join(f'<li><a href="{esc(u["url"])}" target="_blank" rel="noopener">{esc(u["name"])}</a> <span class="muted">· {esc(u["state"])}</span></li>' for u in D["university_ask"])
+    pask = D.get("private_ask", [])
+    priv_ask_html = ""
+    if pask:
+        pstates = sorted({u["state"] for u in pask})
+        lis = "".join(f'<li data-state="{esc(u["state"])}"><a href="{esc(u["url"])}" target="_blank" rel="noopener">{esc(u["name"])}</a> <span class="muted">· {esc(u["state"])}</span></li>' for u in pask)
+        priv_ask_html = (f'<details class="acc" id="priv-ask"><summary>{x("More hospitals in", "Lagi hospital di")} {esc(", ".join(pstates))} '
+                         f'{x("(no price online - call them)", "(tiada harga dalam talian - hubungi mereka)")}</summary><ul>{lis}</ul></details>')
 
     body = f"""
 {page_head(x, "🏥", "t-deliv", x("Pregnant", "Sedang hamil"), x("Delivery cost", "Kos bersalin"),
@@ -931,12 +938,14 @@ def p_delivery(lang):
              "Kos bersalin di hospital kerajaan, universiti dan swasta - daripada senarai harga mereka sendiri."),
            extra=tip(x("Prices for Malaysian citizens, checked on each hospital's or the Ministry of Health's own website. Prices change and packages have conditions - always confirm with the hospital.",
                        "Harga untuk warganegara Malaysia, disemak di laman web hospital atau Kementerian Kesihatan sendiri. Harga boleh berubah dan pakej ada syarat - sentiasa sahkan dengan hospital."), x))}
-<div class="stats deliv-stats">
-  <div class="stat t2"><p class="stat-label">🏛️ {x("Government", "Kerajaan")}</p><p class="stat-big">{x("from", "dari")} {_rm(gov_min)}</p><p class="stat-small">{x("normal, 3rd class, 2 days", "normal, kelas 3, 2 hari")}</p></div>
-  <div class="stat"><p class="stat-label">🎓 {x("University", "Universiti")}</p><p class="stat-big">{x("from", "dari")} {_rm(uni_min)}</p><p class="stat-small">{x("public ward; private wing more", "wad awam; sayap swasta lebih")}</p></div>
-  <div class="stat t1"><p class="stat-label">🏥 {x("Private", "Swasta")}</p><p class="stat-big">{_rm(lo_n)} – {_rm(hi_n)}</p><p class="stat-small">{x("normal packages", "pakej normal")} · {x("caesarean", "caesarean")} {_rm(min(cs))} – {_rm(max(cs))}</p></div>
+<p class="dtabs-q">{x("Where do you plan to give birth? Tap one:", "Di mana anda merancang untuk bersalin? Pilih satu:")}</p>
+<div class="dtabs" role="tablist" aria-label="{x("Type of hospital", "Jenis hospital")}">
+  <button type="button" class="dtab dt-gov" role="tab" id="dt-gov" aria-controls="dp-gov" aria-selected="true" data-tab="gov"><span class="dt-lbl"><span aria-hidden="true">🏛️</span> {x("Government", "Kerajaan")}</span><span class="dt-big">{x("from", "dari")} {_rm(gov_min)}</span><span class="dt-small">{x("normal, class 3 ward, 2 days", "normal, wad kelas 3, 2 hari")}</span></button>
+  <button type="button" class="dtab dt-uni" role="tab" id="dt-uni" aria-controls="dp-uni" aria-selected="false" data-tab="uni"><span class="dt-lbl"><span aria-hidden="true">🎓</span> {x("University", "Universiti")}</span><span class="dt-big">{_rm(uni_min)} – {_rm(hasa["exec_normal_rm"])}</span><span class="dt-small">{x("normal: public ward to private wing", "normal: wad biasa hingga wad swasta")}</span></button>
+  <button type="button" class="dtab dt-priv" role="tab" id="dt-private" aria-controls="dp-private" aria-selected="false" data-tab="private"><span class="dt-lbl"><span aria-hidden="true">🏥</span> {x("Private", "Swasta")}</span><span class="dt-big">{_rm(lo_n)} – {_rm(hi_n)}</span><span class="dt-small">{x(f"normal packages · {len(priv)} hospitals", f"pakej normal · {len(priv)} hospital")}</span></button>
 </div>
 
+<div class="dpanel" id="dp-gov" role="tabpanel" aria-labelledby="dt-gov" data-tab="gov">
 <section class="card" id="gov-tool">
   <h2><span aria-hidden="true">🏛️</span> {x("Government hospital bill estimate", "Anggaran bil hospital kerajaan")}</h2>
   <p class="field-label">{x("Ward class", "Kelas wad")}</p>
@@ -960,18 +969,21 @@ def p_delivery(lang):
 <li>{x("Vacuum / forceps", "Vakum / forsep")} <strong>{_rm(fpp["assisted"][0])} – {_rm(fpp["assisted"][1])}</strong></li>
 <li>{x("Caesarean", "Caesarean")} <strong>{_rm(fpp["csec"][0])} – {_rm(fpp["csec"][1])}</strong></li></ul>
 <p class="small">{x("Estimates from the hospital's FPP brochure; bed RM160-180 and care RM100 a day.", "Anggaran daripada brosur FPP hospital; katil RM160-180 dan rawatan RM100 sehari.")} <a href="{esc(fpp["source_url"])}" target="_blank" rel="noopener">{x("Brochure (PDF)", "Brosur (PDF)")} ↗</a></p></aside>
+</div>
 
-<h2 class="sv-head"><span aria-hidden="true">🎓</span> {x("University hospitals", "Hospital universiti")} {tip(x("Half government, half private: the public wards charge low fixed fees, and many also have a private wing (Executive / specialist centre) with packages.", "Separuh kerajaan, separuh swasta: wad awam mengenakan caj tetap yang rendah, dan banyak juga ada sayap swasta (Executive / pusat pakar) dengan pakej."), x)}</h2>
+<div class="dpanel" id="dp-uni" role="tabpanel" aria-labelledby="dt-uni" data-tab="uni">
+<p class="dp-intro">{x("University hospitals are half government, half private. Their normal wards charge low fixed fees. Some also have a private wing (for example HASA Executive), where you pay more for a single room and your own specialist.",
+                       "Hospital universiti separuh kerajaan, separuh swasta. Wad biasa mengenakan caj tetap yang rendah. Ada juga yang mempunyai wad swasta (contohnya HASA Executive) - bayar lebih untuk bilik seorang dan pakar pilihan sendiri.")}</p>
 <div class="hosp-grid">{uni_cards}</div>
 <details class="acc"><summary>{x("Other university hospitals (no prices online - call them)", "Hospital universiti lain (tiada harga dalam talian - hubungi mereka)")}</summary><ul>{ask}</ul></details>
+</div>
 
-{ad("in_content", x)}
-
-<h2 class="sv-head"><span aria-hidden="true">🏥</span> {x("Private hospital packages", "Pakej hospital swasta")}</h2>
-<p class="muted">{x("Only hospitals that publish a price on their own website, cheapest first.", "Hanya hospital yang menyiarkan harga di laman web sendiri, paling murah dahulu.")}</p>
+<div class="dpanel" id="dp-private" role="tabpanel" aria-labelledby="dt-private" data-tab="private">
+<p class="dp-intro">{x(f"Hospitals that publish a price on their own website, cheapest first. Caesarean packages: {_rm(min(cs))} – {_rm(max(cs))}.",
+                       f"Hospital yang menyiarkan harga di laman web sendiri, paling murah dahulu. Pakej caesarean: {_rm(min(cs))} – {_rm(max(cs))}.")}</p>
 <div class="nm-origin state-chips" role="group" aria-label="{x("State", "Negeri")}">{chips}</div>
 <div class="hosp-grid" id="hosp-list">{"".join(cards)}</div>
-
+{priv_ask_html}
 <details class="acc"><summary>{x("What packages usually don't include", "Apa yang biasanya tidak termasuk dalam pakej")}</summary><ul>
 <li>{x("Epidural or other pain relief, induction of labour, and often vacuum or forceps.", "Epidural atau ubat tahan sakit lain, induksi bersalin, dan selalunya vakum atau forsep.")}</li>
 <li>{x("Complications or an emergency caesarean - you're then charged normal hospital rates.", "Komplikasi atau caesarean kecemasan - anda akan dicaj kadar biasa hospital.")}</li>
@@ -979,6 +991,8 @@ def p_delivery(lang):
 <li>{x("At some hospitals, deliveries after office hours, at weekends or on public holidays.", "Di sesetengah hospital, bersalin selepas waktu pejabat, hujung minggu atau cuti umum.")}</li>
 <li>{x("Many packages need a full deposit around week 36, and some need a few antenatal visits with their doctors first.", "Banyak pakej memerlukan deposit penuh sekitar minggu ke-36, dan ada yang memerlukan beberapa lawatan antenatal dengan doktor mereka dahulu.")}</li>
 </ul></details>
+</div>
+{ad("in_content", x)}
 <p><a class="btn ghost" href="hospital-bag.html">{x("Hospital bag checklist →", "Senarai beg hospital →")}</a> <a class="btn ghost" href="confinement-cost.html">{x("Confinement cost →", "Kos berpantang →")}</a></p>
 """
     gov_js = {"d": gov["delivery"], "w": gov["ward_per_day"], "t": gov["treatment_per_day"], "room": gov["room_c1"]}
