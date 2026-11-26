@@ -4,7 +4,7 @@ Run by .github/workflows/check-centres.yml every 3 months (or by hand):
     pip install playwright && python -m playwright install chromium
     python scripts/check_centres.py
 
-For each centre in site-data/confinement.json it opens source_url in a real (headless) browser
+For each centre in site-data/confinement.json and each hospital in site-data/delivery.json it opens source_url in a real (headless) browser
 and looks for price_from_rm (and price_to_rm if set) on the page.
   - found     -> "checked" date is moved to today (the site then shows the new date)
   - not found -> date left alone and the centre is listed in centres-report.md so a person can update it
@@ -19,7 +19,9 @@ import re
 from playwright.sync_api import sync_playwright
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DATA = os.path.join(HERE, "..", "site-data", "confinement.json")
+# (file in site-data/, list keys inside it) - every entry needs name, source_url and price_from_rm.
+# delivery.json entries with "auto_check": false (price only in a scanned PDF) are skipped.
+SOURCES = [("confinement.json", ["centres"]), ("delivery.json", ["private", "university"])]
 REPORT = os.path.join(HERE, "..", "centres-report.md")
 TODAY = datetime.date.today().isoformat()
 
@@ -29,14 +31,18 @@ def digits(text):
 
 
 def main():
-    with open(DATA, encoding="utf-8") as f:
-        data = json.load(f)
+    files = {}
+    for fname, keys in SOURCES:
+        with open(os.path.join(HERE, "..", "site-data", fname), encoding="utf-8") as f:
+            files[fname] = (json.load(f), keys)
+    entries = [c for data, keys in files.values() for k in keys for c in data.get(k, [])
+               if c.get("price_from_rm") and c.get("auto_check", True)]
     problems, ok = [], []
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
         page = browser.new_page(user_agent=("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                                             "(KHTML, like Gecko) Chrome/130.0 Safari/537.36"))
-        for c in data["centres"]:
+        for c in entries:
             # Only the "from" price must be on the source page (top room prices are often on other pages).
             want = [c["price_from_rm"]]
             try:
@@ -60,14 +66,15 @@ def main():
                 problems.append(f"- **{c['name']}**: its promotion ended on {c['valid_until']} - check the normal price.")
         browser.close()
 
-    with open(DATA, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-        f.write("\n")
+    for fname, (data, _keys) in files.items():
+        with open(os.path.join(HERE, "..", "site-data", fname), "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.write("\n")
 
     lines = [f"Automatic price check on {TODAY}.", "",
              f"Still correct ({len(ok)}): " + (", ".join(ok) if ok else "none") + ".", ""]
     if problems:
-        lines += ["Need a person to look (update `site-data/confinement.json`, or remove the centre):", ""] + problems
+        lines += ["Need a person to look (update `site-data/confinement.json` or `site-data/delivery.json`, or remove the entry):", ""] + problems
     with open(REPORT, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
     print("\n".join(lines))

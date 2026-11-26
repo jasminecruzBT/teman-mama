@@ -38,12 +38,15 @@ def tr(lang):
 NAV = [
     # (page, English, Malay, icon, colour class); entries starting with "#" are group headings
     ("index.html", "Home", "Utama", "🏠", "t-home"),
+    ("#before", "Before pregnancy", "Sebelum hamil", "🌱", ""),
+    ("fertility.html", "Fertile days", "Hari subur", "🌸", "t-fert"),
+    ("planning.html", "Planning a pregnancy", "Persediaan hamil", "📝", "t-plan"),
     ("#preg", "Pregnant", "Sedang hamil", "🤰", ""),
     ("weeks/index.html", "Week by week", "Minggu demi minggu", "📅", "t-weeks"),
-    ("fertility.html", "Fertile days", "Hari subur", "🌸", "t-fert"),
     ("names.html", "Baby names", "Nama bayi", "✨", "t-names"),
     ("labour.html", "Kicks & contractions", "Tendangan & kontraksi", "⏱️", "t-labour"),
     ("hospital-bag.html", "Hospital bag", "Beg hospital", "👜", "t-bag"),
+    ("delivery-cost.html", "Delivery cost", "Kos bersalin", "🏥", "t-deliv"),
     ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
     ("#new", "New mum", "Ibu baharu", "👶", ""),
     ("pantang.html", "Pantang planner", "Perancang pantang", "🍲", "t-pantang"),
@@ -159,6 +162,9 @@ JS_STR = {
         "dLateSS": "Past 14 days - go to JPN as soon as you can. After 42 days it becomes a late registration with extra steps.",
         "dMyKad": "Apply for MyKad", "dMyKadSmall": "compulsory at age 12",
         "dEpf": "EPF account", "dEpfSmall": "earliest date (age 14)", "dEpfFrom": "Your child can open one from {d}.",
+        "gvEstimate": "Estimated bill for mum", "gvFee": "Delivery fee", "gvWard": "Ward ({n} days)", "gvCare": "Treatment ({n} days)",
+        "gvRoom": "Delivery room (1st class)", "gvTheatre": "Operating theatre (1st class)", "gvFree": "Free",
+        "toDark": "Switch to dark mode", "toLight": "Switch to light mode",
     },
     "ms": {
         "pickDate": "Sila pilih tarikh dahulu.",
@@ -237,6 +243,9 @@ JS_STR = {
         "dLateSS": "Sudah lebih 14 hari - pergi ke JPN secepat mungkin. Selepas 42 hari ia menjadi pendaftaran lewat dengan langkah tambahan.",
         "dMyKad": "Mohon MyKad", "dMyKadSmall": "wajib pada umur 12 tahun",
         "dEpf": "Akaun KWSP", "dEpfSmall": "tarikh paling awal (umur 14)", "dEpfFrom": "Anak anda boleh membukanya mulai {d}.",
+        "gvEstimate": "Anggaran bil ibu", "gvFee": "Caj bersalin", "gvWard": "Wad ({n} hari)", "gvCare": "Rawatan ({n} hari)",
+        "gvRoom": "Bilik bersalin (kelas 1)", "gvTheatre": "Dewan bedah (kelas 1)", "gvFree": "Percuma",
+        "toDark": "Tukar ke mod gelap", "toLight": "Tukar ke mod cerah",
     },
 }
 
@@ -281,6 +290,12 @@ BOT_KW = {
     "fertile": ["hari subur", "ovulasi", "ovulation", "subur", "nak hamil", "cuba hamil", "trying to conceive", "=ttc", "fertile"],
     "kicks": ["tendangan", "kick count", "kick counter", "kira tendangan", "kontraksi", "contraction", "sakit nak bersalin", "labour pain", "labor"],
     "essentials": ["barang bayi", "barang baby", "newborn essentials", "what to buy", "beli apa", "baby list", "persediaan bayi"],
+    "delivery": ["kos bersalin", "harga bersalin", "pakej bersalin", "bil bersalin", "delivery cost", "delivery package",
+                 "maternity package", "cost to give birth", "cost of giving birth", "hospital kerajaan", "government hospital",
+                 "hospital swasta", "private hospital", "caesarean", "czer", "=fpp", "ppum", "hukm", "hctm", "=kelas"],
+    "planning": ["asid folik", "folic", "sebelum hamil", "before pregnancy", "pre-pregnancy", "prakehamilan", "plan pregnancy",
+                 "planning pregnancy", "rancang hamil", "ujian hamil", "pregnancy test", "test hamil", "=upt", "=ivf", "=iui",
+                 "infertil", "kesuburan", "tak hamil", "susah hamil", "not getting pregnant", "lppkn"],
     "hello": ["=hi", "=hello", "=hai", "=helo", "=hey", "salam", "assalamualaikum", "good morning", "selamat pagi"],
     "thanks": ["thank", "terima kasih", "=tq", "=tqvm", "=ty"],
 }
@@ -336,6 +351,12 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
     "essentials": ("newborn.html", "Our newborn checklist covers sleeping, feeding, bathing, diapers, clothes and going out.",
                    "Senarai semak bayi baru lahir merangkumi tidur, menyusu, mandi, lampin, pakaian dan keluar rumah.",
                    "Open newborn checklist", "Buka senarai barang bayi"),
+    "delivery": ("delivery-cost.html", "In a government hospital a normal delivery in a 3rd-class ward costs Malaysians about RM16 for 2 days. Private hospital packages are about RM2,900-5,000 for a normal delivery and RM6,900-12,000 for a caesarean.",
+                 "Di hospital kerajaan, bersalin normal di wad kelas 3 berharga lebih kurang RM16 untuk 2 hari bagi warganegara. Pakej hospital swasta lebih kurang RM2,900-5,000 untuk bersalin normal dan RM6,900-12,000 untuk caesarean.",
+                 "Compare delivery costs", "Banding kos bersalin"),
+    "planning": ("planning.html", "Planning a baby? KKM advises starting folic acid 3 months before pregnancy and a pre-pregnancy check at your klinik kesihatan. Most home pregnancy tests work from the day your period is due.",
+                 "Merancang untuk hamil? KKM menasihatkan mula mengambil asid folik 3 bulan sebelum hamil dan pemeriksaan prakehamilan di klinik kesihatan. Kebanyakan ujian kehamilan di rumah boleh dibuat mulai hari haid dijangka.",
+                 "Open the planning checklist", "Buka senarai persediaan"),
     "hello": ("", "Hi! Ask me about your pregnancy week, pantang, confinement costs, maternity leave, milk prices or taska.",
               "Hai! Tanya saya tentang minggu kehamilan, pantang, kos berpantang, cuti bersalin, harga susu atau taska.", "", ""),
     "thanks": ("", "You're welcome! Take care.", "Sama-sama! Jaga diri.", "", ""),
@@ -366,6 +387,13 @@ for _lang in ("en", "ms"):
                        "a": BOT_ANS[i][2 if _lang == "ms" else 1], "lt": BOT_ANS[i][4 if _lang == "ms" else 3]}
                       for i in BOT_KW]
     JS_STR[_lang]["bot"] = _ui
+
+GLOBE_ICON = ('<svg class="globe" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" '
+              'stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>')
+THEME_ICONS = ('<svg class="ic-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" '
+               'stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>'
+               '<svg class="ic-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" '
+               'stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>')
 
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E"
         "%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%B0%3C/text%3E%3C/svg%3E")
@@ -501,6 +529,7 @@ def write_page(lang, path, title, desc, body, data=None):
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:type" content="website">
 <link rel="icon" href="{ICON}">
+<script>try{{var t=JSON.parse(localStorage.getItem("tm_theme"));if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}}catch(e){{}}</script>
 <link rel="stylesheet" href="{root}assets/style.css?v={VER}">
 {seo}{ads}
 </head>
@@ -510,7 +539,8 @@ def write_page(lang, path, title, desc, body, data=None):
   <div class="wrap top-row">
     {menu}
     <a class="brand" href="{lroot}index.html"><span class="logo" aria-hidden="true">🤰</span><span>{esc(site)}</span></a>
-    <a class="lang" href="{root}{other}/{path}" hreflang="{other}" lang="{other}" title="{"Bahasa Melayu" if other == "ms" else "English"}">{"BM" if other == "ms" else "EN"}</a>
+    <button type="button" class="theme-btn" id="theme-btn" aria-label="{x("Switch light or dark mode", "Tukar mod cerah atau gelap")}">{THEME_ICONS}</button>
+    <a class="lang" href="{root}{other}/{path}" hreflang="{other}" lang="{other}" title="{"Tukar ke Bahasa Melayu" if other == "ms" else "Switch to English"}">{GLOBE_ICON}<span>{"BM" if other == "ms" else "EN"}</span></a>
   </div>
 </header>
 <main id="main" class="wrap">
@@ -824,6 +854,209 @@ def p_afterbirth(lang):
                body)
 
 
+def _rm(n):
+    return f"RM{n:,}"
+
+
+def _dmy(iso_date, lang):
+    d = datetime.date.fromisoformat(iso_date)
+    months = (["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogo", "Sep", "Okt", "Nov", "Dis"] if lang == "ms"
+              else ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
+    return f"{d.day} {months[d.month - 1]} {d.year}"
+
+
+def p_delivery(lang):
+    x = tr(lang)
+    with open(os.path.join(HERE, "site-data", "delivery.json"), encoding="utf-8") as f:
+        D = json.load(f)
+    gov, fpp, priv = D["gov"], D["fpp"], sorted(D["private"], key=lambda h: (h["price_from_rm"], h["name"]))
+    today_iso = TODAY.isoformat()
+    lo_n, hi_n = min(h["price_from_rm"] for h in priv), max(h["price_from_rm"] for h in priv)
+    cs = [h["csec_rm"] for h in priv if h.get("csec_rm")]
+    gov_min = gov["delivery"]["normal"]["c3"] + 2 * gov["ward_per_day"]["c3"][0]
+    hctm = next(u for u in D["university"] if u.get("fees"))
+    uni_min = hctm["fees"]["normal"] + 2 * (hctm["fees"]["ward_per_day"] + hctm["fees"]["care_per_day"])
+
+    def opt(group, v, en, ms, small_en="", small_ms="", on=False):
+        sm = f' <small>{esc(x(small_en, small_ms))}</small>' if small_en else ""
+        return f'<button type="button" class="pill-opt" data-g="{group}" data-v="{v}" aria-pressed="{"true" if on else "false"}">{esc(x(en, ms))}{sm}</button>'
+
+    cls_opts = "".join([opt("cls", "c3", "Class 3", "Kelas 3", "open ward", "wad terbuka", True), opt("cls", "c2", "Class 2", "Kelas 2"),
+                        opt("cls", "c1_3", "Class 1", "Kelas 1", "3+ beds", "3+ katil"), opt("cls", "c1_2", "Class 1", "Kelas 1", "2 beds", "2 katil"),
+                        opt("cls", "c1_1", "Class 1", "Kelas 1", "single", "seorang")])
+    type_opts = "".join([opt("type", "normal", "Normal", "Normal", on=True), opt("type", "assisted", "Vacuum / forceps / breech", "Vakum / forsep / songsang"),
+                         opt("type", "twins", "Twins", "Kembar"), opt("type", "csec", "Caesarean", "Caesarean")])
+
+    states = sorted({h["state"] for h in priv})
+    chips = (f'<button type="button" class="chip-btn" data-state="" aria-pressed="true">{x("All states", "Semua negeri")}</button>'
+             + "".join(f'<button type="button" class="chip-btn" data-state="{esc(s)}" aria-pressed="false">{esc(s)}</button>' for s in states))
+    cards = []
+    for h in priv:
+        ended = h.get("valid_until") and today_iso > h["valid_until"]
+        frm = x("from ", "dari ")
+        normal = (frm if h.get("from") else "") + _rm(h["price_from_rm"])
+        csec = ((frm if h.get("csec_from") else "") + _rm(h["csec_rm"])) if h.get("csec_rm") else x("ask the hospital", "tanya hospital")
+        stay = x(h.get("stay_en", ""), h.get("stay_ms", ""))
+        valid = (f' · {x("offer ends", "tawaran tamat")} {_dmy(h["valid_until"], lang)}' if h.get("valid_until") and not ended else "")
+        cards.append(
+            f'<article class="hosp" data-state="{esc(h["state"])}"><div class="hosp-top"><h3>{esc(h["name"])}</h3><span class="sv-who">{esc(h["state"])}</span></div>'
+            f'<div class="hosp-prices"><div><span class="hp-lbl">{x("Normal", "Normal")}</span><strong>{normal}</strong></div>'
+            f'<div><span class="hp-lbl">{x("Caesarean", "Caesarean")}</span><strong>{csec}</strong></div></div>'
+            + (f'<p class="hosp-stay">{esc(stay)}</p>' if stay else "")
+            + f'<p class="hosp-note">{esc(x(h["note_en"], h["note_ms"]))}</p>'
+            + (f'<p class="hosp-ended">{x("This offer may have ended - check the current price.", "Tawaran ini mungkin sudah tamat - semak harga terkini.")}</p>' if ended else "")
+            + f'<p class="hosp-src"><a href="{esc(h["source_url"])}" target="_blank" rel="noopener">{x("Hospital page", "Laman hospital")} ↗</a>'
+              f' · {x("checked", "disemak")} {_dmy(h["checked"], lang)}{valid}</p></article>')
+
+    hasa = next(u for u in D["university"] if u.get("exec_normal_rm"))
+    f_ = hctm["fees"]
+    uni_cards = f"""
+<article class="hosp"><div class="hosp-top"><h3>{esc(hasa["name"])}</h3><span class="sv-who">{esc(hasa["state"])}</span></div>
+  <div class="hosp-prices"><div><span class="hp-lbl">{x("Normal - standard ward", "Normal - wad biasa")}</span><strong>{_rm(hasa["standard_normal_rm"])}</strong></div>
+  <div><span class="hp-lbl">{x("Normal / caesarean - Executive", "Normal / caesarean - Executive")}</span><strong>{_rm(hasa["exec_normal_rm"])} / {_rm(hasa["exec_csec_rm"])}</strong></div></div>
+  <p class="hosp-note">{esc(x(hasa["standard_note_en"], hasa["standard_note_ms"]))}</p>
+  <p class="hosp-note">{esc(x(hasa["exec_note_en"], hasa["exec_note_ms"]))}</p>
+  <p class="hosp-src"><a href="{esc(hasa["source_url"])}" target="_blank" rel="noopener">{x("Standard price (FAQ)", "Harga biasa (Soalan lazim)")} ↗</a> · <a href="{esc(hasa["exec_url"])}" target="_blank" rel="noopener">HASA Executive ↗</a> · {x("checked", "disemak")} {_dmy(hasa["checked"], lang)}</p></article>
+<article class="hosp"><div class="hosp-top"><h3>{esc(hctm["name"])}</h3><span class="sv-who">{esc(hctm["state"])}</span></div>
+  <div class="hosp-prices"><div><span class="hp-lbl">{x("Normal delivery fee", "Caj bersalin normal")}</span><strong>{_rm(f_["normal"])}</strong></div>
+  <div><span class="hp-lbl">{x("Caesarean fee", "Caj caesarean")}</span><strong>{_rm(f_["csec"])}</strong></div></div>
+  <p class="hosp-stay">{x("Forceps", "Forsep")} {_rm(f_["forceps"])} · {x("Vacuum", "Vakum")} {_rm(f_["vacuum"])} · {x(f"2 days, normal: about {_rm(uni_min)} for mum", f"2 hari, normal: lebih kurang {_rm(uni_min)} untuk ibu")}</p>
+  <p class="hosp-note">{esc(x(hctm["note_en"], hctm["note_ms"]))}</p>
+  <p class="hosp-src"><a href="{esc(hctm["source_url"])}" target="_blank" rel="noopener">{x("HCTM charge book (PDF, pages 37-38)", "Buku Caj HCTM (PDF, muka surat 37-38)")} ↗</a> · {x("checked", "disemak")} {_dmy(hctm["checked"], lang)}</p></article>"""
+    ask = "".join(f'<li><a href="{esc(u["url"])}" target="_blank" rel="noopener">{esc(u["name"])}</a> <span class="muted">· {esc(u["state"])}</span></li>' for u in D["university_ask"])
+
+    body = f"""
+{page_head(x, "🏥", "t-deliv", x("Pregnant", "Sedang hamil"), x("Delivery cost", "Kos bersalin"),
+           x("What giving birth costs in government, university and private hospitals - from their own price lists.",
+             "Kos bersalin di hospital kerajaan, universiti dan swasta - daripada senarai harga mereka sendiri."),
+           extra=tip(x("Prices for Malaysian citizens, checked on each hospital's or the Ministry of Health's own website. Prices change and packages have conditions - always confirm with the hospital.",
+                       "Harga untuk warganegara Malaysia, disemak di laman web hospital atau Kementerian Kesihatan sendiri. Harga boleh berubah dan pakej ada syarat - sentiasa sahkan dengan hospital."), x))}
+<div class="stats deliv-stats">
+  <div class="stat t2"><p class="stat-label">🏛️ {x("Government", "Kerajaan")}</p><p class="stat-big">{x("from", "dari")} {_rm(gov_min)}</p><p class="stat-small">{x("normal, 3rd class, 2 days", "normal, kelas 3, 2 hari")}</p></div>
+  <div class="stat"><p class="stat-label">🎓 {x("University", "Universiti")}</p><p class="stat-big">{x("from", "dari")} {_rm(uni_min)}</p><p class="stat-small">{x("public ward; private wing more", "wad awam; sayap swasta lebih")}</p></div>
+  <div class="stat t1"><p class="stat-label">🏥 {x("Private", "Swasta")}</p><p class="stat-big">{_rm(lo_n)} – {_rm(hi_n)}</p><p class="stat-small">{x("normal packages", "pakej normal")} · {x("caesarean", "caesarean")} {_rm(min(cs))} – {_rm(max(cs))}</p></div>
+</div>
+
+<section class="card" id="gov-tool">
+  <h2><span aria-hidden="true">🏛️</span> {x("Government hospital bill estimate", "Anggaran bil hospital kerajaan")}</h2>
+  <p class="field-label">{x("Ward class", "Kelas wad")}</p>
+  <div class="pill-group">{cls_opts}</div>
+  <p class="field-label">{x("Delivery", "Cara bersalin")}</p>
+  <div class="pill-group">{type_opts}</div>
+  <div class="gv-row">
+    <label class="field">{x("Days in ward", "Hari di wad")}<input type="number" id="gv-days" min="1" max="14" value="2" inputmode="numeric"></label>
+    <label class="check gv-ac"><input type="checkbox" id="gv-ac" checked> {x("Air-conditioned ward", "Wad berhawa dingin")}</label>
+  </div>
+  <div id="gv-result" aria-live="polite"></div>
+  <p class="hint">{x("Ministry of Health rates for Malaysians (updated", "Kadar Kementerian Kesihatan untuk warganegara (dikemas kini")} {_dmy(gov["updated"], lang)}). {x("Lab tests, scans, some medicines and your baby's own charges are extra. Civil servants and government pensioners: ask the hospital about your entitlement.",
+     "Ujian makmal, imbasan, sesetengah ubat dan caj bayi adalah tambahan. Penjawat awam dan pesara kerajaan: tanya hospital tentang kelayakan anda.")}
+     <a href="{esc(gov["source_url"])}" target="_blank" rel="noopener">{x("Delivery rates", "Kadar bersalin")} ↗</a> · <a href="{esc(gov["ward_url"])}" target="_blank" rel="noopener">{x("Ward rates", "Kadar wad")} ↗</a></p>
+</section>
+
+<aside class="box note fpp-box"><h2>{x("Want your own specialist in a government hospital?", "Mahu pakar pilihan sendiri di hospital kerajaan?")}</h2>
+<p>{x("Some government hospitals run a Full Paying Patient (FPP) service: you choose the specialist and pay private-style fees at lower prices. Example - "+fpp["name"]+":",
+      "Sesetengah hospital kerajaan ada Perkhidmatan Pesakit Bayar Penuh (FPP): anda pilih pakar dan bayar yuran gaya swasta pada harga lebih rendah. Contoh - "+fpp["name"]+":")}</p>
+<ul class="fpp-list"><li>{x("Normal", "Normal")} <strong>{_rm(fpp["normal"][0])} – {_rm(fpp["normal"][1])}</strong></li>
+<li>{x("Vacuum / forceps", "Vakum / forsep")} <strong>{_rm(fpp["assisted"][0])} – {_rm(fpp["assisted"][1])}</strong></li>
+<li>{x("Caesarean", "Caesarean")} <strong>{_rm(fpp["csec"][0])} – {_rm(fpp["csec"][1])}</strong></li></ul>
+<p class="small">{x("Estimates from the hospital's FPP brochure; bed RM160-180 and care RM100 a day.", "Anggaran daripada brosur FPP hospital; katil RM160-180 dan rawatan RM100 sehari.")} <a href="{esc(fpp["source_url"])}" target="_blank" rel="noopener">{x("Brochure (PDF)", "Brosur (PDF)")} ↗</a></p></aside>
+
+<h2 class="sv-head"><span aria-hidden="true">🎓</span> {x("University hospitals", "Hospital universiti")} {tip(x("Half government, half private: the public wards charge low fixed fees, and many also have a private wing (Executive / specialist centre) with packages.", "Separuh kerajaan, separuh swasta: wad awam mengenakan caj tetap yang rendah, dan banyak juga ada sayap swasta (Executive / pusat pakar) dengan pakej."), x)}</h2>
+<div class="hosp-grid">{uni_cards}</div>
+<details class="acc"><summary>{x("Other university hospitals (no prices online - call them)", "Hospital universiti lain (tiada harga dalam talian - hubungi mereka)")}</summary><ul>{ask}</ul></details>
+
+{ad("in_content", x)}
+
+<h2 class="sv-head"><span aria-hidden="true">🏥</span> {x("Private hospital packages", "Pakej hospital swasta")}</h2>
+<p class="muted">{x("Only hospitals that publish a price on their own website, cheapest first.", "Hanya hospital yang menyiarkan harga di laman web sendiri, paling murah dahulu.")}</p>
+<div class="nm-origin state-chips" role="group" aria-label="{x("State", "Negeri")}">{chips}</div>
+<div class="hosp-grid" id="hosp-list">{"".join(cards)}</div>
+
+<details class="acc"><summary>{x("What packages usually don't include", "Apa yang biasanya tidak termasuk dalam pakej")}</summary><ul>
+<li>{x("Epidural or other pain relief, induction of labour, and often vacuum or forceps.", "Epidural atau ubat tahan sakit lain, induksi bersalin, dan selalunya vakum atau forsep.")}</li>
+<li>{x("Complications or an emergency caesarean - you're then charged normal hospital rates.", "Komplikasi atau caesarean kecemasan - anda akan dicaj kadar biasa hospital.")}</li>
+<li>{x("Extra nights, and your baby's special care (for example jaundice treatment or the NICU).", "Malam tambahan, dan rawatan khas bayi (contohnya rawatan kuning atau NICU).")}</li>
+<li>{x("At some hospitals, deliveries after office hours, at weekends or on public holidays.", "Di sesetengah hospital, bersalin selepas waktu pejabat, hujung minggu atau cuti umum.")}</li>
+<li>{x("Many packages need a full deposit around week 36, and some need a few antenatal visits with their doctors first.", "Banyak pakej memerlukan deposit penuh sekitar minggu ke-36, dan ada yang memerlukan beberapa lawatan antenatal dengan doktor mereka dahulu.")}</li>
+</ul></details>
+<p><a class="btn ghost" href="hospital-bag.html">{x("Hospital bag checklist →", "Senarai beg hospital →")}</a> <a class="btn ghost" href="confinement-cost.html">{x("Confinement cost →", "Kos berpantang →")}</a></p>
+"""
+    gov_js = {"d": gov["delivery"], "w": gov["ward_per_day"], "t": gov["treatment_per_day"], "room": gov["room_c1"]}
+    write_page(lang, "delivery-cost.html", x("Delivery cost in Malaysia: government, university & private hospitals", "Kos bersalin di Malaysia: hospital kerajaan, universiti & swasta"),
+               x("How much giving birth costs in Malaysia: government hospital rates by ward class, FPP, university hospitals (UiTM, HCTM UKM) and private hospital maternity packages, from official price lists.",
+                 "Berapa kos bersalin di Malaysia: kadar hospital kerajaan mengikut kelas wad, FPP, hospital universiti (UiTM, HCTM UKM) dan pakej bersalin hospital swasta, daripada senarai harga rasmi."),
+               body, {"gov": gov_js})
+
+
+def p_planning(lang):
+    x = tr(lang)
+    items = [
+        ("folic", "Start folic acid about 3 months before you try, and keep taking it until the end of the first trimester",
+         "Mula ambil asid folik lebih kurang 3 bulan sebelum mencuba, dan teruskan hingga akhir trimester pertama",
+         "KKM's pre-pregnancy guideline. It helps prevent spine and brain defects in the baby. Ask your klinik for the right dose - it's higher if you have diabetes, epilepsy or had a baby with a neural tube defect.",
+         "Garis panduan prakehamilan KKM. Ia membantu mencegah kecacatan tulang belakang dan otak bayi. Tanya klinik untuk dos yang sesuai - dos lebih tinggi jika anda menghidap diabetes, epilepsi atau pernah melahirkan bayi dengan kecacatan tiub neural."),
+        ("ppc", "Get a pre-pregnancy check (Penjagaan Prakehamilan) at your klinik kesihatan",
+         "Buat pemeriksaan prakehamilan (Penjagaan Prakehamilan) di klinik kesihatan",
+         "Especially important if you have diabetes, high blood pressure, heart, thyroid or kidney disease, epilepsy, or take long-term medicine.",
+         "Sangat penting jika anda menghidap diabetes, darah tinggi, penyakit jantung, tiroid atau buah pinggang, epilepsi, atau mengambil ubat jangka panjang."),
+        ("meds", "Ask your doctor or pharmacist about every medicine and supplement you take - don't stop any on your own",
+         "Tanya doktor atau ahli farmasi tentang setiap ubat dan suplemen yang anda ambil - jangan berhenti sendiri", "", ""),
+        ("rubella", "Check you're protected against rubella (German measles)",
+         "Pastikan anda dilindungi daripada rubela (campak Jerman)",
+         "If you need the vaccine, have it before pregnancy - your doctor will tell you how long to wait before trying.",
+         "Jika perlu vaksin, ambil sebelum hamil - doktor akan memberitahu berapa lama perlu menunggu sebelum mencuba."),
+        ("thal", "Know your thalassaemia carrier status - and your partner's", "Ketahui status pembawa talasemia anda - dan pasangan",
+         "Thalassaemia is common in Malaysia. If you both carry it, ask your klinik about counselling before pregnancy.",
+         "Talasemia biasa di Malaysia. Jika kedua-duanya pembawa, tanya klinik tentang kaunseling sebelum hamil."),
+        ("teeth", "See a dentist", "Jumpa doktor gigi", "", ""),
+        ("weight", "Eat well, stay active and aim for a healthy weight", "Makan seimbang, kekal aktif dan capai berat badan sihat", "", ""),
+        ("smoke", "Stop smoking, vaping and alcohol - and keep your home smoke-free", "Berhenti merokok, vape dan alkohol - dan pastikan rumah bebas asap rokok", "", ""),
+        ("money", "Check your insurance or takaful: many plans only cover pregnancy after a waiting period",
+         "Semak insurans atau takaful: banyak pelan hanya melindungi kehamilan selepas tempoh menunggu",
+         "Also look at delivery costs and start a small savings fund.", "Lihat juga kos bersalin dan mula simpanan kecil."),
+    ]
+    lis = "".join(
+        f'<li><label class="check"><input type="checkbox" data-key="pl_{k}"> {esc(x(en, ms))}</label>{tip(x(te, tm), x) if te else ""}</li>'
+        for k, en, ms, te, tm in items)
+    body = f"""
+<div data-store="tm_plan" data-progress="{x("{n} of {t} done", "{n} daripada {t} selesai")}" data-done="{x("All done - good luck!", "Semua selesai - semoga dipermudahkan!")}"></div>
+{page_head(x, "📝", "t-plan", x("Before pregnancy", "Sebelum hamil"), x("Planning a pregnancy", "Persediaan sebelum hamil"),
+           x("What to do in the months before you try for a baby.", "Perkara yang perlu dibuat beberapa bulan sebelum mencuba untuk hamil."))}
+<div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
+<div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
+<section class="card"><h2><span aria-hidden="true">✅</span> {x("Before you try", "Sebelum mencuba")}</h2><ul class="checklist">{lis}</ul></section>
+<div class="tool-row">
+  <a class="tool-card t-fert" href="fertility.html"><span class="tool-ico" aria-hidden="true">🌸</span><span><strong>{x("Fertile days", "Hari subur")}</strong><span class="muted">{x("Find your best days to try", "Cari hari terbaik untuk mencuba")}</span></span></a>
+  <a class="tool-card t-deliv" href="delivery-cost.html"><span class="tool-ico" aria-hidden="true">🏥</span><span><strong>{x("Delivery cost", "Kos bersalin")}</strong><span class="muted">{x("Budget for the birth", "Bajet untuk bersalin")}</span></span></a>
+</div>
+{ad("in_content", x)}
+<details class="acc"><summary>{x("When can I take a pregnancy test?", "Bila boleh buat ujian kehamilan?")}</summary>
+<p>{x("Most home pregnancy tests work from the day your period is due. Testing earlier can show a negative even if you are pregnant - if your period still doesn't come, test again a few days later. The fertile-days calculator shows when your next period is due.",
+     "Kebanyakan ujian kehamilan di rumah berkesan mulai hari haid dijangka. Ujian lebih awal boleh menunjukkan negatif walaupun anda hamil - jika haid masih belum datang, uji semula beberapa hari kemudian. Kalkulator hari subur menunjukkan bila haid seterusnya dijangka.")}</p></details>
+<details class="acc"><summary>{x("Early signs of pregnancy", "Tanda awal kehamilan")}</summary><ul>
+<li>{x("A missed period", "Haid tidak datang")}</li><li>{x("Feeling sick or vomiting (morning sickness)", "Loya atau muntah (alahan)")}</li>
+<li>{x("Sore or swollen breasts", "Payudara sakit atau membengkak")}</li><li>{x("Feeling very tired", "Sangat letih")}</li>
+<li>{x("Needing to pee more often", "Kerap buang air kecil")}</li></ul>
+<p class="small muted">{x("Once a test is positive, register at your klinik kesihatan for antenatal care as early as you can.", "Selepas ujian positif, daftar di klinik kesihatan untuk penjagaan antenatal secepat mungkin.")}</p></details>
+<aside class="box note"><h2>{x("Not pregnant yet?", "Belum hamil lagi?")}</h2><ul>
+<li>{x("See a doctor if you've tried for a year - or after 6 months if you're 35 or older, or sooner if your periods are irregular. Your klinik kesihatan can refer you.",
+       "Jumpa doktor jika sudah mencuba setahun - atau selepas 6 bulan jika berumur 35 tahun ke atas, atau lebih awal jika haid tidak teratur. Klinik kesihatan boleh merujuk anda.")}</li>
+<li>{x("LPPKN's fertility programme subsidises IUI treatment for eligible couples (both Malaysian, household income below RM10,000 a month, wife under 37).",
+       "Program kesuburan LPPKN memberi subsidi rawatan IUI kepada pasangan layak (kedua-duanya warganegara, pendapatan isi rumah bawah RM10,000 sebulan, isteri bawah 37 tahun).")}
+    <a href="https://www.lppkn.gov.my/lppkngateway/frontend/web/index.php?r=portal/article2&amp;menu=46&amp;id=MzZWR0JhNFZJbU9lbjNIZU9Rc1E2QT09" target="_blank" rel="noopener">LPPKN ↗</a></li>
+<li>{x("You can withdraw from your EPF Akaun Sejahtera to pay for fertility treatment (IVF, IUI, ICSI).", "Anda boleh mengeluarkan wang daripada Akaun Sejahtera KWSP untuk rawatan kesuburan (IVF, IUI, ICSI).")}
+    <a href="https://www.kwsp.gov.my/en/member/healthcare/fertility" target="_blank" rel="noopener">KWSP ↗</a></li>
+<li>{x("IVF and IUI costs for you or your spouse count towards the medical expenses income tax relief (up to RM10,000).", "Kos IVF dan IUI untuk anda atau pasangan boleh dituntut di bawah pelepasan cukai perbelanjaan perubatan (sehingga RM10,000).")}</li>
+</ul></aside>
+<p class="small muted">{x("Sources: KKM Pre-pregnancy Care guideline (Dec 2023), LPPKN, KWSP and LHDN websites, checked November 2026. General information only - follow your doctor's advice.",
+                          "Sumber: Garis Panduan Perkhidmatan Prakehamilan KKM (Dis 2023), laman LPPKN, KWSP dan LHDN, disemak November 2026. Maklumat umum sahaja - ikut nasihat doktor anda.")}</p>
+"""
+    write_page(lang, "planning.html", x("Planning a pregnancy: checklist for Malaysian mums", "Persediaan sebelum hamil: senarai semak"),
+               x("Before you try for a baby: folic acid, pre-pregnancy check at the klinik kesihatan, rubella and thalassaemia, when to test, and fertility help from LPPKN and EPF.",
+                 "Sebelum mencuba untuk hamil: asid folik, pemeriksaan prakehamilan di klinik kesihatan, rubela dan talasemia, bila boleh uji, dan bantuan kesuburan LPPKN dan KWSP."),
+               body)
+
+
 def p_feedback(lang):
     x = tr(lang)
     url = config.FEEDBACK_FORM_URL
@@ -857,6 +1090,8 @@ def p_home(lang):
         "names.html": ("Malay, Chinese & Indian names", "Nama Melayu, Cina & India"),
         "labour.html": ("Count kicks, time contractions", "Kira tendangan, masa kontraksi"),
         "after-birth.html": ("Birth cert, MyKid, ASB & savings", "Sijil lahir, MyKid, ASB & simpanan"),
+        "planning.html": ("Folic acid, checks & fertility help", "Asid folik, saringan & bantuan kesuburan"),
+        "delivery-cost.html": ("Government, university & private", "Kerajaan, universiti & swasta"),
         "vaccines.html": ("Your baby's KKM vaccine dates", "Tarikh vaksin bayi (KKM)"),
         "breastmilk.html": ("How long it keeps (KKM)", "Berapa lama tahan (KKM)"),
         "newborn.html": ("What to buy before baby", "Apa perlu dibeli sebelum bayi"),
@@ -1026,6 +1261,13 @@ def p_pantang(lang):
 {ad("in_content", x)}
 <section><h2>{x("Pantang traditions in Malaysia", "Tradisi berpantang di Malaysia")} {tip(x("Every family is different - these are common practices, not rules.", "Setiap keluarga berbeza - ini amalan biasa, bukan peraturan."), x)}</h2>
 <div class="trad-grid">{cards}</div></section>
+<section><h2>{x("Help at home after the birth", "Bantuan di rumah selepas bersalin")} {tip(x("Links open HappyPreggie, a Malaysian directory of pregnancy and confinement providers. Most list 'contact for price' - ask for a written quote, and compare it in our confinement cost tool.", "Pautan membuka HappyPreggie, direktori penyedia khidmat kehamilan dan berpantang di Malaysia. Kebanyakannya 'hubungi untuk harga' - minta sebut harga bertulis, dan bandingkan dalam alat kos berpantang kami."), x)}</h2>
+<div class="help-grid">
+  <a class="help-card" href="https://www.happypreggie.com/listing/pantang" target="_blank" rel="noopener"><span aria-hidden="true">💆‍♀️</span><strong>{x("Pantang carers & urut", "Penjaga pantang & urut")}</strong><span class="muted">{x("Home visits for mum and baby", "Lawatan ke rumah untuk ibu dan bayi")} ↗</span></a>
+  <a class="help-card" href="https://www.happypreggie.com/listing/confinement-food" target="_blank" rel="noopener"><span aria-hidden="true">🍱</span><strong>{x("Confinement meals", "Makanan pantang")}</strong><span class="muted">{x("Delivered daily", "Dihantar setiap hari")} ↗</span></a>
+  <a class="help-card" href="https://www.happypreggie.com/listing/confinement-centre" target="_blank" rel="noopener"><span aria-hidden="true">🏨</span><strong>{x("Confinement centres", "Pusat berpantang")}</strong><span class="muted">{x("300+ centres listed", "300+ pusat disenaraikan")} ↗</span></a>
+  <a class="help-card" href="https://www.happypreggie.com/listing/antenatal-education" target="_blank" rel="noopener"><span aria-hidden="true">🤱</span><strong>{x("Breastfeeding help", "Bantuan penyusuan")}</strong><span class="muted">{x("Lactation consultants and classes", "Kaunselor laktasi dan kelas")} ↗</span></a>
+</div></section>
 <aside class="box note"><h2>{x("Stay safe during pantang", "Berpantang dengan selamat")}</h2><ul>
 <li>{x("Ask your doctor before urut, bertungku or a tight binder - especially after a caesarean, when the wound needs to heal first.",
        "Tanya doktor sebelum berurut, bertungku atau memakai bengkung yang ketat - terutama selepas pembedahan caesarean, kerana luka perlu sembuh dahulu.")}</li>
@@ -1105,6 +1347,7 @@ def p_cost(lang):
   <div id="q-result" aria-live="polite"></div>
 </section>
 <p class="maps-row"><a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query={maps_q}" target="_blank" rel="noopener">🔎 {x("More centres near you (Google Maps)", "Lagi pusat berhampiran (Google Maps)")} ↗</a>
+<a class="btn ghost" href="https://www.happypreggie.com/listing/confinement-centre" target="_blank" rel="noopener">📋 {x("300+ centres on HappyPreggie", "300+ pusat di HappyPreggie")} ↗</a>
 {tip(x("Smaller local centres are often cheaper but don't publish prices online. Ask them for a quote, then choose 'Edit / enter your own' above.",
        "Pusat kecil berhampiran selalunya lebih murah tetapi tidak menerbitkan harga dalam talian. Minta sebut harga, kemudian pilih 'Ubah / isi sendiri' di atas."), x)}</p>
 {ad("in_content", x)}
@@ -1505,6 +1748,8 @@ def main():
         p_breastmilk(lang)
         p_newborn(lang)
         p_afterbirth(lang)
+        p_delivery(lang)
+        p_planning(lang)
     root_files()
     print(f"built {len(WRITTEN)} pages into {OUT}" + (" (ad preview)" if AD_PREVIEW else ""))
 

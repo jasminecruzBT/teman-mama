@@ -334,7 +334,7 @@
   function homeTabs() {
     var tabs = $$(".stage-tab"); if (!tabs.length) return;
     var due = parseDate(get("tm_due", "")), stage = get("tm_stage", "");
-    if (!stage) stage = due && diffDays(today(), due) < 0 ? "new" : "preg";
+    if (!stage) stage = due ? (diffDays(today(), due) < 0 ? "new" : "preg") : (get("tm_fert", {}).lmp ? "before" : "preg");
     function show(sv) {
       tabs.forEach(function (t) { t.setAttribute("aria-selected", t.getAttribute("data-stage") === sv ? "true" : "false"); });
       $$(".stage-panel").forEach(function (p) { p.hidden = p.getAttribute("data-stage") !== sv; });
@@ -404,6 +404,64 @@
     input.addEventListener("change", render);
     setRegion(st.region || "pen");
     render();
+  }
+
+  // ---------- delivery cost: government hospital bill from MOH rates (TM.gov) + private hospital state filter
+  function deliveryCost() {
+    var box = $("#gov-tool");
+    if (box && TM.gov) {
+      var G = TM.gov, st = get("tm_gov", { cls: "c3", type: "normal", days: 2, ac: true }), days = $("#gv-days"), ac = $("#gv-ac"), out = $("#gv-result");
+      var defDays = { normal: 2, assisted: 2, twins: 3, csec: 3 };
+      function press(g, v) { $$('.pill-opt[data-g="' + g + '"]', box).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-v") === v ? "true" : "false"); }); }
+      function render() {
+        var n = Math.max(1, Math.min(14, parseInt(days.value, 10) || 1)), base = st.cls.slice(0, 2);
+        st.days = n; st.ac = ac.checked; set("tm_gov", st);
+        var fee = G.d[st.type][base], ward = G.w[st.cls][ac.checked ? 1 : 0] * n, care = G.t[base] * n, room = base === "c1" ? G.room : 0;
+        var total = fee + ward + care + room;
+        var rows = [[S.gvFee, fee], [fill(S.gvWard, { n: n }), ward], [fill(S.gvCare, { n: n }), care]];
+        if (room) rows.push([st.type === "csec" ? S.gvTheatre : S.gvRoom, room]);
+        out.innerHTML = '<div class="gv-total"><p class="stat-label">' + esc(S.gvEstimate) + '</p><p class="stat-big">' + esc(rm(total).replace(".00", "")) + "</p></div>" +
+          '<ul class="gv-break">' + rows.map(function (r) { return "<li><span>" + esc(r[0]) + "</span><strong>" + esc(r[1] ? rm(r[1]).replace(".00", "") : S.gvFree) + "</strong></li>"; }).join("") + "</ul>";
+      }
+      $$(".pill-opt[data-g]", box).forEach(function (b) {
+        b.addEventListener("click", function () {
+          var g = b.getAttribute("data-g"), v = b.getAttribute("data-v");
+          st[g] = v; press(g, v);
+          if (g === "type") days.value = defDays[v];
+          render();
+        });
+      });
+      days.addEventListener("input", render); ac.addEventListener("change", render);
+      days.value = st.days || 2; ac.checked = st.ac !== false; press("cls", st.cls); press("type", st.type); render();
+    }
+    var list = $("#hosp-list");
+    if (list) {
+      var chips = $$(".state-chips .chip-btn");
+      chips.forEach(function (c) {
+        c.addEventListener("click", function () {
+          var s = c.getAttribute("data-state");
+          chips.forEach(function (o) { o.setAttribute("aria-pressed", o === c ? "true" : "false"); });
+          $$(".hosp", list).forEach(function (h) { h.hidden = !!s && h.getAttribute("data-state") !== s; });
+        });
+      });
+    }
+  }
+
+  // ---------- light / dark switch (saved on this phone; the <head> script applies it before the page paints)
+  function themeSwitch() {
+    var btn = $("#theme-btn"); if (!btn) return;
+    var root = document.documentElement, mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+    function current() { return root.getAttribute("data-theme") || (mq && mq.matches ? "dark" : "light"); }
+    function label() {
+      var dark = current() === "dark";
+      btn.setAttribute("aria-label", dark ? S.toLight : S.toDark); btn.title = dark ? S.toLight : S.toDark;
+      btn.setAttribute("data-mode", dark ? "dark" : "light");
+    }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next); set("tm_theme", next); label();
+    });
+    label();
   }
 
   // ---------- breast milk: "use by" from when it was expressed and where it is stored (KKM times)
@@ -861,5 +919,5 @@
   }
 
   freshness(); tips(); menu(); dueTool(); homeTabs(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery();
-  vaccines(); afterBirth(); milk(); names(); fertility(); labour(); bot();
+  themeSwitch(); vaccines(); afterBirth(); deliveryCost(); milk(); names(); fertility(); labour(); bot();
 })();
