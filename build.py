@@ -45,13 +45,13 @@ NAV = [
     ("#preg", "Pregnant", "Sedang hamil", "🤰", ""),
     ("weeks/index.html", "Week by week", "Minggu demi minggu", "📅", "t-weeks"),
     ("antenatal.html", "Antenatal check-ups", "Pemeriksaan antenatal", "🩺", "t-ante"),
-    ("healthy-pregnancy.html", "Healthy pregnancy", "Hamil sihat", "🥗", "t-healthy"),
+    ("healthy-pregnancy.html", "Healthy pregnancy", "Penjagaan kesihatan semasa hamil", "🥗", "t-healthy"),
     ("names.html", "Baby names", "Nama bayi", "✨", "t-names"),
     ("labour.html", "Kicks & contractions", "Tendangan & kontraksi", "⏱️", "t-labour"),
     ("hospital-bag.html", "Hospital bag", "Beg hospital", "👜", "t-bag"),
     ("delivery-cost.html", "Delivery cost", "Kos bersalin", "🏥", "t-deliv"),
     ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
-    ("budget.html", "Baby's first-year budget", "Bajet bayi tahun pertama", "🧾", "t-budget"),
+    ("budget.html", "Baby's first-year budget", "Anggaran belanja tahun pertama bayi", "🧾", "t-budget"),
     ("#new", "New mum", "Ibu baharu", "👶", ""),
     ("pantang.html", "Pantang planner", "Perancang pantang", "🍲", "t-pantang"),
     ("feelings.html", "How are you feeling?", "Kesihatan emosi ibu", "💛", "t-mind"),
@@ -64,7 +64,7 @@ NAV = [
     ("leave.html", "Maternity leave", "Cuti bersalin", "🗓️", "t-leave"),
     ("#kids", "Mum & kids", "Ibu & anak", "🧒", ""),
     ("growth.html", "Baby's growth", "Tumbesaran bayi", "📈", "t-growth"),
-    ("solids.html", "Baby's first foods", "Makanan pertama bayi", "🥣", "t-solids"),
+    ("solids.html", "Baby's first foods", "Pengenalan makanan pejal", "🥣", "t-solids"),
     ("prices.html", "Prices: milk, diapers & essentials", "Harga barang keperluan", "🍼", "t-prices"),
     ("nursery.html", "Taska & tadika", "Taska & tadika", "🧸", "t-nursery"),
 ]
@@ -443,7 +443,7 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
                 "Food, fasting & flying", "Makanan, puasa & terbang"),
     "budget": ("budget.html", "Add up delivery, confinement, diapers, milk, baby items and childcare for baby's first year - every number can be changed.",
                "Kira kos bersalin, berpantang, lampin, susu, barang bayi dan taska untuk tahun pertama bayi - setiap angka boleh diubah.",
-               "Open the budget calculator", "Buka kalkulator bajet"),
+               "Open the budget calculator", "Buka kalkulator anggaran belanja"),
     "feelings": ("feelings.html", "Feeling low after having a baby is common, and it can be treated. Try our private 10-question check, and talk to your klinik. If you're thinking of harming yourself, call 999 or Talian HEAL 15555 now.",
                  "Berasa sedih selepas bersalin adalah biasa, dan boleh dirawat. Cuba semakan peribadi 10 soalan kami, dan berbincang dengan klinik. Jika terfikir untuk mencederakan diri, hubungi 999 atau Talian HEAL 15555 sekarang.",
                  "Open the feelings check", "Buka semakan emosi"),
@@ -458,7 +458,7 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
                "Open baby's growth", "Buka tumbesaran bayi"),
     "solids": ("solids.html", "KKM: start other food at 6 months and keep breastfeeding to 2 years. No salt, sugar, juice or honey before 1 year.",
                "KKM: mula beri makanan lain pada 6 bulan dan teruskan menyusu hingga 2 tahun. Tiada garam, gula, jus atau madu sebelum 1 tahun.",
-               "Baby's first foods", "Makanan pertama bayi"),
+               "Baby's first foods", "Pengenalan makanan pejal"),
     "hello": ("", "Hi! Ask me about your pregnancy week, pantang, confinement costs, maternity leave, milk prices or taska.",
               "Hai! Tanya saya tentang minggu kehamilan, pantang, kos berpantang, cuti bersalin, harga susu atau taska.", "", ""),
     "thanks": ("", "You're welcome! Take care.", "Sama-sama! Jaga diri.", "", ""),
@@ -2086,7 +2086,7 @@ def p_healthy(lang):
         ("fly", "✈️", "Flying", "Terbang", x("Airline rules", "Peraturan"), "by week", "ikut minggu", False),
     ], hash_ok=True, prompt=x("What do you want to know?", "Apa yang anda mahu tahu?"))
     body = f"""
-{page_head(x, "🥗", "t-healthy", x("Pregnant", "Sedang hamil"), x("Healthy pregnancy", "Hamil sihat"),
+{page_head(x, "🥗", "t-healthy", x("Pregnant", "Sedang hamil"), x("Healthy pregnancy", "Penjagaan kesihatan semasa hamil"),
            x("Food, fasting and flying while you're pregnant.", "Makanan, puasa dan menaiki kapal terbang semasa hamil."))}
 {tabs}
 {tabpanel("hp", "food", f'''<section class="card"><h2>✅ {x("Do", "Amalkan")}</h2><ul>{do}</ul></section>
@@ -2110,7 +2110,7 @@ def p_healthy(lang):
 {danger(x)}
 {ad("in_content", x)}
 """
-    write_page(lang, "healthy-pregnancy.html", x("Healthy pregnancy: food, fasting & flying", "Hamil sihat: makanan, puasa & terbang"),
+    write_page(lang, "healthy-pregnancy.html", x("Healthy pregnancy: food, fasting & flying", "Penjagaan kesihatan semasa hamil: makanan, puasa & terbang"),
                x("What to eat and avoid in pregnancy (KKM), fasting in Ramadan while pregnant or breastfeeding, and AirAsia and Malaysia Airlines rules for flying while pregnant.",
                  "Makanan yang perlu diambil dan dielak semasa hamil (KKM), puasa Ramadan ketika hamil atau menyusu, dan peraturan AirAsia serta Malaysia Airlines untuk ibu hamil."),
                body)
@@ -2139,7 +2139,7 @@ def p_budget(lang):
     def opt(v, en, ms):
         return f'<option value="{v}">{esc(x(en, ms))}</option>'
     body = f"""
-{page_head(x, "🧾", "t-budget", x("Pregnant", "Sedang hamil"), x("Baby's first-year budget", "Bajet bayi tahun pertama"),
+{page_head(x, "🧾", "t-budget", x("Pregnant", "Sedang hamil"), x("Baby's first-year budget", "Anggaran belanja tahun pertama bayi"),
            x("Add up the big costs of baby's first year. Change any number - saved on this phone.", "Kira kos besar tahun pertama bayi. Ubah mana-mana angka - disimpan dalam telefon ini."))}
 <section class="card" id="bud-tool">
   <div class="bud-grid">
@@ -2171,7 +2171,7 @@ def p_budget(lang):
 <a class="btn ghost" href="newborn.html">🧺 {x("Newborn essentials", "Barang bayi")} →</a> <a class="btn ghost" href="nursery.html">🧸 {x("Taska & tadika", "Taska & tadika")} →</a></p>
 {ad("in_content", x)}
 """
-    write_page(lang, "budget.html", x("Baby first-year budget calculator Malaysia", "Kalkulator bajet bayi tahun pertama"),
+    write_page(lang, "budget.html", x("Baby first-year budget calculator Malaysia", "Kalkulator anggaran belanja tahun pertama bayi"),
                x("How much does a baby cost in the first year in Malaysia? Add up delivery, confinement, diapers, milk, baby items and childcare - with real prices.",
                  "Berapa kos bayi pada tahun pertama di Malaysia? Kira kos bersalin, berpantang, lampin, susu, barang bayi dan taska - dengan harga sebenar."),
                body)
@@ -2325,7 +2325,7 @@ def p_solids(lang):
     x = tr(lang)
     rules = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.SOLIDS)
     body = f"""
-{page_head(x, "🥣", "t-solids", x("Mum & kids", "Ibu & anak"), x("Baby's first foods", "Makanan pertama bayi"),
+{page_head(x, "🥣", "t-solids", x("Mum & kids", "Ibu & anak"), x("Baby's first foods", "Pengenalan makanan pejal"),
            x("Starting solids at 6 months - how much, what texture, and what to avoid.", "Mula makanan pejal pada 6 bulan - berapa banyak, tekstur dan apa yang perlu dielak."))}
 <section class="card" id="sol-tool">
   <div class="due-row"><label class="field grow">{x("Baby's birth date", "Tarikh lahir bayi")}<input type="date" id="sol-birth"></label></div>
@@ -2337,7 +2337,7 @@ def p_solids(lang):
 {src_line(x, [(x("KKM infant feeding guideline", "Garis panduan pemakanan bayi KKM"), "https://hq.moh.gov.my/nutrition/wp-content/uploads/2023/12/GP_Baby_Book-1.pdf"),
               (x("KKM diet guide for children 2026", "Panduan diet kanak-kanak KKM 2026"), "https://hq.moh.gov.my/nutrition/wp-content/uploads/2026/09/4.-NOTA-POKET-PANDUAN-DIET-MALAYSIA-UNTUK-KANAK-KANAK-DAN-REMAJA-2026.pdf")])}
 """
-    write_page(lang, "solids.html", x("Starting solids at 6 months (KKM guide)", "Makanan pertama bayi pada 6 bulan (panduan KKM)"),
+    write_page(lang, "solids.html", x("Starting solids at 6 months (KKM guide)", "Pengenalan makanan pejal pada 6 bulan (panduan KKM)"),
                x("When and how to start solid food: 6 months, portions for 6-8 months, textures, and no salt, sugar, juice or honey before 1 year - from Malaysia's Ministry of Health.",
                  "Bila dan bagaimana mula makanan pejal: 6 bulan, sukatan untuk 6-8 bulan, tekstur, dan tiada garam, gula, jus atau madu sebelum 1 tahun - daripada Kementerian Kesihatan."),
                body)
