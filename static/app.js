@@ -86,6 +86,8 @@
     if (!due) return;
     var w = Math.floor((280 - diffDays(today(), due)) / 7);
     if (TM.week && TM.week === w) { var p = $("#you-here"); if (p) p.hidden = false; }
+    var tri = $('.dtabs[data-group="tri"]');  // weeks index: open the trimester you're in
+    if (tri && w >= 4 && w <= 40) tri.setAttribute("data-default", w <= 13 ? "t1" : w <= 27 ? "t2" : "t3");
     var li = $('.week-list li[data-week="' + w + '"]');
     if (li) { li.classList.add("current"); li.querySelector(".wk-n").insertAdjacentHTML("beforeend", ' <span class="pill">' + esc(S.youAreHere) + "</span>"); }
   }
@@ -154,8 +156,25 @@
   function quotes() {
     var box = $("#quote-tool"); if (!box) return;
     var cards = $$(".quote", box), out = $("#q-result"), addBtn = $("#q-add");
-    var saved = get("tm_quotes", []), presets = {}, presetsReady = false;
+    var saved = get("tm_quotes", []), presets = {}, presetsReady = false, pendingAdd = null;
     function val(c, n) { return c.querySelector('[name="' + n + '"]'); }
+    // "+ Add to comparison" on a centre card / typical price: fill the next empty quote and open the Compare tab
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-compare]"); if (!b) return;
+      var id = b.getAttribute("data-compare");
+      function go() {
+        pendingAdd = null;
+        if (!presets[id]) return;
+        var c = cards.filter(function (q) { return !q.hidden && !val(q, "price").value && !val(q, "name").value; })[0] ||
+                cards.filter(function (q) { return q.hidden; })[0] || cards[cards.length - 1];
+        c.hidden = false;
+        var sel = val(c, "preset"); sel.value = id; sel.dispatchEvent(new Event("change"));
+        b.textContent = S.qAdded;
+        var tab = $("#tb-cost-compare"); if (tab) tab.click();
+        box.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      if (presetsReady) go(); else pendingAdd = go;
+    });
     cards.forEach(function (c, i) {
       var q = saved[i] || {};
       ["name", "price", "days", "ratio"].forEach(function (k) { if (q[k] !== undefined && q[k] !== "") val(c, k).value = q[k]; });
@@ -206,6 +225,7 @@
         html += '<optgroup label="' + esc(fill(S.preCentres, { state: st })) + '">' + byState[st].join("") + "</optgroup>";
       });
       presetsReady = true;
+      if (pendingAdd) setTimeout(pendingAdd, 0);
       cards.forEach(function (c, i) {
         var sel = val(c, "preset");
         sel.insertAdjacentHTML("beforeend", html);
@@ -434,14 +454,19 @@
       days.addEventListener("input", render); ac.addEventListener("change", render);
       days.value = st.days || 2; ac.checked = st.ac !== false; press("cls", st.cls); press("type", st.type); render();
     }
-    var list = $("#hosp-list");
-    if (list) {
-      var chips = $$(".state-chips .chip-btn"), askBox = $("#priv-ask");
+  }
+
+  // ---------- state chips: filter the cards (data-state) inside the list named by data-for
+  function stateChips() {
+    $$(".state-chips[data-for]").forEach(function (bar) {
+      var list = document.getElementById(bar.getAttribute("data-for")), chips = $$(".chip-btn", bar);
+      var askBox = bar.getAttribute("data-ask") ? document.getElementById(bar.getAttribute("data-ask")) : null;
+      if (!list) return;
       chips.forEach(function (c) {
         c.addEventListener("click", function () {
           var s = c.getAttribute("data-state");
           chips.forEach(function (o) { o.setAttribute("aria-pressed", o === c ? "true" : "false"); });
-          $$(".hosp", list).forEach(function (h) { h.hidden = !!s && h.getAttribute("data-state") !== s; });
+          $$("[data-state]", list).forEach(function (h) { h.hidden = !!s && h.getAttribute("data-state") !== s; });
           if (askBox) {
             var any = false;
             $$("li", askBox).forEach(function (li) { li.hidden = !!s && li.getAttribute("data-state") !== s; if (!li.hidden) any = true; });
@@ -449,29 +474,46 @@
           }
         });
       });
-    }
-    // three tabs (government / university / private): only the chosen one is shown, so there's little to scroll
-    var dtabs = $$(".dtab");
-    if (dtabs.length) {
-      var keys = dtabs.map(function (t) { return t.getAttribute("data-tab"); });
-      function showTab(k) {
-        dtabs.forEach(function (t) { var on = t.getAttribute("data-tab") === k; t.setAttribute("aria-selected", on ? "true" : "false"); t.tabIndex = on ? 0 : -1; });
-        $$(".dpanel").forEach(function (p) { p.hidden = p.getAttribute("data-tab") !== k; });
-        set("tm_deliv_tab", k);
+    });
+  }
+
+  // ---------- big tabs on many pages: only the chosen panel shows, so there's little to scroll.
+  // Remembers the choice per group; data-hash groups also read/write #key; data-count tabs show ticked/total.
+  function tabGroups() {
+    $$(".dtabs[data-group]").forEach(function (bar) {
+      var g = bar.getAttribute("data-group"), btns = $$(".dtab", bar), panels = $$('.dpanel[data-group="' + g + '"]');
+      var keys = btns.map(function (b) { return b.getAttribute("data-tab"); });
+      function panel(k) { return panels.filter(function (p) { return p.getAttribute("data-tab") === k; })[0]; }
+      function show(k, save) {
+        btns.forEach(function (b) { var on = b.getAttribute("data-tab") === k; b.setAttribute("aria-selected", on ? "true" : "false"); b.tabIndex = on ? 0 : -1; });
+        panels.forEach(function (p) { p.hidden = p.getAttribute("data-tab") !== k; });
+        if (save) set("tm_tab_" + g, k);
       }
-      dtabs.forEach(function (t, i) {
-        t.addEventListener("click", function () {
-          var k = t.getAttribute("data-tab"); showTab(k);
-          try { history.replaceState(null, "", "#" + k); } catch (e) { /* file:// */ }
+      function counts() {
+        btns.forEach(function (b) {
+          if (!b.hasAttribute("data-count")) return;
+          var p = panel(b.getAttribute("data-tab")); if (!p) return;
+          var cbs = $$('input[type="checkbox"][data-key]', p), n = cbs.filter(function (c) { return c.checked; }).length;
+          var big = $(".dt-big", b); if (big) big.textContent = n + " / " + cbs.length;
+          b.classList.toggle("all-done", cbs.length > 0 && n === cbs.length);
         });
-        t.addEventListener("keydown", function (e) {
+      }
+      btns.forEach(function (b, i) {
+        b.addEventListener("click", function () {
+          var k = b.getAttribute("data-tab"); show(k, true);
+          if (bar.hasAttribute("data-hash")) { try { history.replaceState(null, "", "#" + k); } catch (e) { /* file:// */ } }
+        });
+        b.addEventListener("keydown", function (e) {
           var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!d) return;
-          var n = dtabs[(i + d + dtabs.length) % dtabs.length]; n.focus(); n.click(); e.preventDefault();
+          var n = btns[(i + d + btns.length) % btns.length]; n.focus(); n.click(); e.preventDefault();
         });
       });
-      var h = location.hash.replace("#", "");
-      showTab(keys.indexOf(h) >= 0 ? h : (keys.indexOf(get("tm_deliv_tab", "")) >= 0 ? get("tm_deliv_tab", "") : keys[0]));
-    }
+      document.addEventListener("change", counts);
+      document.addEventListener("click", function (e) { if (e.target.closest("#bag-reset")) setTimeout(counts, 0); });
+      counts();
+      var h = location.hash.replace("#", ""), saved = get("tm_tab_" + g, ""), def = bar.getAttribute("data-default");
+      show(bar.hasAttribute("data-hash") && keys.indexOf(h) >= 0 ? h : keys.indexOf(saved) >= 0 ? saved : keys.indexOf(def) >= 0 ? def : keys[0], false);
+    });
   }
 
   // ---------- light / dark switch (saved on this phone; the <head> script applies it before the page paints)
@@ -946,5 +988,5 @@
   }
 
   freshness(); tips(); menu(); dueTool(); homeTabs(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery();
-  themeSwitch(); vaccines(); afterBirth(); deliveryCost(); milk(); names(); fertility(); labour(); bot();
+  themeSwitch(); vaccines(); afterBirth(); deliveryCost(); stateChips(); tabGroups(); milk(); names(); fertility(); labour(); bot();
 })();

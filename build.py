@@ -156,7 +156,7 @@ JS_STR = {
         "preTypical": "Typical packages (anywhere in Malaysia)", "preCentres": "Confinement centres - {state}", "qFrom": "from",
         "preCentreNote": "Published price for {d} days: {price}. Checked {date}. Prices change - confirm with the centre.",
         "preSource": "Centre's website", "preTypicalNote": "Typical price - change it to match your quote.",
-        "preCentreNoteNoDays": "Published price: {price} (stay length not stated). Checked {date}. Prices change - confirm with the centre.",
+        "preCentreNoteNoDays": "Published price: {price} (stay length not stated). Checked {date}. Prices change - confirm with the centre.", "qAdded": "Added ✓",
         "dRegBy": "Register the birth by", "dLeft": "{n} days left · free", "dLastDay": "Today is the last day · free",
         "dLatePen": "Now a late registration - go to your nearest JPN office soon (RM50 fee in Peninsular Malaysia).",
         "dLateSS": "Past 14 days - go to JPN as soon as you can. After 42 days it becomes a late registration with extra steps.",
@@ -237,7 +237,7 @@ JS_STR = {
         "preTypical": "Pakej biasa (seluruh Malaysia)", "preCentres": "Pusat berpantang - {state}", "qFrom": "dari",
         "preCentreNote": "Harga yang diterbitkan untuk {d} hari: {price}. Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
         "preSource": "Laman web pusat", "preTypicalNote": "Harga biasa - ubah supaya sama dengan sebut harga anda.",
-        "preCentreNoteNoDays": "Harga yang diterbitkan: {price} (tempoh tidak dinyatakan). Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
+        "preCentreNoteNoDays": "Harga yang diterbitkan: {price} (tempoh tidak dinyatakan). Disemak {date}. Harga boleh berubah - sahkan dengan pusat.", "qAdded": "Ditambah ✓",
         "dRegBy": "Daftar kelahiran sebelum", "dLeft": "{n} hari lagi · percuma", "dLastDay": "Hari ini hari terakhir · percuma",
         "dLatePen": "Kini pendaftaran lewat - pergi ke pejabat JPN terdekat segera (bayaran RM50 di Semenanjung).",
         "dLateSS": "Sudah lebih 14 hari - pergi ke JPN secepat mungkin. Selepas 42 hari ia menjadi pendaftaran lewat dengan langkah tambahan.",
@@ -428,6 +428,46 @@ def page_head(x, ico, cls, eyebrow, title, lead="", extra="", lead_id=""):
     lead_html = f'<p class="lead"{lid}>{lead}</p>' if lead or lead_id else ""
     return (f'<header class="page-head {cls}"><span class="ph-ico" aria-hidden="true">{ico}</span>'
             f'<div class="ph-text"><p class="ph-eyebrow">{esc(eyebrow)}</p><h1>{title}{(" " + extra) if extra else ""}</h1>{lead_html}</div></header>')
+
+
+def tabbar(x, group, items, hash_ok=False, prompt=""):
+    """Big tappable tabs; only the chosen panel shows (less scrolling). Each item:
+    (key, icon, label_en, label_ms, big_html, small_en, small_ms, count). count=True -> JS shows ticked/total
+    for the checkboxes in that panel. app.js tabGroups() remembers the choice per group (tm_tab_<group>)."""
+    btns = []
+    for i, (k, ico, le, lm, big, se, sm, count) in enumerate(items):
+        btns.append(
+            f'<button type="button" class="dtab" role="tab" id="tb-{group}-{k}" aria-controls="tp-{group}-{k}" '
+            f'aria-selected="{"true" if i == 0 else "false"}" data-tab="{k}"{" data-count" if count else ""}>'
+            f'<span class="dt-lbl"><span aria-hidden="true">{ico}</span> {esc(x(le, lm))}</span>'
+            + (f'<span class="dt-big">{big}</span>' if big else "")
+            + (f'<span class="dt-small">{esc(x(se, sm))}</span>' if se else "") + "</button>")
+    q = f'<p class="dtabs-q">{prompt}</p>' if prompt else ""
+    return (f'{q}<div class="dtabs n{len(items)}" role="tablist" data-group="{group}"{" data-hash" if hash_ok else ""} '
+            f'aria-label="{esc(prompt or x("Sections", "Bahagian"))}">{"".join(btns)}</div>')
+
+
+def tabpanel(group, key, html):
+    return (f'<div class="dpanel" role="tabpanel" id="tp-{group}-{key}" aria-labelledby="tb-{group}-{key}" '
+            f'data-group="{group}" data-tab="{key}">{html}</div>')
+
+
+def pcard(x, kind, ico, name, loc, meta, price_html, body, state="", extra_cls=""):
+    """Listing card like a directory: name, place, 'from' price; tap opens the details underneath."""
+    return (f'<details class="pcard{(" " + extra_cls) if extra_cls else ""}" data-state="{esc(state)}"><summary>'
+            f'<span class="pc-band" aria-hidden="true">{ico}</span>'
+            f'<span class="pc-kind">{esc(kind)}</span><strong class="pc-name">{esc(name)}</strong>'
+            f'<span class="pc-loc">📍 {esc(loc)}</span>'
+            f'<span class="pc-foot"><span class="pc-meta">{meta}</span><span class="pc-price">{price_html}</span></span>'
+            f'<span class="pc-more"><span class="pc-open">{x("View details", "Lihat butiran")}</span><span class="pc-close">{x("Hide details", "Tutup butiran")}</span></span>'
+            f'</summary><div class="pc-body">{body}</div></details>')
+
+
+def state_chips(x, target, states):
+    return (f'<div class="nm-origin state-chips" role="group" data-for="{target}" aria-label="{x("State", "Negeri")}">'
+            f'<button type="button" class="chip-btn" data-state="" aria-pressed="true">{x("All states", "Semua negeri")}</button>'
+            + "".join(f'<button type="button" class="chip-btn" data-state="{esc(s)}" aria-pressed="false">{esc(s)}</button>' for s in states)
+            + "</div>")
 
 
 def shop(key, q, x):
@@ -695,7 +735,10 @@ def p_labour(lang):
     body = f"""
 {page_head(x, "⏱️", "t-labour", x("Third trimester", "Trimester ketiga"), x("Kick counter & contraction timer", "Pengira tendangan & masa kontraksi"),
            x("Simple tools for the last weeks. Saved only on this phone.", "Alat mudah untuk minggu-minggu terakhir. Disimpan dalam telefon ini sahaja."))}
-<div class="info-grid">
+{tabbar(x, "lb", [("kick", "👣", "Kick counter", "Pengira tendangan", x("Count 10 moves", "Kira 10 gerakan"), "from about 28 weeks", "dari lebih kurang 28 minggu", False),
+                    ("con", "⏱️", "Contractions", "Kontraksi", x("How far apart?", "Berapa jarak?"), "time each one", "kira setiap satu", False)],
+                prompt=x("Which tool?", "Alat yang mana?"))}
+<div class="dpanel" role="tabpanel" id="tp-lb-kick" aria-labelledby="tb-lb-kick" data-group="lb" data-tab="kick">
 <section class="card" id="kick-tool">
   <h2><span aria-hidden="true">👣</span> {x("Kick counter", "Pengira tendangan")} {tip(x("From about 28 weeks, get to know your baby's usual pattern. Pick a time when baby is usually active and count movements. If movements slow down or change, go to your clinic or hospital the same day - don't wait.",
                                                                                      "Dari lebih kurang 28 minggu, kenali corak biasa bayi. Pilih waktu bayi biasanya aktif dan kira gerakan. Jika gerakan berkurang atau berubah, pergi ke klinik atau hospital pada hari yang sama - jangan tunggu."), x)}</h2>
@@ -703,6 +746,8 @@ def p_labour(lang):
   <p class="hint center" id="kick-time"></p>
   <p class="center"><button type="button" class="link-btn muted" id="kick-reset">{x("Start again", "Mula semula")}</button></p>
 </section>
+</div>
+<div class="dpanel" role="tabpanel" id="tp-lb-con" aria-labelledby="tb-lb-con" data-group="lb" data-tab="con">
 <section class="card" id="con-tool">
   <h2><span aria-hidden="true">⏱️</span> {x("Contraction timer", "Pemasa kontraksi")} {tip(x("Time from the start of one contraction to the start of the next. Contractions that come regularly, get stronger and closer together may mean labour is starting - call your hospital for advice. Go straight away if your waters break, you bleed, or baby moves less.",
                                                                                         "Kira dari permulaan satu kontraksi ke permulaan kontraksi seterusnya. Kontraksi yang datang secara tetap, semakin kuat dan rapat mungkin tanda bersalin bermula - hubungi hospital untuk nasihat. Pergi segera jika air ketuban pecah, berdarah, atau bayi kurang bergerak."), x)}</h2>
@@ -782,13 +827,18 @@ def p_newborn(lang):
             f'<li><label class="check"><input type="checkbox" data-key="nb_{k}"> {esc(x(en, ms))}</label>'
             f'{shop(aff, en, x) if aff else ""}</li>' for k, en, ms, aff in items)
         secs.append(f'<section class="card"><h2>{esc(x(te, tm))}</h2><ul class="checklist">{lis}</ul></section>')
+    icons = ["🛏️", "🍼", "🛁", "🧷", "👕", "🚗"]
+    nb_tabs = tabbar(x, "nb", [(f"s{i}", icons[i % len(icons)], te, tm, f"0 / {len(items)}", "", "", True) for i, (te, tm, items) in enumerate(extra.ESSENTIALS)],
+                     prompt=x("Pick a category:", "Pilih kategori:"))
+    nb_panels = "".join(tabpanel("nb", f"s{i}", sec) for i, sec in enumerate(secs))
     body = f"""
 <div data-store="tm_newborn"></div>
 {page_head(x, "🧺", "t-kit", x("New mum", "Ibu baharu"), x("Newborn essentials", "Barang bayi baru lahir"), extra=tip(x("A starting list - you won't need everything at once. 'Shop' links open Shopee; some are affiliate links, so we may earn a small commission at no extra cost to you.",
                                                                                                                     "Senarai permulaan - anda tidak perlukan semuanya sekali gus. Pautan 'Beli' membuka Shopee; sesetengahnya pautan afiliasi, jadi kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda."), x))}
 <div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
 <div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
-<div class="check-grid">{"".join(secs)}</div>
+{nb_tabs}
+{nb_panels}
 {ad("in_content", x)}
 """
     write_page(lang, "newborn.html", x("Newborn baby checklist Malaysia", "Senarai barang bayi baru lahir"),
@@ -834,18 +884,25 @@ def p_afterbirth(lang):
   <p class="hint">{x("Registering within the time limit is free. Some hospitals have a JPN counter - ask before you go home.",
                      "Pendaftaran dalam tempoh yang ditetapkan adalah percuma. Sesetengah hospital ada kaunter JPN - tanya sebelum pulang.")}</p>
 </section>
+{tabbar(x, "ab", [("docs", "📝", "Documents", "Dokumen", "0 / " + str(sum(len(it) for _, _, _, it in extra.AFTER_BIRTH)), "birth cert, MyKid, STR...", "sijil lahir, MyKid, STR...", True),
+                    ("savings", "🐷", "Savings for baby", "Simpanan bayi", x(f"{len(extra.SAVINGS)} accounts", f"{len(extra.SAVINGS)} akaun"), "ASB, SSPN, Tabung Haji, EPF", "ASB, SSPN, Tabung Haji, KWSP", False)],
+                hash_ok=True, prompt=x("What do you want to sort out?", "Apa yang anda mahu uruskan?"))}
+<div class="dpanel" role="tabpanel" id="tp-ab-docs" aria-labelledby="tb-ab-docs" data-group="ab" data-tab="docs">
 <div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
 <div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
 <div class="check-grid">{"".join(secs)}</div>
-{ad("in_content", x)}
+</div>
+<div class="dpanel" role="tabpanel" id="tp-ab-savings" aria-labelledby="tb-ab-savings" data-group="ab" data-tab="savings">
 <section id="savings">
-<h2 class="sv-head"><span aria-hidden="true">🐷</span> {x("Start saving for baby", "Mula menyimpan untuk bayi")}</h2>
+<h2 class="sv-head sv-first"><span aria-hidden="true">🐷</span> {x("Start saving for baby", "Mula menyimpan untuk bayi")}</h2>
 <p class="muted">{x("Once you have the birth certificate, you can open these for your baby. They're all optional - pick what suits your family.",
                     "Selepas mendapat sijil kelahiran, anda boleh membuka akaun ini untuk bayi. Semuanya pilihan - pilih yang sesuai untuk keluarga anda.")}</p>
 <div class="save-grid">{"".join(cards)}</div>
 <p class="small muted">{x("General information only, not financial advice. Limits, fees and returns change, and past dividends don't promise future ones - check with ASNB, PTPTN, Tabung Haji or EPF before you open an account.",
                           "Maklumat umum sahaja, bukan nasihat kewangan. Had, bayaran dan pulangan boleh berubah, dan dividen lalu tidak menjamin dividen akan datang - semak dengan ASNB, PTPTN, Tabung Haji atau KWSP sebelum membuka akaun.")}</p>
 </section>
+</div>
+{ad("in_content", x)}
 <p><a class="btn ghost" href="vaccines.html">{x("Baby's vaccine dates →", "Tarikh vaksin bayi →")}</a> <a class="btn ghost" href="leave.html">{x("Maternity leave →", "Cuti bersalin →")}</a></p>
 """
     write_page(lang, "after-birth.html", x("Documents after birth & savings for baby (Malaysia)", "Dokumen selepas bersalin & simpanan bayi (Malaysia)"),
@@ -888,8 +945,6 @@ def p_delivery(lang):
                          opt("type", "twins", "Twins", "Kembar"), opt("type", "csec", "Caesarean", "Caesarean")])
 
     states = sorted({h["state"] for h in priv})
-    chips = (f'<button type="button" class="chip-btn" data-state="" aria-pressed="true">{x("All states", "Semua negeri")}</button>'
-             + "".join(f'<button type="button" class="chip-btn" data-state="{esc(s)}" aria-pressed="false">{esc(s)}</button>' for s in states))
     cards = []
     for h in priv:
         ended = h.get("valid_until") and today_iso > h["valid_until"]
@@ -898,31 +953,37 @@ def p_delivery(lang):
         csec = ((frm if h.get("csec_from") else "") + _rm(h["csec_rm"])) if h.get("csec_rm") else x("ask the hospital", "tanya hospital")
         stay = x(h.get("stay_en", ""), h.get("stay_ms", ""))
         valid = (f' · {x("offer ends", "tawaran tamat")} {_dmy(h["valid_until"], lang)}' if h.get("valid_until") and not ended else "")
-        cards.append(
-            f'<article class="hosp" data-state="{esc(h["state"])}"><div class="hosp-top"><h3>{esc(h["name"])}</h3><span class="sv-who">{esc(h["state"])}</span></div>'
-            f'<div class="hosp-prices"><div><span class="hp-lbl">{x("Normal", "Normal")}</span><strong>{normal}</strong></div>'
-            f'<div><span class="hp-lbl">{x("Caesarean", "Caesarean")}</span><strong>{csec}</strong></div></div>'
-            + (f'<p class="hosp-stay">{esc(stay)}</p>' if stay else "")
-            + f'<p class="hosp-note">{esc(x(h["note_en"], h["note_ms"]))}</p>'
-            + (f'<p class="hosp-ended">{x("This offer may have ended - check the current price.", "Tawaran ini mungkin sudah tamat - semak harga terkini.")}</p>' if ended else "")
-            + f'<p class="hosp-src"><a href="{esc(h["source_url"])}" target="_blank" rel="noopener">{x("Hospital page", "Laman hospital")} ↗</a>'
-              f' · {x("checked", "disemak")} {_dmy(h["checked"], lang)}{valid}</p></article>')
+        body_ = (f'<div class="pc-rows"><div>{x("Normal delivery", "Bersalin normal")}<strong>{normal}</strong></div>'
+                 f'<div>{x("Caesarean", "Caesarean")}<strong>{csec}</strong></div></div>'
+                 + (f'<p><strong>{esc(stay)}</strong></p>' if stay else "")
+                 + f'<p>{esc(x(h["note_en"], h["note_ms"]))}</p>'
+                 + (f'<p class="hosp-ended">{x("This offer may have ended - check the current price.", "Tawaran ini mungkin sudah tamat - semak harga terkini.")}</p>' if ended else "")
+                 + f'<p class="pc-actions"><a class="btn" href="{esc(h["source_url"])}" target="_blank" rel="noopener">{x("Hospital page", "Laman hospital")} ↗</a>'
+                   f'<span class="small muted">{x("checked", "disemak")} {_dmy(h["checked"], lang)}{valid}</span></p>')
+        price = (f'{x("Normal", "Normal")} {normal}' + (f'<small>{x("Caesarean", "Caesarean")} {csec}</small>' if h.get("csec_rm") else ""))
+        cards.append(pcard(x, x("Private hospital", "Hospital swasta"), "🏥", h["name"], h["state"], esc(stay.split(" · ")[0]) if stay else "",
+                           price, body_, state=h["state"]))
 
     hasa = next(u for u in D["university"] if u.get("exec_normal_rm"))
     f_ = hctm["fees"]
-    uni_cards = f"""
-<article class="hosp"><div class="hosp-top"><h3>{esc(hasa["name"])}</h3><span class="sv-who">{esc(hasa["state"])}</span></div>
-  <div class="hosp-prices"><div><span class="hp-lbl">{x("Normal - standard ward", "Normal - wad biasa")}</span><strong>{_rm(hasa["standard_normal_rm"])}</strong></div>
-  <div><span class="hp-lbl">{x("Normal / caesarean - Executive", "Normal / caesarean - Executive")}</span><strong>{_rm(hasa["exec_normal_rm"])} / {_rm(hasa["exec_csec_rm"])}</strong></div></div>
-  <p class="hosp-note">{esc(x(hasa["standard_note_en"], hasa["standard_note_ms"]))}</p>
-  <p class="hosp-note">{esc(x(hasa["exec_note_en"], hasa["exec_note_ms"]))}</p>
-  <p class="hosp-src"><a href="{esc(hasa["source_url"])}" target="_blank" rel="noopener">{x("Standard price (FAQ)", "Harga biasa (Soalan lazim)")} ↗</a> · <a href="{esc(hasa["exec_url"])}" target="_blank" rel="noopener">HASA Executive ↗</a> · {x("checked", "disemak")} {_dmy(hasa["checked"], lang)}</p></article>
-<article class="hosp"><div class="hosp-top"><h3>{esc(hctm["name"])}</h3><span class="sv-who">{esc(hctm["state"])}</span></div>
-  <div class="hosp-prices"><div><span class="hp-lbl">{x("Normal delivery fee", "Caj bersalin normal")}</span><strong>{_rm(f_["normal"])}</strong></div>
-  <div><span class="hp-lbl">{x("Caesarean fee", "Caj caesarean")}</span><strong>{_rm(f_["csec"])}</strong></div></div>
-  <p class="hosp-stay">{x("Forceps", "Forsep")} {_rm(f_["forceps"])} · {x("Vacuum", "Vakum")} {_rm(f_["vacuum"])} · {x(f"2 days, normal: about {_rm(uni_min)} for mum", f"2 hari, normal: lebih kurang {_rm(uni_min)} untuk ibu")}</p>
-  <p class="hosp-note">{esc(x(hctm["note_en"], hctm["note_ms"]))}</p>
-  <p class="hosp-src"><a href="{esc(hctm["source_url"])}" target="_blank" rel="noopener">{x("HCTM charge book (PDF, pages 37-38)", "Buku Caj HCTM (PDF, muka surat 37-38)")} ↗</a> · {x("checked", "disemak")} {_dmy(hctm["checked"], lang)}</p></article>"""
+    hasa_body = (f'<div class="pc-rows"><div>{x("Normal - standard ward", "Normal - wad biasa")}<strong>{_rm(hasa["standard_normal_rm"])}</strong></div>'
+                 f'<div>{x("Normal - Executive", "Normal - Executive")}<strong>{_rm(hasa["exec_normal_rm"])}</strong></div>'
+                 f'<div>{x("Caesarean - Executive", "Caesarean - Executive")}<strong>{_rm(hasa["exec_csec_rm"])}</strong></div></div>'
+                 f'<p>{esc(x(hasa["standard_note_en"], hasa["standard_note_ms"]))}</p><p>{esc(x(hasa["exec_note_en"], hasa["exec_note_ms"]))}</p>'
+                 f'<p class="pc-actions"><a class="btn" href="{esc(hasa["source_url"])}" target="_blank" rel="noopener">{x("Standard price", "Harga biasa")} ↗</a>'
+                 f'<a class="btn ghost" href="{esc(hasa["exec_url"])}" target="_blank" rel="noopener">HASA Executive ↗</a>'
+                 f'<span class="small muted">{x("checked", "disemak")} {_dmy(hasa["checked"], lang)}</span></p>')
+    hctm_body = (f'<div class="pc-rows"><div>{x("Normal delivery fee", "Caj bersalin normal")}<strong>{_rm(f_["normal"])}</strong></div>'
+                 f'<div>{x("Forceps / vacuum", "Forsep / vakum")}<strong>{_rm(f_["forceps"])} / {_rm(f_["vacuum"])}</strong></div>'
+                 f'<div>{x("Caesarean fee", "Caj caesarean")}<strong>{_rm(f_["csec"])}</strong></div>'
+                 f'<div>{x("Normal, 2 days (mum)", "Normal, 2 hari (ibu)")}<strong>~{_rm(uni_min)}</strong></div></div>'
+                 f'<p>{esc(x(hctm["note_en"], hctm["note_ms"]))}</p>'
+                 f'<p class="pc-actions"><a class="btn" href="{esc(hctm["source_url"])}" target="_blank" rel="noopener">{x("Charge book (PDF, p. 37-38)", "Buku Caj (PDF, ms 37-38)")} ↗</a>'
+                 f'<span class="small muted">{x("checked", "disemak")} {_dmy(hctm["checked"], lang)}</span></p>')
+    uni_cards = (pcard(x, x("University hospital", "Hospital universiti"), "🎓", hasa["name"], hasa["state"], x("standard ward", "wad biasa"),
+                       f'{x("from", "dari")} {_rm(hasa["standard_normal_rm"])}<small>Executive {_rm(hasa["exec_normal_rm"])}</small>', hasa_body)
+                 + pcard(x, x("University hospital", "Hospital universiti"), "🎓", hctm["name"], hctm["state"], x("public ward, 2 days", "wad awam, 2 hari"),
+                         f'~{_rm(uni_min)}<small>{x("caesarean fee", "caj caesarean")} {_rm(f_["csec"])}</small>', hctm_body))
     ask = "".join(f'<li><a href="{esc(u["url"])}" target="_blank" rel="noopener">{esc(u["name"])}</a> <span class="muted">· {esc(u["state"])}</span></li>' for u in D["university_ask"])
     pask = D.get("private_ask", [])
     priv_ask_html = ""
@@ -932,20 +993,21 @@ def p_delivery(lang):
         priv_ask_html = (f'<details class="acc" id="priv-ask"><summary>{x("More hospitals in", "Lagi hospital di")} {esc(", ".join(pstates))} '
                          f'{x("(no price online - call them)", "(tiada harga dalam talian - hubungi mereka)")}</summary><ul>{lis}</ul></details>')
 
+    chips_html = state_chips(x, "hosp-list", states).replace('data-for="hosp-list"', 'data-for="hosp-list" data-ask="priv-ask"')
+    deliv_tabs = tabbar(x, "deliv", [
+        ("gov", "🏛️", "Government", "Kerajaan", f'{x("from", "dari")} {_rm(gov_min)}', "normal, class 3 ward, 2 days", "normal, wad kelas 3, 2 hari", False),
+        ("uni", "🎓", "University", "Universiti", f'{_rm(uni_min)} – {_rm(hasa["exec_normal_rm"])}', "normal: public ward to private wing", "normal: wad biasa hingga wad swasta", False),
+        ("private", "🏥", "Private", "Swasta", f'{_rm(lo_n)} – {_rm(hi_n)}', f"normal packages · {len(priv)} hospitals", f"pakej normal · {len(priv)} hospital", False),
+    ], hash_ok=True, prompt=x("Where do you plan to give birth? Tap one:", "Di mana anda merancang untuk bersalin? Pilih satu:"))
     body = f"""
 {page_head(x, "🏥", "t-deliv", x("Pregnant", "Sedang hamil"), x("Delivery cost", "Kos bersalin"),
            x("What giving birth costs in government, university and private hospitals - from their own price lists.",
              "Kos bersalin di hospital kerajaan, universiti dan swasta - daripada senarai harga mereka sendiri."),
            extra=tip(x("Prices for Malaysian citizens, checked on each hospital's or the Ministry of Health's own website. Prices change and packages have conditions - always confirm with the hospital.",
                        "Harga untuk warganegara Malaysia, disemak di laman web hospital atau Kementerian Kesihatan sendiri. Harga boleh berubah dan pakej ada syarat - sentiasa sahkan dengan hospital."), x))}
-<p class="dtabs-q">{x("Where do you plan to give birth? Tap one:", "Di mana anda merancang untuk bersalin? Pilih satu:")}</p>
-<div class="dtabs" role="tablist" aria-label="{x("Type of hospital", "Jenis hospital")}">
-  <button type="button" class="dtab dt-gov" role="tab" id="dt-gov" aria-controls="dp-gov" aria-selected="true" data-tab="gov"><span class="dt-lbl"><span aria-hidden="true">🏛️</span> {x("Government", "Kerajaan")}</span><span class="dt-big">{x("from", "dari")} {_rm(gov_min)}</span><span class="dt-small">{x("normal, class 3 ward, 2 days", "normal, wad kelas 3, 2 hari")}</span></button>
-  <button type="button" class="dtab dt-uni" role="tab" id="dt-uni" aria-controls="dp-uni" aria-selected="false" data-tab="uni"><span class="dt-lbl"><span aria-hidden="true">🎓</span> {x("University", "Universiti")}</span><span class="dt-big">{_rm(uni_min)} – {_rm(hasa["exec_normal_rm"])}</span><span class="dt-small">{x("normal: public ward to private wing", "normal: wad biasa hingga wad swasta")}</span></button>
-  <button type="button" class="dtab dt-priv" role="tab" id="dt-private" aria-controls="dp-private" aria-selected="false" data-tab="private"><span class="dt-lbl"><span aria-hidden="true">🏥</span> {x("Private", "Swasta")}</span><span class="dt-big">{_rm(lo_n)} – {_rm(hi_n)}</span><span class="dt-small">{x(f"normal packages · {len(priv)} hospitals", f"pakej normal · {len(priv)} hospital")}</span></button>
-</div>
+{deliv_tabs}
 
-<div class="dpanel" id="dp-gov" role="tabpanel" aria-labelledby="dt-gov" data-tab="gov">
+<div class="dpanel" role="tabpanel" id="tp-deliv-gov" aria-labelledby="tb-deliv-gov" data-group="deliv" data-tab="gov">
 <section class="card" id="gov-tool">
   <h2><span aria-hidden="true">🏛️</span> {x("Government hospital bill estimate", "Anggaran bil hospital kerajaan")}</h2>
   <p class="field-label">{x("Ward class", "Kelas wad")}</p>
@@ -971,18 +1033,18 @@ def p_delivery(lang):
 <p class="small">{x("Estimates from the hospital's FPP brochure; bed RM160-180 and care RM100 a day.", "Anggaran daripada brosur FPP hospital; katil RM160-180 dan rawatan RM100 sehari.")} <a href="{esc(fpp["source_url"])}" target="_blank" rel="noopener">{x("Brochure (PDF)", "Brosur (PDF)")} ↗</a></p></aside>
 </div>
 
-<div class="dpanel" id="dp-uni" role="tabpanel" aria-labelledby="dt-uni" data-tab="uni">
+<div class="dpanel" role="tabpanel" id="tp-deliv-uni" aria-labelledby="tb-deliv-uni" data-group="deliv" data-tab="uni">
 <p class="dp-intro">{x("University hospitals are half government, half private. Their normal wards charge low fixed fees. Some also have a private wing (for example HASA Executive), where you pay more for a single room and your own specialist.",
                        "Hospital universiti separuh kerajaan, separuh swasta. Wad biasa mengenakan caj tetap yang rendah. Ada juga yang mempunyai wad swasta (contohnya HASA Executive) - bayar lebih untuk bilik seorang dan pakar pilihan sendiri.")}</p>
-<div class="hosp-grid">{uni_cards}</div>
+<div class="pgrid">{uni_cards}</div>
 <details class="acc"><summary>{x("Other university hospitals (no prices online - call them)", "Hospital universiti lain (tiada harga dalam talian - hubungi mereka)")}</summary><ul>{ask}</ul></details>
 </div>
 
-<div class="dpanel" id="dp-private" role="tabpanel" aria-labelledby="dt-private" data-tab="private">
+<div class="dpanel" role="tabpanel" id="tp-deliv-private" aria-labelledby="tb-deliv-private" data-group="deliv" data-tab="private">
 <p class="dp-intro">{x(f"Hospitals that publish a price on their own website, cheapest first. Caesarean packages: {_rm(min(cs))} – {_rm(max(cs))}.",
                        f"Hospital yang menyiarkan harga di laman web sendiri, paling murah dahulu. Pakej caesarean: {_rm(min(cs))} – {_rm(max(cs))}.")}</p>
-<div class="nm-origin state-chips" role="group" aria-label="{x("State", "Negeri")}">{chips}</div>
-<div class="hosp-grid" id="hosp-list">{"".join(cards)}</div>
+{chips_html}
+<div class="pgrid" id="hosp-list">{"".join(cards)}</div>
 {priv_ask_html}
 <details class="acc"><summary>{x("What packages usually don't include", "Apa yang biasanya tidak termasuk dalam pakej")}</summary><ul>
 <li>{x("Epidural or other pain relief, induction of labour, and often vacuum or forceps.", "Epidural atau ubat tahan sakit lain, induksi bersalin, dan selalunya vakum atau forsep.")}</li>
@@ -1036,6 +1098,11 @@ def p_planning(lang):
 <div data-store="tm_plan" data-progress="{x("{n} of {t} done", "{n} daripada {t} selesai")}" data-done="{x("All done - good luck!", "Semua selesai - semoga dipermudahkan!")}"></div>
 {page_head(x, "📝", "t-plan", x("Before pregnancy", "Sebelum hamil"), x("Planning a pregnancy", "Persediaan sebelum hamil"),
            x("What to do in the months before you try for a baby.", "Perkara yang perlu dibuat beberapa bulan sebelum mencuba untuk hamil."))}
+{tabbar(x, "pl", [("check", "✅", "Checklist", "Senarai semak", f"0 / {len(items)}", "before you try", "sebelum mencuba", True),
+                    ("test", "🧪", "Test & signs", "Ujian & tanda", x("When to test?", "Bila boleh uji?"), "", "", False),
+                    ("help", "💬", "Not pregnant yet?", "Belum hamil?", "LPPKN · KWSP", "", "", False)],
+                prompt=x("Tap what you need:", "Pilih apa yang anda perlukan:"))}
+<div class="dpanel" role="tabpanel" id="tp-pl-check" aria-labelledby="tb-pl-check" data-group="pl" data-tab="check">
 <div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
 <div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
 <section class="card"><h2><span aria-hidden="true">✅</span> {x("Before you try", "Sebelum mencuba")}</h2><ul class="checklist">{lis}</ul></section>
@@ -1043,15 +1110,18 @@ def p_planning(lang):
   <a class="tool-card t-fert" href="fertility.html"><span class="tool-ico" aria-hidden="true">🌸</span><span><strong>{x("Fertile days", "Hari subur")}</strong><span class="muted">{x("Find your best days to try", "Cari hari terbaik untuk mencuba")}</span></span></a>
   <a class="tool-card t-deliv" href="delivery-cost.html"><span class="tool-ico" aria-hidden="true">🏥</span><span><strong>{x("Delivery cost", "Kos bersalin")}</strong><span class="muted">{x("Budget for the birth", "Bajet untuk bersalin")}</span></span></a>
 </div>
-{ad("in_content", x)}
-<details class="acc"><summary>{x("When can I take a pregnancy test?", "Bila boleh buat ujian kehamilan?")}</summary>
+</div>
+<div class="dpanel" role="tabpanel" id="tp-pl-test" aria-labelledby="tb-pl-test" data-group="pl" data-tab="test">
+<details class="acc" open><summary>{x("When can I take a pregnancy test?", "Bila boleh buat ujian kehamilan?")}</summary>
 <p>{x("Most home pregnancy tests work from the day your period is due. Testing earlier can show a negative even if you are pregnant - if your period still doesn't come, test again a few days later. The fertile-days calculator shows when your next period is due.",
      "Kebanyakan ujian kehamilan di rumah berkesan mulai hari haid dijangka. Ujian lebih awal boleh menunjukkan negatif walaupun anda hamil - jika haid masih belum datang, uji semula beberapa hari kemudian. Kalkulator hari subur menunjukkan bila haid seterusnya dijangka.")}</p></details>
-<details class="acc"><summary>{x("Early signs of pregnancy", "Tanda awal kehamilan")}</summary><ul>
+<details class="acc" open><summary>{x("Early signs of pregnancy", "Tanda awal kehamilan")}</summary><ul>
 <li>{x("A missed period", "Haid tidak datang")}</li><li>{x("Feeling sick or vomiting (morning sickness)", "Loya atau muntah (alahan)")}</li>
 <li>{x("Sore or swollen breasts", "Payudara sakit atau membengkak")}</li><li>{x("Feeling very tired", "Sangat letih")}</li>
 <li>{x("Needing to pee more often", "Kerap buang air kecil")}</li></ul>
 <p class="small muted">{x("Once a test is positive, register at your klinik kesihatan for antenatal care as early as you can.", "Selepas ujian positif, daftar di klinik kesihatan untuk penjagaan antenatal secepat mungkin.")}</p></details>
+</div>
+<div class="dpanel" role="tabpanel" id="tp-pl-help" aria-labelledby="tb-pl-help" data-group="pl" data-tab="help">
 <aside class="box note"><h2>{x("Not pregnant yet?", "Belum hamil lagi?")}</h2><ul>
 <li>{x("See a doctor if you've tried for a year - or after 6 months if you're 35 or older, or sooner if your periods are irregular. Your klinik kesihatan can refer you.",
        "Jumpa doktor jika sudah mencuba setahun - atau selepas 6 bulan jika berumur 35 tahun ke atas, atau lebih awal jika haid tidak teratur. Klinik kesihatan boleh merujuk anda.")}</li>
@@ -1062,6 +1132,8 @@ def p_planning(lang):
     <a href="https://www.kwsp.gov.my/en/member/healthcare/fertility" target="_blank" rel="noopener">KWSP ↗</a></li>
 <li>{x("IVF and IUI costs for you or your spouse count towards the medical expenses income tax relief (up to RM10,000).", "Kos IVF dan IUI untuk anda atau pasangan boleh dituntut di bawah pelepasan cukai perbelanjaan perubatan (sehingga RM10,000).")}</li>
 </ul></aside>
+</div>
+{ad("in_content", x)}
 <p class="small muted">{x("Sources: KKM Pre-pregnancy Care guideline (Dec 2023), LPPKN, KWSP and LHDN websites, checked November 2026. General information only - follow your doctor's advice.",
                           "Sumber: Garis Panduan Perkhidmatan Prakehamilan KKM (Dis 2023), laman LPPKN, KWSP dan LHDN, disemak November 2026. Maklumat umum sahaja - ikut nasihat doktor anda.")}</p>
 """
@@ -1173,13 +1245,16 @@ def p_weeks_index(lang):
             f'<li data-week="{n}"><a href="{n}.html"><span class="wk-n">{x("Week", "Minggu")} {n}</span>'
             f'<span class="wk-s"><span aria-hidden="true">{wk.W[n][0]}</span> {esc(wk.get(n, lang)["size"])}</span></a></li>'
             for n in range(a, b + 1))
-        parts.append(f'<section><h2>{x("Trimester", "Trimester")} {t}</h2><ul class="week-list">{lis}</ul></section>')
+        parts.append(tabpanel("tri", f"t{t}", f'<ul class="week-list">{lis}</ul>'))
+    tri_tabs = tabbar(x, "tri", [("t1", "🌱", "Trimester 1", "Trimester 1", x("Weeks 4–13", "Minggu 4–13"), "", "", False),
+                                 ("t2", "🌷", "Trimester 2", "Trimester 2", x("Weeks 14–27", "Minggu 14–27"), "", "", False),
+                                 ("t3", "🌻", "Trimester 3", "Trimester 3", x("Weeks 28–40", "Minggu 28–40"), "", "", False)])
     body = f"""
 {page_head(x, "📅", "t-weeks", x("Week by week", "Minggu demi minggu"), x("Pregnancy week by week", "Kehamilan minggu demi minggu"),
              x("Your baby's size, growth and one useful thing to do - weeks 4 to 40.", "Saiz bayi, perkembangan dan satu perkara berguna - minggu 4 hingga 40."))}
-{"".join(parts[:1])}
+{tri_tabs}
+{"".join(parts)}
 {ad("in_content", x)}
-{"".join(parts[1:])}
 """
     write_page(lang, "weeks/index.html", x("Pregnancy week by week", "Kehamilan minggu demi minggu"),
                x("Week-by-week pregnancy guide for Malaysian mums: baby size, development and a to-do for every week.",
@@ -1211,11 +1286,11 @@ def p_week(lang, n):
   </div>
 </header>
 <div class="progress wk-progress" role="progressbar" aria-valuemin="0" aria-valuemax="40" aria-valuenow="{n}"><span style="width:{round(n / 40 * 100)}%"></span></div>
-<div class="info-grid">
-  <section class="card"><h2><span aria-hidden="true">👶</span> {x("Your baby this week", "Bayi anda minggu ini")}</h2><p>{esc(d["baby"])}</p></section>
-  <section class="card"><h2><span aria-hidden="true">🤰</span> {x("Your body", "Badan anda")}</h2><p>{esc(d["mum"])}</p></section>
-</div>
-<section class="card todo-card"><h2><span aria-hidden="true">✅</span> {x("To do this week", "Perlu dibuat minggu ini")}</h2><p>{esc(d["todo"])}</p></section>
+{tabbar(x, "wk", [("baby", "👶", "Your baby", "Bayi anda", "", "", "", False), ("mum", "🤰", "Your body", "Badan anda", "", "", "", False),
+                    ("todo", "✅", "To do", "Perlu buat", "", "", "", False)])}
+{tabpanel("wk", "baby", f'<section class="card"><h2><span aria-hidden="true">👶</span> {x("Your baby this week", "Bayi anda minggu ini")}</h2><p>{esc(d["baby"])}</p></section>')}
+{tabpanel("wk", "mum", f'<section class="card"><h2><span aria-hidden="true">🤰</span> {x("Your body", "Badan anda")}</h2><p>{esc(d["mum"])}</p></section>')}
+{tabpanel("wk", "todo", f'<section class="card todo-card"><h2><span aria-hidden="true">✅</span> {x("To do this week", "Perlu dibuat minggu ini")}</h2><p>{esc(d["todo"])}</p></section>')}
 {ad("in_content", x)}
 {danger(x)}
 <nav class="pager" aria-label="{x("Weeks", "Minggu")}">{prev_l}{next_l}</nav>
@@ -1245,6 +1320,11 @@ def p_pantang(lang):
     body = f"""
 {page_head(x, "🍲", "t-pantang", x("Pantang", "Pantang"), x("Pantang planner", "Perancang pantang"),
              x("A dated timeline for before and after the birth.", "Jadual bertarikh sebelum dan selepas bersalin."))}
+{tabbar(x, "pt", [("plan", "📅", "My timeline", "Jadual saya", x("44 · 30 · 40 days", "44 · 30 · 40 hari"), "dates for before and after", "tarikh sebelum & selepas", False),
+                    ("trad", "🌙", "Traditions", "Tradisi", x("Malay · Chinese · Indian", "Melayu · Cina · India"), "", "", False),
+                    ("help", "🏠", "Help at home", "Bantuan di rumah", x("Carers & meals", "Penjaga & makanan"), "", "", False)],
+                prompt=x("Tap what you need:", "Pilih apa yang anda perlukan:"))}
+<div class="dpanel" role="tabpanel" id="tp-pt-plan" aria-labelledby="tb-pt-plan" data-group="pt" data-tab="plan">
 <section class="card" id="pantang-tool">
   <p class="field-label">{x("Your tradition", "Tradisi anda")}</p>
   <div class="pill-group" role="group" aria-label="{x("Tradition", "Tradisi")}">
@@ -1272,9 +1352,12 @@ def p_pantang(lang):
   </div>
   <div id="p-result" aria-live="polite"></div>
 </section>
-{ad("in_content", x)}
+</div>
+<div class="dpanel" role="tabpanel" id="tp-pt-trad" aria-labelledby="tb-pt-trad" data-group="pt" data-tab="trad">
 <section><h2>{x("Pantang traditions in Malaysia", "Tradisi berpantang di Malaysia")} {tip(x("Every family is different - these are common practices, not rules.", "Setiap keluarga berbeza - ini amalan biasa, bukan peraturan."), x)}</h2>
 <div class="trad-grid">{cards}</div></section>
+</div>
+<div class="dpanel" role="tabpanel" id="tp-pt-help" aria-labelledby="tb-pt-help" data-group="pt" data-tab="help">
 <section><h2>{x("Help at home after the birth", "Bantuan di rumah selepas bersalin")} {tip(x("Links open HappyPreggie, a Malaysian directory of pregnancy and confinement providers. Most list 'contact for price' - ask for a written quote, and compare it in our confinement cost tool.", "Pautan membuka HappyPreggie, direktori penyedia khidmat kehamilan dan berpantang di Malaysia. Kebanyakannya 'hubungi untuk harga' - minta sebut harga bertulis, dan bandingkan dalam alat kos berpantang kami."), x)}</h2>
 <div class="help-grid">
   <a class="help-card" href="https://www.happypreggie.com/listing/pantang" target="_blank" rel="noopener"><span aria-hidden="true">💆‍♀️</span><strong>{x("Pantang carers & urut", "Penjaga pantang & urut")}</strong><span class="muted">{x("Home visits for mum and baby", "Lawatan ke rumah untuk ibu dan bayi")} ↗</span></a>
@@ -1282,6 +1365,8 @@ def p_pantang(lang):
   <a class="help-card" href="https://www.happypreggie.com/listing/confinement-centre" target="_blank" rel="noopener"><span aria-hidden="true">🏨</span><strong>{x("Confinement centres", "Pusat berpantang")}</strong><span class="muted">{x("300+ centres listed", "300+ pusat disenaraikan")} ↗</span></a>
   <a class="help-card" href="https://www.happypreggie.com/listing/antenatal-education" target="_blank" rel="noopener"><span aria-hidden="true">🤱</span><strong>{x("Breastfeeding help", "Bantuan penyusuan")}</strong><span class="muted">{x("Lactation consultants and classes", "Kaunselor laktasi dan kelas")} ↗</span></a>
 </div></section>
+</div>
+{ad("in_content", x)}
 <aside class="box note"><h2>{x("Stay safe during pantang", "Berpantang dengan selamat")}</h2><ul>
 <li>{x("Ask your doctor before urut, bertungku or a tight binder - especially after a caesarean, when the wound needs to heal first.",
        "Tanya doktor sebelum berurut, bertungku atau memakai bengkung yang ketat - terutama selepas pembedahan caesarean, kerana luka perlu sembuh dahulu.")}</li>
@@ -1347,9 +1432,87 @@ def p_cost(lang):
     ]
     qs = "".join(f"<li>{esc(q)}</li>" for q in (questions_ms if lang == "ms" else questions_en))
     maps_q = quote_plus(x("confinement centre near me", "pusat berpantang berhampiran"))
+    with open(os.path.join(HERE, "site-data", "confinement.json"), encoding="utf-8") as f:
+        CD = json.load(f)
+    today_iso = TODAY.isoformat()
+    inc_names = {k: (en, ms) for k, en, ms in extras}
+    centre_cards = []
+    order = sorted(range(len(CD["centres"])), key=lambda i: CD["centres"][i]["price_from_rm"])
+    for i in order:
+        c = CD["centres"][i]
+        ended = c.get("valid_until") and today_iso > c["valid_until"]
+        days = c.get("days") or 28
+        per_day = round(c["price_from_rm"] / days)
+        price_rng = _rm(c["price_from_rm"]) + (f' – {_rm(c["price_to_rm"])}' if c.get("price_to_rm") else "")
+        incs = "".join(
+            f'<li class="{"yes" if v is True else "no" if v is False else "ask"}">{"✓ " if v is True else "✗ " if v is False else "? "}{esc(x(*inc_names[k]))}</li>'
+            for k, v in c.get("includes", {}).items() if k in inc_names)
+        rows = (f'<div>{x("Price", "Harga")}<strong>{price_rng}</strong></div>'
+                f'<div>{x("Stay", "Tempoh")}<strong>{x("not stated", "tidak dinyatakan") if c.get("days_unstated") else str(days) + " " + x("days", "hari")}</strong></div>'
+                f'<div>{x("Per day from", "Sehari dari")}<strong>{_rm(per_day)}</strong></div>'
+                + (f'<div>{x("Babies per nurse", "Bayi setiap jururawat")}<strong>{c["babies_per_nurse"]}</strong></div>' if c.get("babies_per_nurse") else "")
+                + (f'<div>{x("Food", "Makanan")}<strong>{x("Halal", "Halal") if c["halal"] else x("Not halal", "Tidak halal")}</strong></div>' if c.get("halal") is not None else ""))
+        body_ = (f'<div class="pc-rows">{rows}</div>'
+                 f'<p class="small muted">{x("Included (✓ yes · ✗ no · ? ask the centre):", "Termasuk (✓ ya · ✗ tidak · ? tanya pusat):")}</p><ul class="inc-list">{incs}</ul>'
+                 + (f'<p>{esc(x(c.get("caveat_en", ""), c.get("caveat_ms", "")))}</p>' if c.get("caveat_en") else "")
+                 + (f'<p class="hosp-ended">{x("This promotion may have ended - check the current price.", "Promosi ini mungkin sudah tamat - semak harga terkini.")}</p>' if ended else "")
+                 + f'<p class="pc-actions"><button type="button" class="btn" data-compare="c{i}">+ {x("Add to comparison", "Tambah ke perbandingan")}</button>'
+                   f'<a class="btn ghost" href="{esc(c["source_url"])}" target="_blank" rel="noopener">{x("Centre website", "Laman pusat")} ↗</a>'
+                   f'<span class="small muted">{x("checked", "disemak")} {_dmy(c["checked"], lang)}</span></p>')
+        centre_cards.append(pcard(x, x("Confinement centre", "Pusat berpantang"), "🏨", c["name"], f'{c["area"]}, {c["state"]}',
+                                  x("days not stated", "tempoh tidak dinyatakan") if c.get("days_unstated") else f'{days} {x("days", "hari")}',
+                                  f'{x("From", "Dari")} {_rm(c["price_from_rm"])}<small>{_rm(per_day)}{x("/day", "/hari")}</small>', body_, state=c["state"]))
+    c_states = sorted({c["state"] for c in CD["centres"]})
+    c_min = min(c["price_from_rm"] for c in CD["centres"])
+    typ = {t["id"]: t for t in CD["typical"]}
+    def typ_row(tid, en, ms, rng):
+        return (f'<li><span>{esc(x(en, ms))}</span><strong>{rng}</strong>'
+                f'<button type="button" class="link-btn" data-compare="{tid}">+ {x("Compare", "Banding")}</button></li>')
+    cost_tabs = tabbar(x, "cost", [
+        ("centres", "🏨", "Centres", "Pusat berpantang", f'{x("from", "dari")} {_rm(c_min)}', f"{len(CD['centres'])} centres with published prices", f"{len(CD['centres'])} pusat dengan harga diterbitkan", False),
+        ("nanny", "👩‍🍼", "Nanny at home", "Pengasuh di rumah", "RM5,000 – 9,000", "typical, live-in, 28 days", "biasa, tinggal bersama, 28 hari", False),
+        ("compare", "⚖️", "Compare quotes", "Banding sebut harga", x("Price per day", "Harga sehari"), "rank your own quotes", "susun sebut harga anda", False),
+    ], hash_ok=True, prompt=x("What are you looking for? Tap one:", "Apa yang anda cari? Pilih satu:"))
+    nanny_qs = [
+        (x("Does she live in with you, and how many hours does she work each day?", "Adakah dia tinggal bersama, dan berapa jam dia bekerja sehari?")),
+        (x("Does she cook pantang meals, and who buys the ingredients?", "Adakah dia memasak makanan pantang, dan siapa yang membeli bahan?")),
+        (x("Does she look after the baby at night so you can sleep?", "Adakah dia menjaga bayi pada waktu malam supaya anda boleh tidur?")),
+        (x("Can she give herbal baths, urut or bertungku - and has your doctor said it's safe?", "Bolehkah dia memandikan herba, mengurut atau bertungku - dan adakah doktor kata selamat?")),
+        (x("What happens on public holidays, and is there a replacement if she falls ill?", "Bagaimana pada cuti umum, dan adakah pengganti jika dia sakit?")),
+        (x("How much is the deposit, and is it refundable if the baby comes early or late?", "Berapa deposit, dan adakah ia dipulangkan jika bayi lahir awal atau lewat?")),
+    ]
     body = f"""
 {page_head(x, "💰", "t-cost", x("Confinement", "Berpantang"), x("Confinement cost", "Kos berpantang"),
              x("Compare centres and nannies by price per day.", "Banding pusat dan pengasuh mengikut harga sehari."))}
+{cost_tabs}
+{tabpanel("cost", "centres", f"""
+<p class="dp-intro">{x("Centres that publish a price on their own website, cheapest first. Tap a card for details, or add it to your comparison.",
+                       "Pusat yang menyiarkan harga di laman web sendiri, paling murah dahulu. Tekan kad untuk butiran, atau tambah ke perbandingan anda.")}</p>
+{state_chips(x, "centre-list", c_states)}
+<div class="pgrid" id="centre-list">{"".join(centre_cards)}</div>
+<section><h2>{x("Typical prices for 28 days", "Harga biasa untuk 28 hari")} {tip(x("Rough 2026 ranges from price guides (malaysia4u.com). Prices differ a lot by city and by what's included - always get a written quote.",
+                                                                              "Anggaran julat 2026 daripada panduan harga (malaysia4u.com). Harga sangat berbeza mengikut bandar dan apa yang termasuk - sentiasa minta sebut harga bertulis."), x)}</h2>
+<ul class="price-list typ-list">
+  {typ_row("t-budget", "Centre - budget (outside central KL)", "Pusat - bajet (luar pusat KL)", "RM9,000 – 12,000")}
+  {typ_row("t-mid", "Centre - mid-range", "Pusat - pertengahan", "RM12,000 – 18,000")}
+  {typ_row("t-lux", "Centre - luxury", "Pusat - mewah", "RM20,000 – 40,000+")}
+</ul></section>
+<p class="maps-row"><a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query={maps_q}" target="_blank" rel="noopener">🔎 {x("More centres near you (Google Maps)", "Lagi pusat berhampiran (Google Maps)")} ↗</a>
+<a class="btn ghost" href="https://www.happypreggie.com/listing/confinement-centre" target="_blank" rel="noopener">📋 {x("300+ centres on HappyPreggie", "300+ pusat di HappyPreggie")} ↗</a>
+{tip(x("Smaller local centres are often cheaper but don't publish prices online. Ask them for a quote, then add it in 'Compare quotes'.",
+       "Pusat kecil berhampiran selalunya lebih murah tetapi tidak menerbitkan harga dalam talian. Minta sebut harga, kemudian masukkan dalam 'Banding sebut harga'."), x)}</p>
+""")}
+{tabpanel("cost", "nanny", f"""
+<div class="card nanny-card"><div class="pc-rows">
+  <div>{x("Live-in confinement nanny", "Pengasuh berpantang tinggal bersama")}<strong>RM5,000 – 9,000</strong></div>
+  <div>{x("Usual length", "Tempoh biasa")}<strong>28 {x("days", "hari")}</strong></div>
+  <div>{x("Per day", "Sehari")}<strong>~RM179 – 321</strong></div></div>
+  <p class="small muted">{x("Typical 2026 range from price guides (malaysia4u.com) - agencies and freelance nannies vary a lot.", "Julat biasa 2026 daripada panduan harga (malaysia4u.com) - agensi dan pengasuh bebas sangat berbeza.")}</p>
+  <p class="pc-actions"><button type="button" class="btn" data-compare="t-nanny">+ {x("Add a typical nanny to comparison", "Tambah pengasuh biasa ke perbandingan")}</button>
+  <a class="btn ghost" href="https://www.happypreggie.com/listing/pantang" target="_blank" rel="noopener">{x("Find pantang carers (HappyPreggie)", "Cari penjaga pantang (HappyPreggie)")} ↗</a></p></div>
+<details class="acc" open><summary>{x("Ask a nanny before you book", "Tanya pengasuh sebelum menempah")}</summary><ol>{"".join(f"<li>{esc(q)}</li>" for q in nanny_qs)}</ol></details>
+""")}
+{tabpanel("cost", "compare", f"""
 <section class="card" id="quote-tool">
   <h2>{x("Compare quotes", "Banding sebut harga")} {tip(x("Pick a centre or a typical package and the rest fills in. Change anything to match what you were offered. Saved only on this phone.",
                                                         "Pilih pusat atau pakej biasa dan yang lain diisi sendiri. Ubah apa-apa supaya sama dengan tawaran anda. Disimpan dalam telefon ini sahaja."), x)}</h2>
@@ -1360,19 +1523,9 @@ def p_cost(lang):
   </div>
   <div id="q-result" aria-live="polite"></div>
 </section>
-<p class="maps-row"><a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query={maps_q}" target="_blank" rel="noopener">🔎 {x("More centres near you (Google Maps)", "Lagi pusat berhampiran (Google Maps)")} ↗</a>
-<a class="btn ghost" href="https://www.happypreggie.com/listing/confinement-centre" target="_blank" rel="noopener">📋 {x("300+ centres on HappyPreggie", "300+ pusat di HappyPreggie")} ↗</a>
-{tip(x("Smaller local centres are often cheaper but don't publish prices online. Ask them for a quote, then choose 'Edit / enter your own' above.",
-       "Pusat kecil berhampiran selalunya lebih murah tetapi tidak menerbitkan harga dalam talian. Minta sebut harga, kemudian pilih 'Ubah / isi sendiri' di atas."), x)}</p>
-{ad("in_content", x)}
-<section><h2>{x("Typical prices for 28 days", "Harga biasa untuk 28 hari")} {tip(x("Rough 2026 ranges from price guides (malaysia4u.com). Prices differ a lot by city and by what's included - always get a written quote.",
-                                                                              "Anggaran julat 2026 daripada panduan harga (malaysia4u.com). Harga sangat berbeza mengikut bandar dan apa yang termasuk - sentiasa minta sebut harga bertulis."), x)}</h2>
-<ul class="price-list">
-  <li><span>{x("Live-in nanny", "Pengasuh tinggal bersama")}</span><strong>RM5,000 – 9,000</strong></li>
-  <li><span>{x("Centre - mid-range", "Pusat - pertengahan")}</span><strong>RM12,000 – 18,000</strong></li>
-  <li><span>{x("Centre - luxury", "Pusat - mewah")}</span><strong>{x("RM20,000 – 40,000+", "RM20,000 – 40,000+")}</strong></li>
-</ul></section>
 <details class="acc"><summary>{x("Ask before you pay a deposit", "Tanya sebelum membayar deposit")}</summary><ol>{qs}</ol></details>
+""")}
+{ad("in_content", x)}
 {contact_cta(x, "Run a confinement centre or work as a confinement nanny? Ask us about being listed here.",
              "Mengusahakan pusat berpantang atau bekerja sebagai pengasuh berpantang? Tanya kami tentang penyenaraian di sini.")}
 """
@@ -1430,14 +1583,18 @@ def p_bag(lang):
             f'<li><label class="check"><input type="checkbox" data-key="{k}"> {esc(x(en, ms))}</label>'
             f'{shop(k, q, x) if q else ""}</li>' for k, en, ms, q in items)
         secs.append(f'<section class="card"><h2>{esc(x(te, tm))}</h2><ul class="checklist">{lis}</ul></section>')
+    icons = ["📄", "🤰", "👶", "👨"]
+    bag_tabs = tabbar(x, "bag", [(f"s{i}", icons[i], te, tm, f"0 / {len(items)}", "", "", True) for i, (te, tm, items) in enumerate(BAG)],
+                      prompt=x("Pack one part at a time:", "Kemas satu bahagian pada satu masa:"))
+    bag_panels = "".join(tabpanel("bag", f"s{i}", sec) for i, sec in enumerate(secs))
     body = f"""
 {page_head(x, "👜", "t-bag", x("Before the birth", "Sebelum bersalin"), x("Hospital bag checklist", "Senarai semak beg hospital"), extra=tip(x("Pack by about 36 weeks. Your ticks are saved on this phone. 'Shop' links open Shopee - some are affiliate links, so we may earn a small commission at no extra cost to you.",
                                                                        "Siapkan sebelum lebih kurang 36 minggu. Tanda anda disimpan dalam telefon ini. Pautan 'Beli' membuka Shopee - sesetengahnya pautan afiliasi, jadi kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda."), x))}
 <div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
 <div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
-{secs[0]}
+{bag_tabs}
+{bag_panels}
 {ad("in_content", x)}
-{"".join(secs[1:])}
 """
     write_page(lang, "hospital-bag.html", x("Hospital bag checklist for Malaysian mums", "Senarai semak beg hospital untuk ibu"),
                x("What to pack in your hospital bag for giving birth in Malaysia: documents, mum, baby and partner - a free checklist that saves on your phone.",
@@ -1587,6 +1744,11 @@ def p_nursery(lang):
     body = f"""
 {page_head(x, "🧸", "t-nursery", x("After the birth", "Selepas bersalin"), x("Taska & tadika", "Taska & tadika"),
              x("Find, check and compare childcare near you.", "Cari, semak dan banding penjagaan anak berhampiran anda."))}
+{tabbar(x, "nu", [("find", "📍", "Find near you", "Cari berhampiran", "Google Maps", "taska & tadika", "taska & tadika", False),
+                    ("compare", "⚖️", "Compare", "Banding", x("First-year cost", "Kos tahun pertama"), "fees + deposit", "yuran + deposit", False),
+                    ("guide", "📚", "Types & checks", "Jenis & semakan", x("Taska · Tadika", "Taska · Tadika"), "what to ask", "apa perlu ditanya", False)],
+                prompt=x("Tap what you need:", "Pilih apa yang anda perlukan:"))}
+<div class="dpanel" role="tabpanel" id="tp-nu-find" aria-labelledby="tb-nu-find" data-group="nu" data-tab="find">
 <section class="card" id="nursery-tool">
   <div class="btn-row">
     <a class="btn" id="nu-near-taska" href="{near_taska}" target="_blank" rel="noopener">📍 {x("Taska near me", "Taska berhampiran")}</a>
@@ -1602,10 +1764,13 @@ def p_nursery(lang):
     <a class="btn ghost" id="nu-tadika" href="#" target="_blank" rel="noopener"></a>
   </div>
 </section>
+</div>
+<div class="dpanel" role="tabpanel" id="tp-nu-compare" aria-labelledby="tb-nu-compare" data-group="nu" data-tab="compare">
 {nu_compare}
+</div>
+<div class="dpanel" role="tabpanel" id="tp-nu-guide" aria-labelledby="tb-nu-guide" data-group="nu" data-tab="guide">
 <h2>{x("Taska, tadika or preschool?", "Taska, tadika atau prasekolah?")}</h2>
 {type_table}
-{ad("in_content", x)}
 <div class="acc-list">
 <details class="acc"><summary>{x("Check before you choose", "Semak sebelum memilih")}</summary><ol>{ql}</ol></details>
 <details class="acc"><summary>{x("Registration, complaints & tax relief", "Pendaftaran, aduan & pelepasan cukai")}</summary><ul>
@@ -1617,6 +1782,8 @@ def p_nursery(lang):
        "Yuran taska atau tadika berdaftar untuk anak berumur 6 tahun ke bawah boleh mendapat pelepasan cukai pendapatan (sehingga RM3,000 setahun - semak peraturan terkini dengan LHDN).")}</li>
 </ul></details>
 </div>
+</div>
+{ad("in_content", x)}
 {contact_cta(x, "Run a taska or tadika? Ask us about being listed here.", "Mengusahakan taska atau tadika? Tanya kami tentang penyenaraian di sini.")}
 """
     write_page(lang, "nursery.html", x("Find a taska or tadika near you", "Cari taska atau tadika berhampiran"),
