@@ -425,8 +425,8 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
     "essentials": ("newborn.html", "Our newborn checklist covers sleeping, feeding, bathing, diapers, clothes and going out.",
                    "Senarai semak bayi baru lahir merangkumi tidur, menyusu, mandi, lampin, pakaian dan keluar rumah.",
                    "Open newborn checklist", "Buka senarai barang bayi"),
-    "delivery": ("delivery-cost.html", "In a government hospital a normal delivery in a 3rd-class ward costs Malaysians about RM16 for 2 days. Private hospital packages are about RM2,900-5,000 for a normal delivery and RM6,900-12,000 for a caesarean.",
-                 "Di hospital kerajaan, bersalin normal di wad kelas 3 berharga lebih kurang RM16 untuk 2 hari bagi warganegara. Pakej hospital swasta lebih kurang RM2,900-5,000 untuk bersalin normal dan RM6,900-12,000 untuk caesarean.",
+    "delivery": ("delivery-cost.html", "In a government hospital a normal delivery in a 3rd-class ward costs Malaysians about RM16 for 2 days. Private hospital packages are about RM2,300-5,500 for a normal delivery and RM5,700-12,000 for a caesarean.",
+                 "Di hospital kerajaan, bersalin normal di wad kelas 3 berharga lebih kurang RM16 untuk 2 hari bagi warganegara. Pakej hospital swasta lebih kurang RM2,300-5,500 untuk bersalin normal dan RM5,700-12,000 untuk caesarean.",
                  "Compare delivery costs", "Banding kos bersalin"),
     "planning": ("planning.html", "Planning a baby? KKM advises starting folic acid 3 months before pregnancy and a pre-pregnancy check at your klinik kesihatan. Most home pregnancy tests work from the day your period is due.",
                  "Merancang untuk hamil? KKM menasihatkan mula mengambil asid folik 3 bulan sebelum hamil dan pemeriksaan prakehamilan di klinik kesihatan. Kebanyakan ujian kehamilan di rumah boleh dibuat mulai hari haid dijangka.",
@@ -1120,8 +1120,8 @@ def p_delivery(lang):
     if pask:
         pstates = sorted({u["state"] for u in pask})
         lis = "".join(f'<li data-state="{esc(u["state"])}"><a href="{esc(u["url"])}" target="_blank" rel="noopener">{esc(u["name"])}</a> <span class="muted">· {esc(u["state"])}</span></li>' for u in pask)
-        priv_ask_html = (f'<details class="acc" id="priv-ask"><summary>{x("More hospitals in", "Lagi hospital di")} {esc(", ".join(pstates))} '
-                         f'{x("(no price online - call them)", "(tiada harga dalam talian - hubungi mereka)")}</summary><ul>{lis}</ul></details>')
+        priv_ask_html = (f'<details class="acc" id="priv-ask"><summary>{x(f"{len(pask)} more hospitals with no package price online - call them", f"{len(pask)} lagi hospital tanpa harga pakej dalam talian - hubungi mereka")}</summary>'
+                         f'<p class="small muted">{x("Some only offer a discount on the final bill.", "Sesetengahnya hanya menawarkan diskaun pada bil akhir.")}</p><ul>{lis}</ul></details>')
 
     chips_html = state_chips(x, "hosp-list", states).replace('data-for="hosp-list"', 'data-for="hosp-list" data-ask="priv-ask"')
     deliv_tabs = tabbar(x, "deliv", [

@@ -412,6 +412,273 @@
       "note_ms": "Pakej bersalin dengan lawatan jururawat ke rumah dan makanan pantang. Tanya jenis bersalin yang dilindungi.",
       "source_url": "https://kpjhealth.com.my/3-days-2-nights-maternity-package-2026",
       "checked": "2026-11-26"
+    },
+    {
+      "name": "Columbia Asia Hospital Setapak",
+      "state": "Kuala Lumpur",
+      "price_from_rm": 4750,
+      "from": true,
+      "csec_rm": null,
+      "stay_en": "2 days 1 night · 2-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 2 katil",
+      "valid_until": "2027-03-31",
+      "note_en": "Single room RM4,999. For cash or card-paying patients.",
+      "note_ms": "Bilik seorang RM4,999. Untuk pesakit bayar tunai atau kad.",
+      "source_url": "https://www.columbiaasia.com/malaysia/setapak/packages/normal-delivery-package/",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "KPJ Sentosa KL Specialist Hospital",
+      "state": "Kuala Lumpur",
+      "price_from_rm": 3288,
+      "from": true,
+      "csec_rm": 7288,
+      "csec_from": true,
+      "stay_en": "2 days · 4-bed room",
+      "stay_ms": "2 hari · bilik 4 katil",
+      "note_en": "2-bed room RM3,588, single RM3,988. Caesarean (3 days 2 nights): RM7,288 / RM7,788 / RM8,588.",
+      "note_ms": "Bilik 2 katil RM3,588, seorang RM3,988. Caesarean (3 hari 2 malam): RM7,288 / RM7,788 / RM8,588.",
+      "source_url": "https://kpjhealth.com.my/maternity-package---normal-delivery-1",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "KPJ Tawakkal Specialist Hospital",
+      "state": "Kuala Lumpur",
+      "price_from_rm": 4199,
+      "from": true,
+      "csec_rm": 9145,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · 4-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 4 katil",
+      "valid_until": "2026-12-31",
+      "note_en": "2-bed room RM4,299, single RM4,399. Caesarean (3 days 2 nights): RM9,145 / RM9,245 / RM9,450.",
+      "note_ms": "Bilik 2 katil RM4,299, seorang RM4,399. Caesarean (3 hari 2 malam): RM9,145 / RM9,245 / RM9,450.",
+      "source_url": "https://kpjhealth.com.my/tawakkal-maternity-normal-delivery-package",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Tung Shin Hospital",
+      "state": "Kuala Lumpur",
+      "price_from_rm": 3388,
+      "from": true,
+      "csec_rm": 7399,
+      "csec_from": true,
+      "stay_en": "up to 3 days 2 nights · 4-bed room",
+      "stay_ms": "sehingga 3 hari 2 malam · bilik 4 katil",
+      "note_en": "2-bed room RM3,588, single RM3,688. Elective caesarean (3 days 2 nights): RM7,399 / RM7,599 / RM7,788. Price list is a PDF on the hospital's site.",
+      "note_ms": "Bilik 2 katil RM3,588, seorang RM3,688. Caesarean terancang (3 hari 2 malam): RM7,399 / RM7,599 / RM7,788. Senarai harga dalam PDF di laman hospital.",
+      "source_url": "https://tung-shin-hospital-web.s3.ap-southeast-1.amazonaws.com/Maternity_Package_A4_57bd5bd67e.pdf",
+      "checked": "2026-11-26",
+      "auto_check": false
+    },
+    {
+      "name": "KPJ Selangor Specialist Hospital, Shah Alam",
+      "state": "Selangor",
+      "price_from_rm": 3888,
+      "from": false,
+      "csec_rm": 9099,
+      "stay_en": "2 days 1 night",
+      "stay_ms": "2 hari 1 malam",
+      "note_en": "Elective caesarean: 3 days 2 nights. Emergency caesarean RM11,888. Free baby car seat.",
+      "note_ms": "Caesarean terancang: 3 hari 2 malam. Caesarean kecemasan RM11,888. Kerusi kereta bayi percuma.",
+      "source_url": "https://kpjhealth.com.my/maternity-package-87",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "KPJ Kuala Selangor Specialist Hospital",
+      "state": "Selangor",
+      "price_from_rm": 3666,
+      "from": true,
+      "csec_rm": 8300,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · 2-bed or single room",
+      "stay_ms": "2 hari 1 malam · bilik 2 katil atau seorang",
+      "note_en": "Caesarean: 3 days 2 nights.",
+      "note_ms": "Caesarean: 3 hari 2 malam.",
+      "source_url": "https://kpjhealth.com.my/kualaselangor-maternity-normal-delivery-package",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "KPJ Klang Specialist Hospital",
+      "state": "Selangor",
+      "price_from_rm": 3660,
+      "from": true,
+      "csec_rm": 8300,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · 2-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 2 katil",
+      "note_en": "Single room RM3,880. Caesarean (3 days 2 nights): RM8,300 two-bed, RM8,800 single. Prices are in the 2026 poster on the hospital page.",
+      "note_ms": "Bilik seorang RM3,880. Caesarean (3 hari 2 malam): RM8,300 bilik 2 katil, RM8,800 seorang. Harga dalam poster 2026 di laman hospital.",
+      "source_url": "https://kpjhealth.com.my/delivery-package-kpj-klang-75",
+      "checked": "2026-11-26",
+      "auto_check": false
+    },
+    {
+      "name": "Assunta Hospital, Petaling Jaya",
+      "state": "Selangor",
+      "price_from_rm": 3888,
+      "from": false,
+      "csec_rm": 8688,
+      "stay_en": "2 days 1 night",
+      "stay_ms": "2 hari 1 malam",
+      "note_en": "Caesarean: 3 days 2 nights.",
+      "note_ms": "Caesarean: 3 hari 2 malam.",
+      "source_url": "https://assunta.com.my/product/maternity-packages/",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Kedah Medical Centre, Alor Setar",
+      "state": "Kedah",
+      "price_from_rm": 2280,
+      "from": false,
+      "csec_rm": 6888,
+      "stay_en": "2 days 1 night",
+      "stay_ms": "2 hari 1 malam",
+      "note_en": "Self-paying patients, office hours. You need at least one check-up with the hospital's O&G specialist after 28 weeks. Caesarean: elective.",
+      "note_ms": "Pesakit bayar sendiri, waktu pejabat. Perlu sekurang-kurangnya satu pemeriksaan dengan pakar O&G hospital selepas 28 minggu. Caesarean: terancang.",
+      "source_url": "https://kpjhealth.com.my/normal-delivery-package",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Pantai Hospital Sungai Petani",
+      "state": "Kedah",
+      "price_from_rm": 2580,
+      "from": true,
+      "csec_rm": 7788,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · 4-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 4 katil",
+      "note_en": "2-bed room RM2,780, single RM2,980, VIP RM3,580. Elective caesarean (3 days 2 nights): RM7,788 - RM8,588.",
+      "note_ms": "Bilik 2 katil RM2,780, seorang RM2,980, VIP RM3,580. Caesarean terancang (3 hari 2 malam): RM7,788 - RM8,588.",
+      "source_url": "https://www.pantai.com.my/sungai-petani/general-facilities/maternity-ward",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Pantai Hospital Laguna Merbok, Sungai Petani",
+      "state": "Kedah",
+      "price_from_rm": 2880,
+      "from": true,
+      "csec_rm": 7788,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · 4-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 4 katil",
+      "valid_until": "2026-12-31",
+      "note_en": "2-bed room RM3,080, single RM3,280. Caesarean (3 days 2 nights): RM7,788 / RM7,888 / RM7,988. Self-paying patients only.",
+      "note_ms": "Bilik 2 katil RM3,080, seorang RM3,280. Caesarean (3 hari 2 malam): RM7,788 / RM7,888 / RM7,988. Untuk pesakit bayar sendiri sahaja.",
+      "source_url": "https://www.pantai.com.my/laguna-merbok/packages-promotions/normal-delivery-package",
+      "checked": "2026-11-26",
+      "auto_check": false
+    },
+    {
+      "name": "Loh Guan Lye Specialists Centre",
+      "state": "Pulau Pinang",
+      "price_from_rm": 2988,
+      "from": true,
+      "csec_rm": null,
+      "stay_en": "3 days 2 nights · general room",
+      "stay_ms": "3 hari 2 malam · bilik am",
+      "note_en": "Twin room RM3,588, single RM4,988. Normal delivery only - caesarean is not included.",
+      "note_ms": "Bilik berkembar RM3,588, seorang RM4,988. Bersalin normal sahaja - caesarean tidak termasuk.",
+      "source_url": "https://www.lohguanlye.com/pack-maternity-package.php",
+      "checked": "2026-11-26",
+      "auto_check": false
+    },
+    {
+      "name": "Gleneagles Hospital Penang",
+      "state": "Pulau Pinang",
+      "price_from_rm": 3388,
+      "from": true,
+      "csec_rm": 11888,
+      "stay_en": "3 days 2 nights · 6-bed room",
+      "stay_ms": "3 hari 2 malam · bilik 6 katil",
+      "valid_until": "2026-12-31",
+      "note_en": "2-bed room RM3,688. Elective caesarean: 3 days 2 nights, 2-bed room. Self-paying patients.",
+      "note_ms": "Bilik 2 katil RM3,688. Caesarean terancang: 3 hari 2 malam, bilik 2 katil. Pesakit bayar sendiri.",
+      "source_url": "https://gleneagles.com.my/penang/packages-promotions/maternity-package-promo",
+      "checked": "2026-11-26",
+      "auto_check": false
+    },
+    {
+      "name": "Sunway Medical Centre Ipoh",
+      "state": "Perak",
+      "price_from_rm": 3388,
+      "from": true,
+      "csec_rm": 7800,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · 2-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 2 katil",
+      "note_en": "Includes meals. Caesarean: 3 days 2 nights. Epidural add-on RM800. Self-paying patients.",
+      "note_ms": "Termasuk makanan. Caesarean: 3 hari 2 malam. Tambahan epidural RM800. Pesakit bayar sendiri.",
+      "source_url": "https://www.sunwaymedicalipoh.com.my/en/promotion/normal-delivery-package/",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Columbia Asia Hospital Taiping",
+      "state": "Perak",
+      "price_from_rm": 3500,
+      "from": false,
+      "csec_rm": null,
+      "stay_en": "2 days 1 night · 2-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 2 katil",
+      "note_en": "Forceps or vacuum delivery: add RM500. Self-paying patients.",
+      "note_ms": "Bersalin dengan forsep atau vakum: tambah RM500. Pesakit bayar sendiri.",
+      "source_url": "https://www.columbiaasia.com/malaysia/taiping/packages/normal-delivery-package/",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Aurelius Hospital Pahang, Kuantan",
+      "state": "Pahang",
+      "price_from_rm": 5288,
+      "from": true,
+      "csec_rm": 11288,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · suite",
+      "stay_ms": "2 hari 1 malam · suite",
+      "note_en": "Elective caesarean: 3 days 2 nights. RM500 booking fee at least 2 months before delivery.",
+      "note_ms": "Caesarean terancang: 3 hari 2 malam. Yuran tempahan RM500 sekurang-kurangnya 2 bulan sebelum bersalin.",
+      "source_url": "https://www.aureliushealth.com/pahang/promotion/luxternity-maternity-package",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Aurelius Hospital Negeri Sembilan, Nilai",
+      "state": "Negeri Sembilan",
+      "price_from_rm": 5500,
+      "from": true,
+      "csec_rm": 9800,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · suite",
+      "stay_ms": "2 hari 1 malam · suite",
+      "note_en": "Elective caesarean: 3 days 2 nights. RM500 booking fee at least 2 months before delivery.",
+      "note_ms": "Caesarean terancang: 3 hari 2 malam. Yuran tempahan RM500 sekurang-kurangnya 2 bulan sebelum bersalin.",
+      "source_url": "https://www.aureliushealth.com/negerisembilan/promotion/luxternity-maternity-package",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "KPJ Sabah Specialist Hospital, Kota Kinabalu",
+      "state": "Sabah",
+      "price_from_rm": 2850,
+      "from": false,
+      "csec_rm": 5650,
+      "stay_en": "2 days 1 night · single room",
+      "stay_ms": "2 hari 1 malam · bilik seorang",
+      "note_en": "Caesarean: 3 days 2 nights, single room. You need at least 3 check-ups with the hospital's O&G specialist.",
+      "note_ms": "Caesarean: 3 hari 2 malam, bilik seorang. Perlu sekurang-kurangnya 3 pemeriksaan dengan pakar O&G hospital.",
+      "source_url": "https://kpjhealth.com.my/normal-delivery-maternity-package",
+      "checked": "2026-11-26"
+    },
+    {
+      "name": "Jesselton Medical Centre, Kota Kinabalu",
+      "state": "Sabah",
+      "price_from_rm": 2969,
+      "from": false,
+      "csec_rm": 5950,
+      "stay_en": "2 days 1 night",
+      "stay_ms": "2 hari 1 malam",
+      "note_en": "Doctor's fee NOT included. After office hours or on public holidays add RM600 (normal) or RM1,800 (caesarean). For patients of the hospital's own O&G specialists (at least 3 visits). Caesarean: elective, 3 days 2 nights.",
+      "note_ms": "Yuran doktor TIDAK termasuk. Selepas waktu pejabat atau cuti umum tambah RM600 (normal) atau RM1,800 (caesarean). Untuk pesakit pakar O&G hospital ini (sekurang-kurangnya 3 lawatan). Caesarean: terancang, 3 hari 2 malam.",
+      "source_url": "https://jmc.my/assets/packages/files/Maternity_Package2025.pdf",
+      "checked": "2026-11-26",
+      "auto_check": false
     }
   ],
   "private_ask": [
@@ -439,6 +706,96 @@
       "name": "Columbia Asia Hospital Bintulu",
       "state": "Sarawak",
       "url": "https://www.columbiaasia.com/malaysia/hospitals/bintulu/"
+    },
+    {
+      "name": "KPJ Damansara Specialist Hospital",
+      "state": "Selangor",
+      "url": "https://kpjhealth.com.my/maternity-package-10"
+    },
+    {
+      "name": "Sunway Medical Centre, Sunway City",
+      "state": "Selangor",
+      "url": "https://www.sunwaymedical.com/promotion/maternity-promotion-2026"
+    },
+    {
+      "name": "Subang Jaya Medical Centre",
+      "state": "Selangor",
+      "url": "https://subangjayamedicalcentre.com/highlights/maternity-promotion"
+    },
+    {
+      "name": "Columbia Asia Hospital Petaling Jaya",
+      "state": "Selangor",
+      "url": "https://www.columbiaasia.com/malaysia/petaling-jaya/packages/maternity-package/"
+    },
+    {
+      "name": "Avisena Specialist Hospital 2, Shah Alam",
+      "state": "Selangor",
+      "url": "https://ash2.avisena.com.my/promotions/maternity-promotion/"
+    },
+    {
+      "name": "Thomson Hospital Kota Damansara",
+      "state": "Selangor",
+      "url": "https://www.thomsonhospitals.com/our-services/mother-baby-care/"
+    },
+    {
+      "name": "Sunway Medical Centre Velocity",
+      "state": "Kuala Lumpur",
+      "url": "https://www.sunwaymedicalvelocity.com.my/en/promotion/delivery-package-2026/"
+    },
+    {
+      "name": "Gleneagles Hospital Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "url": "https://gleneagles.com.my/kuala-lumpur/packages-promotions/delivery-promotion-normal-delivery-c-section"
+    },
+    {
+      "name": "Prince Court Medical Centre",
+      "state": "Kuala Lumpur",
+      "url": "https://princecourt.com/our-services/highlights-and-promotions/maternity-package"
+    },
+    {
+      "name": "ParkCity Medical Centre",
+      "state": "Kuala Lumpur",
+      "url": "https://parkcitymedicalcentre.com/promotion/maternity-packages"
+    },
+    {
+      "name": "Columbia Asia Hospital Cheras",
+      "state": "Kuala Lumpur",
+      "url": "https://www.columbiaasia.com/malaysia/cheras/packages/maternity-package/"
+    },
+    {
+      "name": "Island Hospital",
+      "state": "Pulau Pinang",
+      "url": "https://packages.islandhospital.com/product/normal-delivery/"
+    },
+    {
+      "name": "Penang Adventist Hospital",
+      "state": "Pulau Pinang",
+      "url": "https://pah.com.my/promotions/maternity-packages/"
+    },
+    {
+      "name": "Oriental Melaka Straits Medical Centre",
+      "state": "Melaka",
+      "url": "https://orientalmedical.com.my/packages/delivery-package/"
+    },
+    {
+      "name": "Mahkota Medical Centre",
+      "state": "Melaka",
+      "url": "https://www.mahkotamedical.com/"
+    },
+    {
+      "name": "KPJ Seremban Specialist Hospital",
+      "state": "Negeri Sembilan",
+      "url": "https://kpjhealth.com.my/seremban"
+    },
+    {
+      "name": "KPJ Perdana Specialist Hospital, Kota Bharu",
+      "state": "Kelantan",
+      "url": "https://kpjhealth.com.my/perdana"
+    },
+    {
+      "name": "KPJ Pahang Specialist Hospital, Kuantan",
+      "state": "Pahang",
+      "url": "https://kpjhealth.com.my/pahang"
     }
   ]
 }
