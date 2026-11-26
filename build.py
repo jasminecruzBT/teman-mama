@@ -56,7 +56,7 @@ NAV = [
     ("newborn.html", "Newborn essentials", "Barang bayi baru lahir", "🧺", "t-kit"),
     ("leave.html", "Maternity leave", "Cuti bersalin", "🗓️", "t-leave"),
     ("#kids", "Mum & kids", "Ibu & anak", "🧒", ""),
-    ("prices.html", "Milk & diaper prices", "Harga susu & lampin", "🍼", "t-prices"),
+    ("prices.html", "Prices: milk, diapers & essentials", "Harga barang keperluan", "🍼", "t-prices"),
     ("nursery.html", "Taska & tadika", "Taska & tadika", "🧸", "t-nursery"),
 ]
 
@@ -68,6 +68,8 @@ GROUPS = {
     "growing": ("🥛", "Growing-up milk (1 year +)", "Susu pertumbuhan (1 tahun +)"),
     "diaper": ("🧷", "Diapers", "Lampin pakai buang"),
     "food": ("🥣", "Baby food", "Makanan bayi"),
+    "essentials": ("🧴", "Mum & home essentials", "Barang keperluan ibu & rumah"),
+    "pantang": ("🍲", "Pantang cooking basics", "Bahan masakan pantang"),
 }
 
 
@@ -122,7 +124,9 @@ JS_STR = {
         "lvEarly": "Note: under the Employment Act, maternity leave can't start more than 30 days before the birth.",
         "grp": {"mum": "Milk for mums (pregnancy & breastfeeding)", "infant": "Infant formula (Step 1)",
                 "followon": "Follow-on formula (Step 2)", "growing": "Growing-up milk (1 year and above)",
-                "diaper": "Diapers", "food": "Baby food"},
+                "diaper": "Diapers", "food": "Baby food", "essentials": "Mum & home essentials (pads, laundry, children's Panadol)",
+                "pantang": "Pantang cooking basics (ginger, chicken, fish, eggs, rice)"},
+        "sortUnit": "Cheapest per unit", "sortTypical": "Cheapest typical price", "sortFrom": "Cheapest 'from' price", "sortAz": "Name A-Z", "sortShops": "Most shops",
         "cProduct": "Product", "cTypical": "Typical", "cFrom": "From", "cUnit": "Per unit",
         "cShops": "Shops", "per100": "/100 g", "perPiece": "/diaper (M)",
         "tape": "tape", "pants": "pants", "where": "Cheapest shops", "hide": "Hide",
@@ -140,7 +144,7 @@ JS_STR = {
         "pStartsLbl": "Pantang starts", "pInDays": "in {n} days", "pCheckLbl": "Postnatal check-up", "pCheckSmall": "around 6 weeks after birth", "pNext": "Next",
         "vaxBirth": "At birth", "vaxMonths": "{m} months",
         "milkUseBy": "Use by", "milkLabel": "Write on the bag: expressed {a}",
-        "nmFav": "Save to favourites", "nmNone": "No names match.",
+        "nmFav": "Save to favourites", "nmNone": "No names match.", "nmCount": "{n} names",
         "fWindow": "Most fertile days", "fWindowSmall": "best chance of pregnancy", "fOv": "Likely ovulation", "fNext": "Next period",
         "fDue": "If you conceive this cycle, due around {d}",
         "kickIdle": "Tap each time you feel a movement.", "kickRunning": "{m} min since your first tap", "kickDone": "10 movements in {m} min",
@@ -148,7 +152,7 @@ JS_STR = {
         "conAvg": "Last few: about {gap} apart, lasting {len}.", "conHint": "Tap Start when a contraction begins and Stop when it ends.",
         "nuOneMore": "Add one more taska or tadika to compare.", "nuYear": "first year", "nuMonth": "/month",
         "nuNotReg": "Not ticked as registered - ask to see the JKM / KPM certificate",
-        "nuOption": "Option {n}", "nuCheapest": "Lowest first-year cost",
+        "nuOption": "Option {n}", "nuCheapest": "Lowest first-year cost", "nuFree": "Free",
         "promoEnded": "(This promotion may have ended - check the current price.)", "moreInfo": "More info",
         "bfNote": "Breast milk is the best food for babies - the Ministry of Health and WHO recommend only breast milk for the first 6 months. If you use formula, ask your doctor or nurse which type suits your baby. We don't sell or advertise infant formula.",
         "online": "Check online prices (Google Shopping)",
@@ -203,7 +207,9 @@ JS_STR = {
         "lvEarly": "Nota: di bawah Akta Kerja, cuti bersalin tidak boleh bermula lebih awal daripada 30 hari sebelum bersalin.",
         "grp": {"mum": "Susu untuk ibu (hamil & menyusu)", "infant": "Rumusan bayi (Langkah 1)",
                 "followon": "Rumusan susulan (Langkah 2)", "growing": "Susu pertumbuhan (1 tahun ke atas)",
-                "diaper": "Lampin pakai buang", "food": "Makanan bayi"},
+                "diaper": "Lampin pakai buang", "food": "Makanan bayi", "essentials": "Barang keperluan ibu & rumah (tuala wanita, dobi, Panadol kanak-kanak)",
+                "pantang": "Bahan masakan pantang (halia, ayam, ikan, telur, beras)"},
+        "sortUnit": "Seunit paling murah", "sortTypical": "Harga biasa paling murah", "sortFrom": "Harga 'dari' paling murah", "sortAz": "Nama A-Z", "sortShops": "Paling banyak kedai",
         "cProduct": "Produk", "cTypical": "Biasa", "cFrom": "Dari", "cUnit": "Seunit",
         "cShops": "Kedai", "per100": "/100 g", "perPiece": "/helai (M)",
         "tape": "pita", "pants": "seluar", "where": "Kedai termurah", "hide": "Tutup",
@@ -221,7 +227,7 @@ JS_STR = {
         "pStartsLbl": "Pantang bermula", "pInDays": "{n} hari lagi", "pCheckLbl": "Pemeriksaan postnatal", "pCheckSmall": "lebih kurang 6 minggu selepas bersalin", "pNext": "Seterusnya",
         "vaxBirth": "Semasa lahir", "vaxMonths": "{m} bulan",
         "milkUseBy": "Guna sebelum", "milkLabel": "Tulis pada beg: diperah {a}",
-        "nmFav": "Simpan sebagai kegemaran", "nmNone": "Tiada nama sepadan.",
+        "nmFav": "Simpan sebagai kegemaran", "nmNone": "Tiada nama sepadan.", "nmCount": "{n} nama",
         "fWindow": "Hari paling subur", "fWindowSmall": "peluang hamil paling tinggi", "fOv": "Ovulasi dijangka", "fNext": "Haid seterusnya",
         "fDue": "Jika hamil kitaran ini, jangkaan lahir sekitar {d}",
         "kickIdle": "Tekan setiap kali anda rasa bayi bergerak.", "kickRunning": "{m} minit sejak tekanan pertama", "kickDone": "10 gerakan dalam {m} minit",
@@ -229,7 +235,7 @@ JS_STR = {
         "conAvg": "Beberapa terakhir: jarak lebih kurang {gap}, tempoh {len}.", "conHint": "Tekan Mula apabila kontraksi bermula dan Berhenti apabila tamat.",
         "nuOneMore": "Tambah satu lagi taska atau tadika untuk dibandingkan.", "nuYear": "tahun pertama", "nuMonth": "/bulan",
         "nuNotReg": "Tidak ditanda berdaftar - minta untuk melihat sijil JKM / KPM",
-        "nuOption": "Pilihan {n}", "nuCheapest": "Kos tahun pertama paling rendah",
+        "nuOption": "Pilihan {n}", "nuCheapest": "Kos tahun pertama paling rendah", "nuFree": "Percuma",
         "promoEnded": "(Promosi ini mungkin sudah tamat - semak harga terkini.)", "moreInfo": "Maklumat lanjut",
         "bfNote": "Susu ibu ialah makanan terbaik untuk bayi - Kementerian Kesihatan dan WHO mengesyorkan susu ibu sahaja untuk 6 bulan pertama. Jika anda menggunakan susu formula, tanya doktor atau jururawat jenis yang sesuai. Kami tidak menjual atau mengiklankan susu formula bayi.",
         "online": "Semak harga dalam talian (Google Shopping)",
@@ -270,7 +276,8 @@ BOT_KW = {
     "leave": ["maternity leave", "cuti bersalin", "paternity", "paterniti", "cuti", "98 days", "98 hari", "=leave",
               "employer", "majikan", "=hr"],
     "prices": ["milk", "susu", "formula", "diaper", "lampin", "pampers", "drypers", "huggies", "petpet", "mamypoko",
-               "price", "harga", "murah", "cheap", "cerelac", "kedai"],
+               "price", "harga", "murah", "cheap", "cerelac", "kedai", "tuala wanita", "=pad", "panadol", "detergen", "sabun",
+               "halia", "ayam", "telur", "ikan haruan", "barang dapur", "barang keperluan", "groceries"],
     "nursery": ["taska", "tadika", "nursery", "kindergarten", "childcare", "child care", "daycare", "day care",
                 "prasekolah", "preschool", "tabika", "kemas", "babysit"],
     "breastfeed": ["breastfeed", "breast feed", "breastmilk", "breast milk", "susu ibu", "menyusu", "penyusuan",
@@ -526,7 +533,7 @@ def write_page(lang, path, title, desc, body, data=None):
             items.append(f'<li class="menu-group"><span aria-hidden="true">{ico}</span> {esc(x(en, ms))}</li>')
             continue
         active = href == path or (href == "weeks/index.html" and path.startswith("weeks/"))
-        label = x(en, ms) if href != "prices.html" else x("Prices", "Harga")
+        label = x(en, ms) if href != "prices.html" else x("Prices", "Harga barang keperluan")
         if active and href != "index.html":
             current = label
         cur = ' aria-current="page"' if active else ""
@@ -721,6 +728,10 @@ def p_names(lang):
     <button type="button" data-f="f" aria-pressed="false">{x("Girls", "Perempuan")}</button>
     <button type="button" data-f="fav" aria-pressed="false">♥ {x("Saved", "Disimpan")}</button>
   </div>
+  <div class="az-bar" id="nm-az" role="group" aria-label="{x("First letter", "Huruf pertama")}">
+    <button type="button" data-l="all" aria-pressed="true">{x("A-Z", "A-Z")}</button>{"".join(f'<button type="button" data-l="{l}" aria-pressed="false">{l}</button>' for l in sorted({n[0][0].upper() for n in extra.NAMES}))}
+  </div>
+  <p class="hint" id="nm-count" aria-live="polite"></p>
   <ul class="nm-list" id="nm-list"></ul>
 </section>
 {ad("bottom", x)}
@@ -1169,7 +1180,7 @@ def p_home(lang):
         ("confinement-cost.html", "💰", "Confinement cost", "Kos berpantang", "Compare centres & nannies", "Banding pusat & pengasuh", "t-cost"),
         ("hospital-bag.html", "👜", "Hospital bag", "Beg hospital", "What to pack", "Apa yang perlu dibawa", "t-bag"),
         ("leave.html", "🗓️", "Maternity leave", "Cuti bersalin", "98 + 7 days, worked out", "98 + 7 hari, dikira", "t-leave"),
-        ("prices.html", "🍼", "Milk & diaper prices", "Harga susu & lampin", "Cheapest shops near you", "Kedai termurah berhampiran", "t-prices"),
+        ("prices.html", "🍼", "Milk, diapers & essentials", "Harga barang keperluan", "Cheapest shops near you", "Kedai termurah berhampiran", "t-prices"),
         ("nursery.html", "🧸", "Taska & tadika", "Taska & tadika", "Childcare near you", "Penjagaan anak berhampiran", "t-nursery"),
     ]
     desc = {h: (de, dm) for h, i, te, tm, de, dm, c in tools}
@@ -1651,7 +1662,7 @@ def p_leave(lang):
 def p_prices(lang):
     x = tr(lang)
     body = f"""
-{page_head(x, "🍼", "t-prices", x("Prices", "Harga"), x("Milk & diaper prices", "Harga susu & lampin"), lead=x("Official shop prices near you.", "Harga kedai rasmi berhampiran anda."), lead_id="pr-updated", extra=tip(x("Shop prices from the government's price survey: PriceCatcher by KPDN, published on data.gov.my. Typical = the middle price across shops. From = 1 in 10 shops charge this or less. Prices change often - check in store.",
+{page_head(x, "🍼", "t-prices", x("Prices", "Harga"), x("Milk, diapers & essentials", "Harga susu, lampin & barang keperluan"), lead=x("Official shop prices near you.", "Harga kedai rasmi berhampiran anda."), lead_id="pr-updated", extra=tip(x("Shop prices from the government's price survey: PriceCatcher by KPDN, published on data.gov.my. Typical = the middle price across shops. From = 1 in 10 shops charge this or less. Prices change often - check in store.",
                                                                          "Harga kedai daripada tinjauan harga kerajaan: PriceCatcher oleh KPDN, diterbitkan di data.gov.my. Biasa = harga pertengahan di semua kedai. Dari = 1 daripada 10 kedai mengenakan harga ini atau lebih rendah. Harga sering berubah - semak di kedai."), x))}
 <section class="filters">
   <form class="search-row" id="pr-search" role="search">
@@ -1666,14 +1677,22 @@ def p_prices(lang):
     <select id="pr-state" aria-label="{x("State", "Negeri")}"></select>
     <select id="pr-district" aria-label="{x("District", "Daerah")}" disabled></select>
   </div>
+  <label class="sort-row"><span>⇅ {x("Sort by", "Susun ikut")}</span>
+    <select id="pr-sort">
+      <option value="unit">{x("Cheapest per unit", "Seunit paling murah")}</option>
+      <option value="typical">{x("Cheapest typical price", "Harga biasa paling murah")}</option>
+      <option value="from">{x("Cheapest 'from' price", "Harga 'dari' paling murah")}</option>
+      <option value="az">{x("Name A-Z", "Nama A-Z")}</option>
+      <option value="shops">{x("Most shops", "Paling banyak kedai")}</option>
+    </select></label>
 </section>
 <div id="pr-tables" aria-live="polite"><p class="muted">{x("Loading prices...", "Memuatkan harga...")}</p></div>
 {ad("bottom", x)}
 """
-    write_page(lang, "prices.html", x("Baby milk & diaper prices in Malaysia", "Harga susu bayi & lampin di Malaysia"),
-               x("Compare baby milk, formula and diaper prices by state and district in Malaysia, from the government's PriceCatcher survey. Find the cheapest shops near you.",
-                 "Banding harga susu bayi, susu formula dan lampin mengikut negeri dan daerah, daripada tinjauan PriceCatcher kerajaan. Cari kedai paling murah berhampiran anda."),
-               body)
+    write_page(lang, "prices.html", x("Baby milk, diaper & essentials prices in Malaysia", "Harga susu bayi, lampin & barang keperluan di Malaysia"),
+               x("Compare baby milk, formula, diaper, maternity pad, laundry and pantang food prices by state and district in Malaysia, from the government's PriceCatcher survey. Find the cheapest shops near you.",
+                 "Banding harga susu bayi, susu formula, lampin, tuala wanita, barang dobi dan bahan masakan pantang mengikut negeri dan daerah, daripada tinjauan PriceCatcher kerajaan. Cari kedai paling murah berhampiran anda."),
+               body, {"grpOrder": list(GROUPS)})
 
 
 def p_nursery(lang):
@@ -1694,26 +1713,52 @@ def p_nursery(lang):
     nu_extras = [("reg", "Registered (JKM / KPM)", "Berdaftar (JKM / KPM)"), ("cctv", "CCTV for parents", "CCTV untuk ibu bapa"),
                  ("meals", "Meals included", "Makanan termasuk"), ("halal", "Halal food", "Makanan halal"),
                  ("near", "Near home / work", "Dekat rumah / tempat kerja"), ("transport", "Transport", "Pengangkutan")]
+    with open(os.path.join(HERE, "site-data", "nursery.json"), encoding="utf-8") as f:
+        NU = json.load(f)["options"]
+    def nu_fee(o):
+        return x(o["fee_en"], o["fee_ms"])
+    nu_opts = ('<optgroup label="' + esc(x("Government (fees published)", "Kerajaan (yuran diterbitkan)")) + '">'
+               + "".join(f'<option value="{esc(o["id"])}">{esc(o["name"])} · {esc(nu_fee(o))}</option>' for o in NU) + "</optgroup>")
     nu_cards = []
     for i in range(1, 5):
         chips = "".join(f'<label class="chip"><input type="checkbox" name="inc" value="{k}"><span>{esc(x(en, ms))}</span></label>'
                         for k, en, ms in nu_extras)
         nu_cards.append(f"""<div class="quote" data-q="{i}"{" hidden" if i > 2 else ""}>
   <div class="q-head"><span class="q-num">{i}</span>
-    <input type="text" name="name" maxlength="60" autocomplete="off" placeholder="{x("Name of taska / tadika", "Nama taska / tadika")}" aria-label="{x("Name", "Nama")} {i}"></div>
+    <select name="preset" aria-label="{x("Choose a taska or tadika", "Pilih taska atau tadika")} {i}">
+      <option value="">{x("Choose, or enter your own...", "Pilih, atau isi sendiri...")}</option>{nu_opts}</select></div>
+  <p class="q-sum" hidden></p>
+  <details class="q-edit"><summary>{x("Edit / enter your own", "Ubah / isi sendiri")}</summary>
   <div class="q-fields">
+    <label class="field q-name">{x("Name", "Nama")}<input type="text" name="name" maxlength="60" autocomplete="off" placeholder="{x("Name of taska / tadika", "Nama taska / tadika")}"></label>
     <label class="field">{x("Monthly fee (RM)", "Yuran bulanan (RM)")}<input type="number" name="fee" min="0" inputmode="decimal"></label>
     <label class="field">{x("Registration + deposit (RM)", "Pendaftaran + deposit (RM)")}<input type="number" name="reg_fee" min="0" inputmode="decimal"></label>
     <label class="field">{x("Opens", "Buka")}<input type="time" name="open"></label>
     <label class="field">{x("Closes", "Tutup")}<input type="time" name="close"></label>
     <label class="field">{x("Children per carer", "Kanak-kanak/pengasuh")}<input type="number" name="ratio" min="1" max="30" inputmode="numeric"></label>
   </div>
-  <p class="q-sum" hidden></p>
   <div class="chips">{chips}</div>
+  </details>
 </div>""")
-    nu_compare = f"""<section class="card" id="nu-compare">
-  <h2>{x("Compare taska & tadika", "Banding taska & tadika")} {tip(x("Visit a few places, then type in what they told you. We rank them by first-year cost (12 months of fees plus registration and deposit). Saved only on this phone.",
-                                                                   "Lawat beberapa tempat, kemudian masukkan apa yang mereka beritahu. Kami susun mengikut kos tahun pertama (12 bulan yuran serta pendaftaran dan deposit). Disimpan dalam telefon ini sahaja."), x)}</h2>
+    nu_dir = []
+    for o in NU:
+        rows = (f'<div>{x("Monthly", "Sebulan")}<strong>{esc(nu_fee(o))}</strong></div>'
+                f'<div>{x("Registration", "Pendaftaran")}<strong>{x("Free", "Percuma") if o["reg"] == 0 else (_rm(o["reg"]) if o["reg"] else x("Ask", "Tanya"))}</strong></div>'
+                f'<div>{x("Ages", "Umur")}<strong>{esc(o["ages"])} {x("years", "tahun")}</strong></div>')
+        body_ = (f'<div class="pc-rows">{rows}</div><p>{esc(x(o["note_en"], o["note_ms"]))}</p>'
+                 f'<p class="pc-actions"><button type="button" class="btn" data-nu-add="{esc(o["id"])}">+ {x("Add to comparison", "Tambah ke perbandingan")}</button>'
+                 f'<a class="btn ghost" href="{esc(o["source_url"])}" target="_blank" rel="noopener">{x("Official page", "Laman rasmi")} ↗</a>'
+                 + (f'<a class="btn ghost" href="{esc(o["apply_url"])}" target="_blank" rel="noopener">{x("Apply", "Mohon")} ↗</a>' if o.get("apply_url") else "")
+                 + f'<span class="small muted">{x("checked", "disemak")} {_dmy(o["checked"], lang)}</span></p>')
+        kind = x("Government tadika", "Tadika kerajaan") if o["kind"] == "tadika" else x("Government taska", "Taska kerajaan")
+        nu_dir.append(pcard(x, kind, o["icon"], o["name"], x("All over Malaysia", "Seluruh Malaysia"),
+                            f'{x("Ages", "Umur")} {esc(o["ages"])}', esc(nu_fee(o)) + (f'<small>{x("a month", "sebulan")}</small>' if o["fee"] else ""), body_))
+    nu_compare = f"""<p class="dp-intro">{x("Government taska and tadika publish their fees, so you can add them straight to your comparison. Private ones don't - visit them, then enter their quote.",
+                                         "Taska dan tadika kerajaan menyiarkan yuran mereka, jadi anda boleh terus menambahnya ke perbandingan. Yang swasta tidak - lawat dahulu, kemudian masukkan sebut harga mereka.")}</p>
+<div class="pgrid">{"".join(nu_dir)}</div>
+<section class="card" id="nu-compare">
+  <h2>{x("Compare taska & tadika", "Banding taska & tadika")} {tip(x("Pick a government option or enter what a centre told you. We rank them by first-year cost (12 months of fees plus registration and deposit). Saved only on this phone.",
+                                                                   "Pilih pilihan kerajaan atau masukkan apa yang pusat beritahu anda. Kami susun mengikut kos tahun pertama (12 bulan yuran serta pendaftaran dan deposit). Disimpan dalam telefon ini sahaja."), x)}</h2>
   <div class="quotes">{"".join(nu_cards)}</div>
   <div class="q-actions">
     <button type="button" class="link-btn" id="nu-add">+ {x("Add another", "Tambah lagi")}</button>
@@ -1761,7 +1806,7 @@ def p_nursery(lang):
 {page_head(x, "🧸", "t-nursery", x("After the birth", "Selepas bersalin"), x("Taska & tadika", "Taska & tadika"),
              x("Find, check and compare childcare near you.", "Cari, semak dan banding penjagaan anak berhampiran anda."))}
 {tabbar(x, "nu", [("find", "📍", "Find near you", "Cari berhampiran", "Google Maps", "taska & tadika", "taska & tadika", False),
-                    ("compare", "⚖️", "Compare", "Banding", x("First-year cost", "Kos tahun pertama"), "fees + deposit", "yuran + deposit", False),
+                    ("compare", "⚖️", "Compare", "Banding", x("Free – RM25 a month", "Percuma – RM25 sebulan"), "government options + your quotes", "pilihan kerajaan + sebut harga anda", False),
                     ("guide", "📚", "Types & checks", "Jenis & semakan", x("Taska · Tadika", "Taska · Tadika"), "what to ask", "apa perlu ditanya", False)],
                 prompt=x("Tap what you need:", "Pilih apa yang anda perlukan:"))}
 <div class="dpanel" role="tabpanel" id="tp-nu-find" aria-labelledby="tb-nu-find" data-group="nu" data-tab="find">
@@ -1805,7 +1850,7 @@ def p_nursery(lang):
     write_page(lang, "nursery.html", x("Find a taska or tadika near you", "Cari taska atau tadika berhampiran"),
                x("Find a taska (childcare centre) or tadika (kindergarten) near you in Malaysia, and the questions to ask before you choose.",
                  "Cari taska atau tadika berhampiran anda, dan soalan yang perlu ditanya sebelum memilih."),
-               body)
+               body, {"nu": NU})
 
 
 def p_privacy(lang):

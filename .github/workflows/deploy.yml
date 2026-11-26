@@ -1,6 +1,6 @@
 name: Build and publish
 # On every push: build the site and publish it to GitHub Pages.
-# Every Monday (and on manual run): first fetch the newest government price survey and commit it.
+# Every Monday (and on manual runs, or a push whose message contains [prices]): first fetch the newest government price survey and commit it.
 on:
   push:
     branches: [main]
@@ -27,7 +27,7 @@ jobs:
           python-version: "3.12"
 
       - name: Refresh prices (Mondays / manual runs only)
-        if: github.event_name != 'push'
+        if: github.event_name != 'push' || contains(github.event.head_commit.message, '[prices]')
         run: |
           pip install pandas pyarrow
           mkdir -p /tmp/pc

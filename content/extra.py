@@ -152,6 +152,73 @@ INDIAN_NAMES = [
     ("Aishwarya", "f", "prosperity", "kemakmuran"), ("Vani", "f", "speech; Goddess Saraswati", "pertuturan; Dewi Saraswati"),
 ]
 
+# More names (added 26 Nov 2026). Common interpretations, as above.
+MALAY_NAMES += [
+    ("Abdullah", "m", "servant of God", "hamba Allah"), ("Afif", "m", "chaste, modest", "suci, menjaga diri"),
+    ("Aiman", "m", "blessed, fortunate", "diberkati, bertuah"), ("Akmal", "m", "most perfect", "paling sempurna"),
+    ("Ammar", "m", "long-lived; one who builds", "panjang umur; yang memakmurkan"), ("Anas", "m", "friendly, affectionate", "mesra, ramah"),
+    ("Asyraf", "m", "most noble", "paling mulia"), ("Azim", "m", "great, mighty", "agung, hebat"),
+    ("Badrul", "m", "full moon", "bulan purnama"), ("Bayu", "m", "breeze", "angin lembut"),
+    ("Bilal", "m", "the Prophet's muezzin", "muazzin Rasulullah"), ("Fahim", "m", "understanding, intelligent", "memahami, cerdik"),
+    ("Faiz", "m", "successful, victorious", "berjaya, menang"), ("Farhan", "m", "happy, joyful", "gembira"),
+    ("Firdaus", "m", "the highest garden of Paradise", "syurga Firdaus"), ("Ghazi", "m", "warrior", "pahlawan"),
+    ("Hariz", "m", "guardian, protector", "penjaga, pelindung"), ("Haziq", "m", "clever, skilful", "cerdik, mahir"),
+    ("Ilyas", "m", "name of the prophet Ilyas", "nama Nabi Ilyas"), ("Irsyad", "m", "guidance", "petunjuk"),
+    ("Izzat", "m", "honour, dignity", "kemuliaan, maruah"), ("Jibril", "m", "name of the archangel Jibril", "nama malaikat Jibril"),
+    ("Kamal", "m", "perfection", "kesempurnaan"), ("Luth", "m", "name of the prophet Luth", "nama Nabi Luth"),
+    ("Mustafa", "m", "the chosen one", "yang terpilih"), ("Nabil", "m", "noble", "mulia"),
+    ("Putra", "m", "prince", "putera"), ("Rafiq", "m", "kind companion", "teman yang baik hati"),
+    ("Rasyid", "m", "rightly guided", "yang mendapat petunjuk"), ("Rizqi", "m", "sustenance, blessing", "rezeki"),
+    ("Saif", "m", "sword", "pedang"), ("Taufiq", "m", "success granted by God", "taufik, kejayaan"),
+    ("Ukasyah", "m", "name of a Companion of the Prophet", "nama sahabat Nabi"), ("Wafiq", "m", "successful", "berjaya"),
+    ("Wira", "m", "hero", "wira, pahlawan"), ("Yahya", "m", "name of the prophet Yahya", "nama Nabi Yahya"),
+    ("Zaim", "m", "leader", "pemimpin"),
+    ("Ain", "f", "eye; spring of water", "mata; mata air"), ("Aqilah", "f", "intelligent, wise", "bijak, berakal"),
+    ("Balqis", "f", "the Queen of Sheba", "Ratu Saba'"), ("Bunga", "f", "flower", "bunga"),
+    ("Cahaya", "f", "light", "cahaya"), ("Embun", "f", "dew", "embun"),
+    ("Farah", "f", "joy", "kegembiraan"), ("Hannah", "f", "grace", "rahmat"),
+    ("Husna", "f", "the best, most beautiful", "yang terbaik, terindah"), ("Intan", "f", "diamond", "intan"),
+    ("Izzah", "f", "honour, dignity", "kemuliaan, maruah"), ("Jannah", "f", "paradise", "syurga"),
+    ("Kasih", "f", "love", "kasih sayang"), ("Khairunnisa", "f", "the best of women", "sebaik-baik wanita"),
+    ("Lutfiah", "f", "kind, gentle", "lemah lembut"), ("Madinah", "f", "the city of Madinah", "kota Madinah"),
+    ("Mutiara", "f", "pearl", "mutiara"), ("Nabila", "f", "noble", "mulia"),
+    ("Nadhirah", "f", "radiant, flourishing", "berseri, segar"), ("Najwa", "f", "a close, private talk", "bisikan, bicara rahsia"),
+    ("Nayla", "f", "one who achieves", "yang memperoleh"), ("Nisa", "f", "women", "wanita"),
+    ("Puteri", "f", "princess", "puteri"), ("Qaisara", "f", "empress", "maharani"),
+    ("Rahmah", "f", "mercy", "rahmat"), ("Ruqayyah", "f", "daughter of the Prophet", "puteri Rasulullah"),
+    ("Sakinah", "f", "calm, tranquillity", "ketenangan"), ("Salsabila", "f", "a spring in Paradise", "mata air di syurga"),
+    ("Seri", "f", "radiance", "seri, berseri"), ("Sumayyah", "f", "the first martyr in Islam", "syahidah pertama dalam Islam"),
+    ("Suria", "f", "sun", "matahari"), ("Yusra", "f", "ease", "kemudahan"),
+    ("Zainab", "f", "daughter of the Prophet", "puteri Rasulullah"), ("Zara", "f", "princess; radiant", "puteri; berseri"),
+]
+CHINESE_NAMES += [
+    ("Zi Xuan 子轩", "m", "lofty and dignified", "luhur dan bermaruah"), ("Hao Yu 浩宇", "m", "vast universe", "alam semesta yang luas"),
+    ("Wei Ming 伟明", "m", "great and bright", "hebat dan cerah"), ("Jun Kai 俊凯", "m", "handsome and triumphant", "kacak dan berjaya"),
+    ("Zhi Xuan 志轩", "m", "ambitious and dignified", "bercita-cita tinggi dan bermaruah"), ("Jia Jun 家俊", "m", "the handsome one of the family", "yang kacak dalam keluarga"),
+    ("Rui Xiang 瑞祥", "m", "auspicious and lucky", "bertuah dan membawa rezeki"), ("Jing Hao 景浩", "m", "bright and vast", "cerah dan luas"),
+    ("Yi Chen 奕辰", "m", "radiant like the stars", "bersinar seperti bintang"), ("Ze Yu 泽宇", "m", "a blessing to the world", "rahmat kepada dunia"),
+    ("Xin Yue 欣悦", "f", "joyful and happy", "gembira dan bahagia"), ("Yu Tong 雨桐", "f", "rain on the paulownia tree; graceful", "hujan di pohon paulownia; anggun"),
+    ("Si Qi 思琪", "f", "thoughtful and precious like jade", "bijak berfikir dan berharga seperti jed"), ("Ke Xin 可欣", "f", "lovely and joyful", "comel dan gembira"),
+    ("Yi Xuan 怡萱", "f", "happy and carefree", "bahagia dan tenang"), ("Hui Xin 慧心", "f", "a wise heart", "hati yang bijak"),
+    ("Wen Qi 雯琪", "f", "colourful clouds and fine jade", "awan berwarna dan jed halus"), ("Le Yi 乐怡", "f", "happy and joyful", "riang dan gembira"),
+    ("Jia Yi 佳怡", "f", "good and joyful", "baik dan gembira"), ("Mei Xin 美欣", "f", "beautiful and joyful", "cantik dan gembira"),
+    ("Shi Han 诗涵", "f", "poetic and refined", "puitis dan halus budi"), ("Xue Er 雪儿", "f", "snow; pure", "salji; suci"),
+]
+INDIAN_NAMES += [
+    ("Aadhav", "m", "the sun", "matahari"), ("Dinesh", "m", "lord of the day; the sun", "tuan siang; matahari"),
+    ("Harish", "m", "Lord Vishnu", "Dewa Vishnu"), ("Kishore", "m", "young boy", "anak muda"),
+    ("Krishna", "m", "the Hindu god Krishna", "Dewa Krishna"), ("Mahesh", "m", "great lord; Lord Shiva", "tuan agung; Dewa Shiva"),
+    ("Pranav", "m", "the sacred syllable Om", "suku kata suci Om"), ("Rohan", "m", "rising, ascending", "meningkat, naik"),
+    ("Santhosh", "m", "happiness", "kebahagiaan"), ("Surya", "m", "the sun", "matahari"),
+    ("Varun", "m", "Hindu god of water and sky", "dewa air dan langit"), ("Yuvan", "m", "young", "muda"),
+    ("Anitha", "f", "grace", "rahmat, keanggunan"), ("Bhavani", "f", "a name of Goddess Parvati", "nama Dewi Parvati"),
+    ("Devi", "f", "goddess", "dewi"), ("Gayathri", "f", "a sacred hymn", "himne suci"),
+    ("Haritha", "f", "green; nature", "hijau; alam"), ("Janani", "f", "mother", "ibu"),
+    ("Keerthana", "f", "song of praise", "lagu pujian"), ("Nandhini", "f", "daughter; one who gives joy", "anak perempuan; pembawa kegembiraan"),
+    ("Revathi", "f", "a star", "sebuah bintang"), ("Shalini", "f", "modest", "sopan, rendah diri"),
+    ("Tharani", "f", "the earth", "bumi"), ("Yamini", "f", "night", "malam"),
+]
+
 NAMES = ([n + ("malay",) for n in MALAY_NAMES] + [n + ("chinese",) for n in CHINESE_NAMES]
          + [n + ("indian",) for n in INDIAN_NAMES])
 

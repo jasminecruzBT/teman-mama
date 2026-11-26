@@ -1,0 +1,38 @@
+{
+  "_note": "Taska/tadika options whose fees are published by the operator itself (government agencies). Private centres don't publish fees online - parents type their own quotes. Checked on the official pages on the 'checked' date.",
+  "options": [
+    {
+      "id": "tabika-perpaduan", "kind": "tadika", "icon": "🏫", "name": "Tabika Perpaduan", "ages": "4-6",
+      "fee": 0, "reg": 0, "fee_en": "Free", "fee_ms": "Percuma", "inc": {"reg": true},
+      "note_en": "Free, with no fees, says the Ministry of National Unity. 1,781 Tabika Perpaduan around Malaysia in 2026. Priority for children aged 5-6 who live, or whose parents work, within 10 km. Uniform and insurance follow JPNIN's rules - ask your Tabika.",
+      "note_ms": "Percuma tanpa sebarang bayaran, kata Kementerian Perpaduan Negara. 1,781 Tabika Perpaduan di seluruh Malaysia pada 2026. Keutamaan kepada kanak-kanak berumur 5-6 tahun yang tinggal, atau ibu bapa bekerja, dalam lingkungan 10 km. Uniform dan insurans ikut peraturan JPNIN - tanya Tabika anda.",
+      "source_url": "https://www.perpaduan.gov.my/index.php/en/kalendar-aktiviti-program/general/program-santuni-murid-tabika-perpaduan-kembali-ke-tabika-perpaduan-sesi-tahun-2026",
+      "apply_url": "https://www.malaysia.gov.my/my/digital-services/pendaftaran-kanak-kanak-tabika-perpaduan",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "taska-perpaduan", "kind": "taska", "icon": "🧸", "name": "Taska Perpaduan", "ages": "2-4",
+      "fee": 0, "reg": 0, "fee_en": "Free", "fee_ms": "Percuma", "inc": {"reg": true},
+      "note_en": "Free, with no fees, says the Ministry of National Unity. Only 41 Taska Perpaduan around Malaysia in 2026, so places are limited - ask your nearest Jabatan Perpaduan office.",
+      "note_ms": "Percuma tanpa sebarang bayaran, kata Kementerian Perpaduan Negara. Hanya 41 Taska Perpaduan di seluruh Malaysia pada 2026, jadi tempat terhad - tanya pejabat Jabatan Perpaduan terdekat.",
+      "source_url": "https://www.perpaduan.gov.my/index.php/en/kalendar-aktiviti-program/general/program-santuni-murid-tabika-perpaduan-kembali-ke-tabika-perpaduan-sesi-tahun-2026",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "tabika-kemas", "kind": "tadika", "icon": "🏫", "name": "Tabika KEMAS", "ages": "4-6",
+      "fee": 25, "reg": 10, "fee_en": "RM10-25", "fee_ms": "RM10-25", "inc": {"reg": true},
+      "note_en": "RM10 registration (covers your child's insurance) plus a parents' contribution of RM10-25, set by each Tabika's committee. In the comparison we count RM25 a month to be safe - ask your Tabika how often it's paid. Up to 30 children; priority for 6-year-olds.",
+      "note_ms": "Yuran pendaftaran RM10 (untuk insurans anak) serta sumbangan ibu bapa RM10-25 yang ditetapkan oleh jawatankuasa setiap Tabika. Dalam perbandingan kami kira RM25 sebulan supaya selamat - tanya Tabika berapa kerap ia dibayar. Maksimum 30 kanak-kanak; keutamaan kepada umur 6 tahun.",
+      "source_url": "https://www.kemas.gov.my/soalan-lazim/",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "prasekolah-kpm", "kind": "tadika", "icon": "🎒", "name": "Prasekolah KPM", "ages": "5-6",
+      "fee": null, "reg": null, "fee_en": "Ask the school", "fee_ms": "Tanya sekolah", "inc": {"reg": true, "meals": true},
+      "note_en": "Preschool classes in government primary schools, with healthy meals. Priority for low-income (B40) families and rural areas. Apply online through KPM's e-Prasekolah system.",
+      "note_ms": "Kelas prasekolah di sekolah rendah kerajaan, dengan makanan sihat. Keutamaan kepada keluarga berpendapatan rendah (B40) dan kawasan luar bandar. Mohon dalam talian melalui sistem e-Prasekolah KPM.",
+      "source_url": "https://www.malaysia.gov.my/my/topics/pra-sekolah-kpm",
+      "checked": "2026-11-26"
+    }
+  ]
+}

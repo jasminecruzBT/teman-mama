@@ -292,9 +292,29 @@
   // ---------- taska / tadika compare: ranked by first-year cost (12 x monthly fee + registration/deposit)
   function nurseryCompare() {
     var box = $("#nu-compare"); if (!box) return;
-    var cards = $$(".quote", box), out = $("#nu-result"), addBtn = $("#nu-add"), F = ["name", "fee", "reg_fee", "open", "close", "ratio"];
-    var saved = get("tm_nursery", []);
+    var cards = $$(".quote", box), out = $("#nu-result"), addBtn = $("#nu-add"), F = ["preset", "name", "fee", "reg_fee", "open", "close", "ratio"];
+    var saved = get("tm_nursery", []), P = {};
+    (TM.nu || []).forEach(function (o) { P[o.id] = o; });
     function val(c, n) { return c.querySelector('[name="' + n + '"]'); }
+    function applyPreset(c, o) {
+      val(c, "name").value = o.name;
+      val(c, "fee").value = o.fee === null ? "" : o.fee;
+      val(c, "reg_fee").value = o.reg === null ? "" : o.reg;
+      $$('input[name="inc"]', c).forEach(function (cb) { cb.checked = !!(o.inc || {})[cb.value]; });
+    }
+    cards.forEach(function (c) {
+      val(c, "preset").addEventListener("change", function () { var o = P[this.value]; if (o) applyPreset(c, o); render(); });
+    });
+    // "+ Add to comparison" on a government taska/tadika card
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-nu-add]"); if (!b) return;
+      var o = P[b.getAttribute("data-nu-add")]; if (!o) return;
+      var c = cards.filter(function (q) { return !q.hidden && !val(q, "name").value && !val(q, "fee").value; })[0] ||
+              cards.filter(function (q) { return q.hidden; })[0] || cards[cards.length - 1];
+      c.hidden = false; val(c, "preset").value = o.id; applyPreset(c, o); render();
+      b.textContent = S.qAdded;
+      box.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     cards.forEach(function (c, i) {
       var q = saved[i] || {};
       F.forEach(function (k) { if (q[k]) val(c, k).value = q[k]; });
@@ -313,10 +333,12 @@
       qs.forEach(function (q, i) {
         var fee = parseFloat(q.fee) || 0, reg = parseFloat(q.reg_fee) || 0, sum = $(".q-sum", cards[i]);
         var hours = q.open && q.close ? q.open + " - " + q.close : "";
-        if (fee > 0) {
+        var hasFee = q.fee !== "" && !isNaN(parseFloat(q.fee));
+        if (hasFee && (fee > 0 || q.name)) {
           var year = fee * 12 + reg;
-          sum.innerHTML = "<strong>" + rm(fee).replace(".00", "") + "</strong>" + esc(S.nuMonth) + " · " + esc(S.nuYear) + " <strong>" +
-            rm(year).replace(".00", "") + "</strong>" + (hours ? " · " + esc(hours) : "");
+          sum.innerHTML = (year === 0 ? "<strong>" + esc(S.nuFree) + "</strong>" :
+            "<strong>" + rm(fee).replace(".00", "") + "</strong>" + esc(S.nuMonth) + " · " + esc(S.nuYear) + " <strong>" + rm(year).replace(".00", "") + "</strong>") +
+            (hours ? " · " + esc(hours) : "");
           sum.hidden = false;
           rows.push({ name: q.name || fill(S.nuOption, { n: i + 1 }), year: year, fee: fee, hours: hours, reg: q.inc.indexOf("reg") >= 0, ratio: q.ratio });
         } else sum.hidden = true;
@@ -328,7 +350,7 @@
           (k === 0 ? ' <span class="badge">' + esc(S.nuCheapest) + "</span>" : "") +
           (r.hours ? '<span class="flag muted-flag">' + esc(r.hours) + "</span>" : "") +
           (!r.reg ? '<span class="flag">⚠ ' + esc(S.nuNotReg) + "</span>" : "") +
-          '</span><span class="rank-per"><strong>' + rm(r.year).replace(".00", "") + "</strong> " + esc(S.nuYear) + "</span></li>";
+          '</span><span class="rank-per"><strong>' + (r.year === 0 ? esc(S.nuFree) : rm(r.year).replace(".00", "")) + "</strong> " + (r.year === 0 ? "" : esc(S.nuYear)) + "</span></li>";
       }).join("") + "</ol>";
     }
     box.addEventListener("input", render);
@@ -557,16 +579,23 @@
     var oBtns = $$(".nm-origin .chip-btn", box);
     oBtns.forEach(function (b) { b.addEventListener("click", function () {
       origin = b.getAttribute("data-o"); oBtns.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); render(); }); });
-    var segs = $$(".nm-seg button", box);
+    var segs = $$(".nm-seg button", box), letter = "all", azBtns = $$("#nm-az button", box), count = $("#nm-count");
+    azBtns.forEach(function (b) { b.addEventListener("click", function () {
+      letter = b.getAttribute("data-l"); azBtns.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); render(); }); });
     function render() {
       var qq = (q.value || "").toLowerCase().trim(), rows = (TM.names || []).filter(function (n) {
         if (filter === "fav" && !fav[n[0]]) return false;
         if (origin !== "all" && n[3] !== origin) return false;
         if (filter === "m" || filter === "f") { if (n[1] !== filter) return false; }
+        if (letter !== "all" && n[0].charAt(0).toUpperCase() !== letter) return false;
         return !qq || (n[0] + " " + n[2]).toLowerCase().indexOf(qq) >= 0;
-      });
+      }).sort(function (a, b) { return a[0].localeCompare(b[0]); });
+      count.textContent = fill(S.nmCount, { n: rows.length });
+      var lastL = "";
       list.innerHTML = rows.length ? rows.map(function (n) {
-        return '<li class="nm-' + n[1] + '"><div><strong>' + esc(n[0]) + '</strong><span class="muted">' + esc(n[2]) + "</span></div>" +
+        var L = n[0].charAt(0).toUpperCase(), head = "";
+        if (letter === "all" && L !== lastL) { head = '<li class="nm-letter" aria-hidden="true">' + esc(L) + "</li>"; lastL = L; }
+        return head + '<li class="nm-' + n[1] + '"><div><strong>' + esc(n[0]) + '</strong><span class="muted">' + esc(n[2]) + "</span></div>" +
           '<button type="button" class="nm-fav" data-n="' + esc(n[0]) + '" aria-pressed="' + (fav[n[0]] ? "true" : "false") + '" aria-label="' + esc(S.nmFav) + '">' + (fav[n[0]] ? "♥" : "♡") + "</button></li>";
       }).join("") : '<li class="muted">' + esc(S.nmNone) + "</li>";
     }
@@ -723,6 +752,12 @@
       .then(function (j) { pics = j || {}; }).catch(function () { /* pictures are optional */ });
     Promise.all([fetch(TM.root + "data/prices-summary.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }), picsReady]).then(function (res) {
       var data = res[0];
+      var sortSel = $("#pr-sort");
+      function nameOf(it) { return LANG === "ms" && it.nm ? it.nm : it.n; }
+      if (sortSel) {
+        sortSel.value = get("tm_pr_sort", "unit");
+        sortSel.addEventListener("change", function () { set("tm_pr_sort", sortSel.value); draw(cur.state, cur.district); });
+      }
       $("#pr-updated").textContent = fill(S.updated, { a: fmt(parseDate(data.from)), b: fmt(parseDate(data.to)), n: data.shops.toLocaleString("en-MY") });
       var states = {};
       Object.keys(data.areas).forEach(function (k) {
@@ -739,14 +774,22 @@
         var area = data.areas[key] || {};
         var areaName = district ? district + ", " + state : (state || S.allMy);
         var html = "";  // the area is already visible in the drop-downs
-        ["mum", "infant", "followon", "growing", "diaper", "food"].forEach(function (g) {
+        var sortBy = sortSel ? sortSel.value : "unit";
+        (TM.grpOrder || ["mum", "infant", "followon", "growing", "diaper", "food"]).forEach(function (g) {
           var codes = Object.keys(data.items).filter(function (c) { return data.items[c].g === g && area[c]; });
           if (!codes.length) return;
           codes.forEach(function (c) {
             var it = data.items[c], a = area[c];
             it._unit = it.gr ? a[0] / it.gr * 100 : (it.pc ? a[0] / it.pc : 0);
           });
-          codes.sort(function (x, y) { return data.items[x]._unit - data.items[y]._unit; });
+          codes.sort(function (x, y) {
+            var X = data.items[x], Y = data.items[y], ax = area[x], ay = area[y];
+            if (sortBy === "az") return nameOf(X).localeCompare(nameOf(Y));
+            if (sortBy === "shops") return ay[2] - ax[2];
+            if (sortBy === "from") return ax[1] - ay[1];
+            if (sortBy === "typical" || !X._unit || !Y._unit) return ax[0] - ay[0];
+            return X._unit - Y._unit;
+          });
           html += '<section class="price-group" id="grp-' + g + '" data-g="' + g + '"><h2>' + esc(S.grp[g]) +
             ((g === "infant" || g === "followon") ? " " + makeTip(esc(S.bfNote)) : "") + '</h2><div class="table-wrap"><table><thead><tr><th>' + esc(S.cProduct) +
             '</th><th class="num">' + esc(S.cTypical) + '</th><th class="num hide-sm">' + esc(S.cFrom) + '</th><th class="num">' + esc(S.cUnit) +
@@ -754,11 +797,11 @@
           codes.forEach(function (c) {
             var it = data.items[c], a = area[c];
             var pack = it.pc ? it.u + " · " + (it.t === "pants" ? S.pants : S.tape) : it.u;
-            var unit = rm(it._unit) + '<small class="per">' + esc(it.gr ? S.per100 : S.perPiece) + "</small>";
+            var unit = it._unit ? rm(it._unit) + '<small class="per">' + esc(it.gr ? S.per100 : S.perPiece) + "</small>" : '<span class="muted">–</span>';
             // Photos only - formula still gets no shop links, ads or commission.
             var pic = pics[c] ?
               '<img class="thumb" src="https://down-my.img.susercontent.com/file/' + encodeURIComponent(pics[c]) + '_tn" alt="" loading="lazy" width="48" height="48">' : "";
-            html += '<tr data-code="' + c + '" data-name="' + esc((it.n + " " + S.grp[g]).toLowerCase()) + '"><td class="prod"><div class="prod-row">' + pic + "<div>" + esc(it.n) + "<small>" + esc(pack) +
+            html += '<tr data-code="' + c + '" data-name="' + esc((it.n + " " + (it.nm || "") + " " + S.grp[g]).toLowerCase()) + '"><td class="prod"><div class="prod-row">' + pic + "<div>" + esc(nameOf(it)) + "<small>" + esc(pack) +
               (a[2] < 3 ? " · " + esc(S.fewShops) : "") + '</small><button type="button" class="where-btn">' + esc(S.where) +
               '</button></div></div></td><td class="num">' + rm(a[0]) + '</td><td class="num hide-sm">' + rm(a[1]) + '</td><td class="num">' + unit +
               '</td><td class="num hide-sm">' + a[2] + "</td></tr>";
@@ -819,7 +862,7 @@
         var code = tr.getAttribute("data-code"), st = cur.state, di = cur.district;
         var it0 = data.items[code];
         // Online prices (Shopee, Lazada, pharmacies) are often cheaper than shop shelves - Google Shopping lists them.
-        var online = '<a class="online" href="https://www.google.com/search?tbm=shop&amp;q=' + encodeURIComponent(it0.n + " " + it0.u) +
+        var online = '<a class="online" href="https://www.google.com/search?tbm=shop&amp;q=' + encodeURIComponent(nameOf(it0) + " " + it0.u) +
           '" target="_blank" rel="noopener">' + esc(S.online) + " ↗</a>";
         if (!cur.state) { cell.innerHTML = esc(S.chooseState) + "<br>" + online; return; }
         var p = shopCache[st] || fetch(TM.root + "data/shops/" + slug(st) + ".json").then(function (r) { if (!r.ok) throw 0; return r.json(); });

@@ -27,6 +27,43 @@ OUT = os.path.join(HERE, "..", "site-data")
 BABY_CATEGORIES = {"SUSU BAYI", "LAMPIN PAKAI BUANG", "MAKANAN BAYI"}
 MUM_MILK = {336: "Anmum Materna", 843: "Anmum Lacta"}  # pregnancy / breastfeeding milk
 
+# Everyday things a new mum buys, from the same survey: code -> (group, English name, Malay name)
+EXTRA_ITEMS = {
+    # mum & home essentials
+    1669: ("essentials", "Kotex Overnight pads (wing, 8)", "Tuala wanita Kotex Overnight (bersayap, 8)"),
+    1670: ("essentials", "Kotex Maxi pads (wing, 10)", "Tuala wanita Kotex Maxi (bersayap, 10)"),
+    1985: ("essentials", "Kotex Maxi pads (no wing, 10)", "Tuala wanita Kotex Maxi (tanpa sayap, 10)"),
+    1986: ("essentials", "Libresse Maxi pads (no wing, 10)", "Tuala wanita Libresse Maxi (tanpa sayap, 10)"),
+    1468: ("essentials", "Panadol for Children 1-6 yrs (syrup)", "Panadol Kanak-kanak 1-6 tahun (sirap)"),
+    1677: ("essentials", "Kleenex facial tissue (3 x 50)", "Tisu muka Kleenex (3 x 50)"),
+    2102: ("essentials", "Lifebuoy body wash", "Sabun mandi Lifebuoy"),
+    2103: ("essentials", "Dettol body wash", "Sabun mandi Dettol"),
+    2109: ("essentials", "Breeze washing powder", "Sabun serbuk Breeze"),
+    2110: ("essentials", "Top detergent", "Sabun detergen Top"),
+    2111: ("essentials", "Daia washing powder", "Sabun serbuk Daia"),
+    1994: ("essentials", "Dynamo Power Gel", "Dynamo Power Gel"),
+    1996: ("essentials", "Softlan fabric softener", "Pelembut pakaian Softlan"),
+    1876: ("essentials", "Downy fabric softener", "Pelembut pakaian Downy"),
+    2112: ("essentials", "Sunlight dishwashing liquid", "Sabun pencuci pinggan Sunlight"),
+    # pantang cooking basics
+    95: ("pantang", "Ginger, old (halia tua)", "Halia basah (tua)"),
+    108: ("pantang", "Fresh turmeric (kunyit)", "Kunyit hidup"),
+    1564: ("pantang", "Garlic (imported)", "Bawang putih (import)"),
+    871: ("pantang", "Black pepper", "Lada hitam"),
+    1: ("pantang", "Chicken, cleaned (standard)", "Ayam bersih (standard)"),
+    1930: ("pantang", "Kampung eggs (10)", "Telur ayam kampung (10 biji)"),
+    1109: ("pantang", "Eggs, grade A (30)", "Telur ayam gred A (30 biji)"),
+    87: ("pantang", "Haruan (snakehead fish)", "Ikan haruan"),
+    1476: ("pantang", "Kembung (mackerel)", "Ikan kembung"),
+    1437: ("pantang", "Siakap (sea bass)", "Ikan siakap"),
+    79: ("pantang", "Tenggiri (Spanish mackerel)", "Ikan tenggiri papan"),
+    1556: ("pantang", "Spinach (bayam hijau)", "Bayam hijau"),
+    109: ("pantang", "Carrots", "Lobak merah"),
+    918: ("pantang", "Cooking oil (packet)", "Minyak masak (paket)"),
+    1582: ("pantang", "Rice, Cap Jasmine", "Beras Cap Jasmine"),
+    1589: ("pantang", "White sugar (coarse)", "Gula putih (kasar)"),
+}
+
 # Clean display names (product names stay as sold in Malaysia).
 NAMES = {
     299: "Lactogen 1", 300: "Lactogen 2", 303: "Enfagrow A+ Mind Pro 3 (vanilla)",
@@ -74,6 +111,8 @@ def pieces_m(unit):
 
 def group_of(row):
     code, item, cat = row["item_code"], str(row["item"]).upper(), row["item_category"]
+    if code in EXTRA_ITEMS:
+        return EXTRA_ITEMS[code][0]
     if code in MUM_MILK:
         return "mum"
     if cat == "LAMPIN PAKAI BUANG":
@@ -101,7 +140,8 @@ def main(raw):
     prices = prices[prices["date"] >= end - pd.Timedelta(days=29)]
     start = prices["date"].min()
 
-    want = items[items["item_category"].isin(BABY_CATEGORIES) | items["item_code"].isin(MUM_MILK)].copy()
+    want = items[items["item_category"].isin(BABY_CATEGORIES) | items["item_code"].isin(MUM_MILK)
+                 | items["item_code"].isin(EXTRA_ITEMS)].copy()
     want["group"] = want.apply(group_of, axis=1)
     p = prices[prices["item_code"].isin(want["item_code"])]
 
@@ -137,14 +177,17 @@ def main(raw):
     meta = {}
     for _, r in want.iterrows():
         code = int(r["item_code"])
+        extra = EXTRA_ITEMS.get(code)
         meta[str(code)] = {
-            "n": NAMES.get(code, str(r["item"]).title()),
+            "n": extra[1] if extra else NAMES.get(code, str(r["item"]).title()),
             "u": str(r["unit"]),
             "g": r["group"],
-            "gr": grams(r["unit"]) if r["group"] != "diaper" else None,
+            "gr": grams(r["unit"]) if r["group"] not in ("diaper", "essentials", "pantang") else None,
             "pc": pieces_m(r["unit"]) if r["group"] == "diaper" else None,
             "t": ("pants" if re.search(r"PANT", str(r["item"]).upper()) else "tape") if r["group"] == "diaper" else None,
         }
+        if extra:
+            meta[str(code)]["nm"] = extra[2]
 
     os.makedirs(os.path.join(OUT, "shops"), exist_ok=True)
     summary = {
