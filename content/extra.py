@@ -440,6 +440,26 @@ BORNEO_NAMES += [
     ("Maih", "u", "gold (Melanau)", "emas (Melanau)"),
     ("Pirek", "u", "silver; a flash of light (Melanau)", "perak; kilauan cahaya (Melanau)"),
 ]
+BORNEO_NAMES += [
+    # More Murut (Timugon) and Bajau (West Coast): SIL dictionaries on Webonary (Murut glosses are in Malay).
+    ("Sinda", "u", "light, sparkle, radiance (Murut)", "cahaya, sinaran, kilauan (Murut)"),
+    ("Orou", "u", "bright, clear (of the day) (Murut)", "terang, cerah (Murut)"),
+    ("Raat", "u", "sea (Murut)", "laut (Murut)"),
+    ("Baani", "u", "brave (Murut)", "berani (Murut)"),
+    ("Bonsoi", "u", "good, lovely, beautiful (Murut)", "baik, bagus, cantik, indah (Murut)"),
+    ("Akang", "u", "darling - a loving name for a child (Murut)", "anak sayang - panggilan manja untuk anak (Murut)"),
+    ("Jingit", "u", "smile (Murut)", "senyuman (Murut)"),
+    ("Gintak", "u", "to jump for joy (Murut)", "melompat gembira (Murut)"),
+    ("Kalimambang", "u", "butterfly (Bajau)", "rama-rama (Bajau)"),
+    ("Sinsaung", "u", "morning (Bajau)", "pagi (Bajau)"),
+    ("Dayag", "u", "happy (Bajau)", "gembira (Bajau)"),
+    ("Beriu", "u", "wind (Bajau)", "angin (Bajau)"),
+    ("Suang", "u", "river (Bajau)", "sungai (Bajau)"),
+    ("Pekar", "u", "to bloom, to open out (Bajau)", "mekar, berkembang (Bajau)"),
+    ("Ambun", "u", "dew (Bajau)", "embun (Bajau)"),
+    ("Uran", "u", "rain (Bajau)", "hujan (Bajau)"),
+    ("Daras", "u", "strong (Bajau)", "kuat (Bajau)"),
+]
 ORANG_ASLI_NAMES = [
     ('Perloi', 'u', 'star (Semai)', 'bintang (Semai)'),
     ('Cedau', 'u', 'rainbow (Semai)', 'pelangi (Semai)'),
