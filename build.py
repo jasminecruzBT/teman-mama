@@ -877,10 +877,11 @@ def p_afterbirth(lang):
             f'{tip(x(te_, tm_), x) if te_ else ""}</li>' for k, en, ms, te_, tm_ in items)
         secs.append(f'<section class="card"><h2><span aria-hidden="true">{ico}</span> {esc(x(te, tm))}</h2><ul class="checklist">{lis}</ul></section>')
     cards = []
+    SAVE_START = {"th": 2, "asb": 10, "asm": 10, "sspn": 20, "epf": 999}  # RM to open; EPF only from age 14, so last
     for k, ico, ne, nm, we, wm, se, sm, be, bm, he, hm, url in extra.SAVINGS:
         epf = k == "epf"
         cards.append(
-            f'<article class="save-card{" save-later" if epf else ""}" id="sv-{k}"><div class="sv-top"><span class="sv-ico" aria-hidden="true">{ico}</span>'
+            f'<article class="save-card{" save-later" if epf else ""}" id="sv-{k}" data-s-start="{SAVE_START[k]}" data-s-name="{esc(x(ne, nm).lower())}"><div class="sv-top"><span class="sv-ico" aria-hidden="true">{ico}</span>'
             f'<div><h3>{esc(x(ne, nm))}</h3><span class="sv-who">{esc(x(we, wm))}</span></div></div>'
             f'<dl><dt>{x("Start", "Mula")}</dt><dd>{esc(x(se, sm))}</dd>'
             f'<dt>{x("Bring", "Bawa")}</dt><dd>{esc(x(be, bm))}</dd>'
@@ -919,7 +920,8 @@ def p_afterbirth(lang):
 <h2 class="sv-head sv-first"><span aria-hidden="true">🐷</span> {x("Start saving for baby", "Mula menyimpan untuk bayi")}</h2>
 <p class="muted">{x("Once you have the birth certificate, you can open these for your baby. They're all optional - pick what suits your family.",
                     "Selepas mendapat sijil kelahiran, anda boleh membuka akaun ini untuk bayi. Semuanya pilihan - pilih yang sesuai untuk keluarga anda.")}</p>
-<div class="save-grid">{"".join(cards)}</div>
+{sort_select(x, "save-list", [("start:asc", "Cheapest to open", "Paling murah untuk dibuka"), ("name:asc", "Name A-Z", "Nama A-Z")])}
+<div class="save-grid" id="save-list">{"".join(cards)}</div>
 <p class="small muted">{x("General information only, not financial advice. Limits, fees and returns change, and past dividends don't promise future ones - check with ASNB, PTPTN, Tabung Haji or EPF before you open an account.",
                           "Maklumat umum sahaja, bukan nasihat kewangan. Had, bayaran dan pulangan boleh berubah, dan dividen lalu tidak menjamin dividen akan datang - semak dengan ASNB, PTPTN, Tabung Haji atau KWSP sebelum membuka akaun.")}</p>
 </section>
@@ -983,8 +985,9 @@ def p_delivery(lang):
                  + f'<p class="pc-actions"><a class="btn" href="{esc(h["source_url"])}" target="_blank" rel="noopener">{x("Hospital page", "Laman hospital")} ↗</a>'
                    f'<span class="small muted">{x("checked", "disemak")} {_dmy(h["checked"], lang)}{valid}</span></p>')
         price = (f'{x("Normal", "Normal")} {normal}' + (f'<small>{x("Caesarean", "Caesarean")} {csec}</small>' if h.get("csec_rm") else ""))
+        hsort = {"normal": h["price_from_rm"], "csec": h.get("csec_rm") or 999999, "name": h["name"].lower(), "state": h["state"].lower()}
         cards.append(pcard(x, x("Private hospital", "Hospital swasta"), "🏥", h["name"], h["state"], esc(stay.split(" · ")[0]) if stay else "",
-                           price, body_, state=h["state"]))
+                           price, body_, state=h["state"], sort=hsort))
 
     hasa = next(u for u in D["university"] if u.get("exec_normal_rm"))
     f_ = hctm["fees"]
@@ -1066,6 +1069,10 @@ def p_delivery(lang):
 <p class="dp-intro">{x(f"Hospitals that publish a price on their own website, cheapest first. Caesarean packages: {_rm(min(cs))} – {_rm(max(cs))}.",
                        f"Hospital yang menyiarkan harga di laman web sendiri, paling murah dahulu. Pakej caesarean: {_rm(min(cs))} – {_rm(max(cs))}.")}</p>
 {chips_html}
+{sort_select(x, "hosp-list", [("normal:asc", "Normal: cheapest", "Normal: paling murah"),
+                               ("normal:desc", "Normal: most expensive", "Normal: paling mahal"),
+                               ("csec:asc", "Caesarean: cheapest", "Caesarean: paling murah"),
+                               ("name:asc", "Name A-Z", "Nama A-Z"), ("state:asc", "State", "Negeri")])}
 <div class="pgrid" id="hosp-list">{"".join(cards)}</div>
 {priv_ask_html}
 <details class="acc"><summary>{x("What packages usually don't include", "Apa yang biasanya tidak termasuk dalam pakej")}</summary><ul>
