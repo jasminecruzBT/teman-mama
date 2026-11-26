@@ -103,7 +103,7 @@ JS_STR = {
         "qNone": "Fill in a price for at least one quote to compare.",
         "bagProgress": "{n} of {t} packed", "bagDone": "All packed - well done!",
         "lvNeed": "Please enter the birth date.",
-        "lvMat": "Maternity leave (98 days)", "lvPat": "Paternity leave (7 days)",
+        "lvMat": "Maternity leave (98 days)", "lvPat": "Paternity leave (7 days)", "lvMatEnds": "Maternity leave ends", "lvPatEnds": "Paternity leave ends", "lvStarts": "Starts {a} · {n} days", "lvBackLbl": "Back at work", "lvBackNote": "or your next working day",
         "lvRange": "{a} to {b}", "lvBack": "Back at work on {d} (or your next working day).",
         "lvEarly": "Note: under the Employment Act, maternity leave can't start more than 30 days before the birth.",
         "grp": {"mum": "Milk for mums (pregnancy & breastfeeding)", "infant": "Infant formula (Step 1)",
@@ -166,7 +166,7 @@ JS_STR = {
         "qNone": "Isi harga untuk sekurang-kurangnya satu sebut harga untuk dibandingkan.",
         "bagProgress": "{n} daripada {t} siap", "bagDone": "Semua siap - syabas!",
         "lvNeed": "Sila masukkan tarikh lahir.",
-        "lvMat": "Cuti bersalin (98 hari)", "lvPat": "Cuti paterniti (7 hari)",
+        "lvMat": "Cuti bersalin (98 hari)", "lvPat": "Cuti paterniti (7 hari)", "lvMatEnds": "Cuti bersalin tamat", "lvPatEnds": "Cuti paterniti tamat", "lvStarts": "Bermula {a} · {n} hari", "lvBackLbl": "Kembali bekerja", "lvBackNote": "atau hari bekerja berikutnya",
         "lvRange": "{a} hingga {b}", "lvBack": "Kembali bekerja pada {d} (atau hari bekerja berikutnya).",
         "lvEarly": "Nota: di bawah Akta Kerja, cuti bersalin tidak boleh bermula lebih awal daripada 30 hari sebelum bersalin.",
         "grp": {"mum": "Susu untuk ibu (hamil & menyusu)", "infant": "Rumusan bayi (Langkah 1)",
@@ -326,6 +326,14 @@ def tip(text, x, html_text=False):
             f'<span class="tip-bubble" role="tooltip">{body}</span></span>')
 
 
+def page_head(x, ico, cls, eyebrow, title, lead="", extra="", lead_id=""):
+    """Modern page header: coloured icon tile, small section label, title, one-line intro."""
+    lid = f' id="{lead_id}"' if lead_id else ""
+    lead_html = f'<p class="lead"{lid}>{lead}</p>' if lead or lead_id else ""
+    return (f'<header class="page-head {cls}"><span class="ph-ico" aria-hidden="true">{ico}</span>'
+            f'<div class="ph-text"><p class="ph-eyebrow">{esc(eyebrow)}</p><h1>{title}{(" " + extra) if extra else ""}</h1>{lead_html}</div></header>')
+
+
 def shop(key, q, x):
     url = config.AFFILIATE_LINKS.get(key) or config.SHOP_SEARCH_URL.format(q=quote_plus(q))
     return (f'<a class="shop" href="{esc(url)}" target="_blank" rel="sponsored nofollow noopener">'
@@ -404,7 +412,7 @@ def write_page(lang, path, title, desc, body, data=None):
       <nav class="menu-panel" aria-label="{x("Main", "Utama")}"><ul>{"".join(items)}{extra}</ul></nav>
     </details>"""
 
-    tm = {"lang": lang, "root": root, "s": JS_STR[lang],
+    tm = {"lang": lang, "root": root, "s": JS_STR[lang], "ver": VER,
           "wk": {n: wk.get(n, lang)["size"] for n in wk.W}}  # for the helper bot's week answers
     if data:
         tm.update(data)
@@ -530,8 +538,8 @@ def p_feedback(lang):
     x = tr(lang)
     url = config.FEEDBACK_FORM_URL
     body = f"""
-<h1>{x("Help us improve", "Bantu kami menambah baik")}</h1>
-<p class="lead">{x("Something missing, wrong or confusing? Tell us - every idea is read. Please don't share medical details here.",
+{page_head(x, "💬", "t-home", x("Feedback", "Maklum balas"), x("Help us improve", "Bantu kami menambah baik"))}
+<p class="muted">{x("Something missing, wrong or confusing? Tell us - every idea is read. Please don't share medical details here.",
                    "Ada yang tiada, salah atau mengelirukan? Beritahu kami - setiap cadangan dibaca. Jangan kongsi butiran perubatan di sini.")}</p>
 <div class="form-frame"><iframe src="{esc(url)}?embedded=true" title="{x("Feedback form", "Borang cadangan")}">{x("Loading...", "Memuatkan...")}</iframe></div>
 <p class="small muted">{x("Form not showing?", "Borang tidak keluar?")} <a href="{esc(url)}" target="_blank" rel="noopener">{x("Open it in a new tab", "Buka dalam tab baharu")} ↗</a></p>
@@ -610,9 +618,8 @@ def p_weeks_index(lang):
             for n in range(a, b + 1))
         parts.append(f'<section><h2>{x("Trimester", "Trimester")} {t}</h2><ul class="week-list">{lis}</ul></section>')
     body = f"""
-<h1>{x("Pregnancy week by week", "Kehamilan minggu demi minggu")}</h1>
-<p class="lead">{x("How big your baby is, how they're growing, and one useful thing to do - every week from week 4 to 40.",
-                   "Saiz bayi, perkembangannya, dan satu perkara berguna untuk dibuat - setiap minggu dari minggu ke-4 hingga ke-40.")}</p>
+{page_head(x, "📅", "t-weeks", x("Week by week", "Minggu demi minggu"), x("Pregnancy week by week", "Kehamilan minggu demi minggu"),
+             x("Your baby's size, growth and one useful thing to do - weeks 4 to 40.", "Saiz bayi, perkembangan dan satu perkara berguna - minggu 4 hingga 40."))}
 {"".join(parts[:1])}
 {ad("in_content", x)}
 {"".join(parts[1:])}
@@ -627,22 +634,32 @@ def p_week(lang, n):
     x = tr(lang)
     d = wk.get(n, lang)
     stats = " · ".join(s for s in (d["length"], d["weight"]) if s)
-    prev_l = f'<a class="btn ghost" href="{n - 1}.html">← {x("Week", "Minggu")} {n - 1}</a>' if n > wk.FIRST else "<span></span>"
-    next_l = f'<a class="btn ghost" href="{n + 1}.html">{x("Week", "Minggu")} {n + 1} →</a>' if n < wk.LAST else "<span></span>"
+    def pg(m, arrow_left):
+        if m < wk.FIRST or m > wk.LAST:
+            return "<span></span>"
+        lbl = f'{x("Week", "Minggu")} {m}'
+        sub = f'<small>{wk.W[m][0]} {esc(wk.get(m, lang)["size"])}</small>'
+        return (f'<a class="pg {"pg-prev" if arrow_left else "pg-next"}" href="{m}.html"><span>{"← " if arrow_left else ""}{lbl}{"" if arrow_left else " →"}</span>{sub}</a>')
+    prev_l, next_l = pg(n - 1, True), pg(n + 1, False)
+    chips = "".join(f'<span class="chip-static">{esc(c)}</span>' for c in
+                    [x(f"Trimester {d['tri']}", f"Trimester {d['tri']}"), d["length"], d["weight"]] if c)
     body = f"""
 <p class="crumbs"><a href="index.html">{x("Week by week", "Minggu demi minggu")}</a> › {x("Trimester", "Trimester")} {d["tri"]}</p>
-<h1>{x(f"Week {n} of pregnancy", f"Kehamilan minggu ke-{n}")}</h1>
-<p id="you-here" class="pill" hidden>{x("You are here", "Anda di sini")}</p>
-<section class="card size-card">
-  <div class="size-emoji" aria-hidden="true">{d["emoji"]}</div>
-  <div><p class="muted">{x("Your baby is about the size of", "Saiz bayi anda lebih kurang")}</p>
-  <p class="size-name">{esc(d["size"])}</p>
-  <p class="muted">{esc(stats)}</p></div>
-</section>
-<section><h2>{x("Your baby this week", "Bayi anda minggu ini")}</h2><p>{esc(d["baby"])}</p></section>
-<section><h2>{x("Your body", "Badan anda")}</h2><p>{esc(d["mum"])}</p></section>
+<header class="week-hero">
+  <div class="wh-emoji" aria-hidden="true">{d["emoji"]}</div>
+  <div>
+    <p class="ph-eyebrow">{x(f"Week {n} of 40", f"Minggu {n} daripada 40")} <span id="you-here" class="pill" hidden>{x("You are here", "Anda di sini")}</span></p>
+    <h1>{x(f"Week {n}: baby is the size of {d['size']}", f"Minggu {n}: bayi sebesar {d['size']}")}</h1>
+    <div class="chips-static">{chips}</div>
+  </div>
+</header>
+<div class="progress wk-progress" role="progressbar" aria-valuemin="0" aria-valuemax="40" aria-valuenow="{n}"><span style="width:{round(n / 40 * 100)}%"></span></div>
+<div class="info-grid">
+  <section class="card"><h2><span aria-hidden="true">👶</span> {x("Your baby this week", "Bayi anda minggu ini")}</h2><p>{esc(d["baby"])}</p></section>
+  <section class="card"><h2><span aria-hidden="true">🤰</span> {x("Your body", "Badan anda")}</h2><p>{esc(d["mum"])}</p></section>
+</div>
+<section class="card todo-card"><h2><span aria-hidden="true">✅</span> {x("To do this week", "Perlu dibuat minggu ini")}</h2><p>{esc(d["todo"])}</p></section>
 {ad("in_content", x)}
-<section class="box todo"><h2>{x("To do this week", "Perlu dibuat minggu ini")}</h2><p>{esc(d["todo"])}</p></section>
 {danger(x)}
 <nav class="pager" aria-label="{x("Weeks", "Minggu")}">{prev_l}{next_l}</nav>
 """
@@ -667,8 +684,8 @@ def p_pantang(lang):
     ]
     cards = "".join(f'<details class="acc"><summary>{esc(x(a, b))}</summary><p>{esc(x(c, d))}</p></details>' for a, b, c, d in trads)
     body = f"""
-<h1>{x("Pantang planner", "Perancang pantang")}</h1>
-<p class="lead">{x("A dated timeline for before and after the birth.", "Jadual bertarikh sebelum dan selepas bersalin.")}</p>
+{page_head(x, "🍲", "t-pantang", x("Pantang", "Pantang"), x("Pantang planner", "Perancang pantang"),
+             x("A dated timeline for before and after the birth.", "Jadual bertarikh sebelum dan selepas bersalin."))}
 <section class="card" id="pantang-tool">
   <label class="field">{x("Tradition", "Tradisi")}
     <select id="p-trad">
@@ -756,8 +773,8 @@ def p_cost(lang):
     qs = "".join(f"<li>{esc(q)}</li>" for q in (questions_ms if lang == "ms" else questions_en))
     maps_q = quote_plus(x("confinement centre near me", "pusat berpantang berhampiran"))
     body = f"""
-<h1>{x("Confinement cost", "Kos berpantang")}</h1>
-<p class="lead">{x("Compare centres and nannies by price per day.", "Banding pusat dan pengasuh mengikut harga sehari.")}</p>
+{page_head(x, "💰", "t-cost", x("Confinement", "Berpantang"), x("Confinement cost", "Kos berpantang"),
+             x("Compare centres and nannies by price per day.", "Banding pusat dan pengasuh mengikut harga sehari."))}
 <section class="card" id="quote-tool">
   <h2>{x("Compare quotes", "Banding sebut harga")} {tip(x("Pick a centre or a typical package and the rest fills in. Change anything to match what you were offered. Saved only on this phone.",
                                                         "Pilih pusat atau pakej biasa dan yang lain diisi sendiri. Ubah apa-apa supaya sama dengan tawaran anda. Disimpan dalam telefon ini sahaja."), x)}</h2>
@@ -838,13 +855,13 @@ def p_bag(lang):
             f'{shop(k, q, x) if q else ""}</li>' for k, en, ms, q in items)
         secs.append(f'<section class="card"><h2>{esc(x(te, tm))}</h2><ul class="checklist">{lis}</ul></section>')
     body = f"""
-<h1>{x("Hospital bag checklist", "Senarai semak beg hospital")} {tip(x("Pack by about 36 weeks. Your ticks are saved on this phone. 'Shop' links open Shopee - some are affiliate links, so we may earn a small commission at no extra cost to you.",
-                                                                       "Siapkan sebelum lebih kurang 36 minggu. Tanda anda disimpan dalam telefon ini. Pautan 'Beli' membuka Shopee - sesetengahnya pautan afiliasi, jadi kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda."), x)}</h1>
-<p class="pill" id="bag-progress" aria-live="polite"></p>
+{page_head(x, "👜", "t-bag", x("Before the birth", "Sebelum bersalin"), x("Hospital bag checklist", "Senarai semak beg hospital"), extra=tip(x("Pack by about 36 weeks. Your ticks are saved on this phone. 'Shop' links open Shopee - some are affiliate links, so we may earn a small commission at no extra cost to you.",
+                                                                       "Siapkan sebelum lebih kurang 36 minggu. Tanda anda disimpan dalam telefon ini. Pautan 'Beli' membuka Shopee - sesetengahnya pautan afiliasi, jadi kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda."), x))}
+<div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
+<div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
 {secs[0]}
 {ad("in_content", x)}
 {"".join(secs[1:])}
-<button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button>
 """
     write_page(lang, "hospital-bag.html", x("Hospital bag checklist for Malaysian mums", "Senarai semak beg hospital untuk ibu"),
                x("What to pack in your hospital bag for giving birth in Malaysia: documents, mum, baby and partner - a free checklist that saves on your phone.",
@@ -855,8 +872,8 @@ def p_bag(lang):
 def p_leave(lang):
     x = tr(lang)
     body = f"""
-<h1>{x("Maternity leave", "Cuti bersalin")}</h1>
-<p class="lead">{x("When your 98 days (and dad's 7 days) start and end.", "Bila 98 hari anda (dan 7 hari bapa) bermula dan berakhir.")}</p>
+{page_head(x, "🗓️", "t-leave", x("Work", "Kerja"), x("Maternity leave", "Cuti bersalin"),
+             x("When your 98 days (and dad's 7 days) start and end.", "Bila 98 hari anda (dan 7 hari bapa) bermula dan berakhir."))}
 <section class="card" id="leave-tool">
   <label class="field">{x("Baby's birth date (or due date)", "Tarikh lahir bayi (atau tarikh jangkaan)")}<input type="date" id="lv-birth"></label>
   <label class="field">{x("Maternity leave starts on (leave empty = birth date)", "Cuti bersalin bermula pada (biar kosong = tarikh lahir)")}<input type="date" id="lv-mstart"></label>
@@ -885,9 +902,8 @@ def p_leave(lang):
 def p_prices(lang):
     x = tr(lang)
     body = f"""
-<h1>{x("Milk & diaper prices", "Harga susu & lampin")} {tip(x("Shop prices from the government's price survey: PriceCatcher by KPDN, published on data.gov.my. Typical = the middle price across shops. From = 1 in 10 shops charge this or less. Prices change often - check in store.",
-                                                                         "Harga kedai daripada tinjauan harga kerajaan: PriceCatcher oleh KPDN, diterbitkan di data.gov.my. Biasa = harga pertengahan di semua kedai. Dari = 1 daripada 10 kedai mengenakan harga ini atau lebih rendah. Harga sering berubah - semak di kedai."), x)}</h1>
-<p class="lead" id="pr-updated">{x("Official shop prices near you.", "Harga kedai rasmi berhampiran anda.")}</p>
+{page_head(x, "🍼", "t-prices", x("Prices", "Harga"), x("Milk & diaper prices", "Harga susu & lampin"), lead=x("Official shop prices near you.", "Harga kedai rasmi berhampiran anda."), lead_id="pr-updated", extra=tip(x("Shop prices from the government's price survey: PriceCatcher by KPDN, published on data.gov.my. Typical = the middle price across shops. From = 1 in 10 shops charge this or less. Prices change often - check in store.",
+                                                                         "Harga kedai daripada tinjauan harga kerajaan: PriceCatcher oleh KPDN, diterbitkan di data.gov.my. Biasa = harga pertengahan di semua kedai. Dari = 1 daripada 10 kedai mengenakan harga ini atau lebih rendah. Harga sering berubah - semak di kedai."), x))}
 <section class="filters">
   <form class="search-row" id="pr-search" role="search">
     <input type="search" id="pr-q" placeholder="{x("Search, e.g. Drypers or Dutch Lady", "Cari, cth. Drypers atau Dutch Lady")}" aria-label="{x("Search products", "Cari produk")}">
@@ -993,8 +1009,8 @@ def p_nursery(lang):
     near_taska = "https://www.google.com/maps/search/?api=1&query=" + quote_plus("taska near me")
     near_tadika = "https://www.google.com/maps/search/?api=1&query=" + quote_plus("tadika near me")
     body = f"""
-<h1>{x("Taska & tadika", "Taska & tadika")}</h1>
-<p class="lead">{x("Childcare and kindergartens near you.", "Taska dan tadika berhampiran anda.")}</p>
+{page_head(x, "🧸", "t-nursery", x("After the birth", "Selepas bersalin"), x("Taska & tadika", "Taska & tadika"),
+             x("Find, check and compare childcare near you.", "Cari, semak dan banding penjagaan anak berhampiran anda."))}
 <section class="card" id="nursery-tool">
   <div class="btn-row">
     <a class="btn" id="nu-near-taska" href="{near_taska}" target="_blank" rel="noopener">📍 {x("Taska near me", "Taska berhampiran")}</a>
@@ -1038,7 +1054,7 @@ def p_privacy(lang):
     email = (f'<a href="mailto:{esc(config.CONTACT_EMAIL)}">{esc(config.CONTACT_EMAIL)}</a>'
              if config.CONTACT_EMAIL else x("the email on our About page", "e-mel di halaman Tentang kami"))
     body = f"""
-<h1>{x("Privacy", "Privasi")}</h1>
+{page_head(x, "🔒", "t-leave", x("Your data", "Data anda"), x("Privacy", "Privasi"))}
 <p class="small muted">{x("Last updated", "Kemas kini terakhir")}: {TODAY.isoformat()}</p>
 <h2>{x("What you type stays on your phone", "Apa yang anda taip kekal dalam telefon anda")}</h2>
 <p>{x("There are no accounts. Your due date, checklists, quotes and area choices are saved only in your own browser (local storage) so the tools remember them. They are never sent to us. To delete them, clear this site's data in your browser settings.",
@@ -1071,8 +1087,8 @@ def p_about(lang):
     email = (f'<p>{x("Contact us:", "Hubungi kami:")} <a href="mailto:{esc(config.CONTACT_EMAIL)}">{esc(config.CONTACT_EMAIL)}</a></p>'
              if config.CONTACT_EMAIL else "")
     body = f"""
-<h1>{x("About", "Tentang kami")} {esc(config.SITE_NAME)}</h1>
-<p class="lead">{x("Free, simple tools for Malaysian families expecting a baby - in English and Bahasa Melayu.",
+{page_head(x, "🤰", "t-home", x("About", "Tentang kami"), esc(config.SITE_NAME))}
+<p class="muted">{x("Free, simple tools for Malaysian families expecting a baby - in English and Bahasa Melayu.",
                    "Alat percuma dan mudah untuk keluarga Malaysia yang menantikan bayi - dalam Bahasa Melayu dan English.")}</p>
 <p>{x("We bring together the things parents-to-be in Malaysia ask about most: how the baby is growing, pantang, confinement costs, maternity leave, baby milk prices and childcare.",
        "Kami menghimpunkan perkara yang paling kerap ditanya oleh bakal ibu bapa di Malaysia: perkembangan bayi, pantang, kos berpantang, cuti bersalin, harga susu bayi dan penjagaan anak.")}</p>
@@ -1106,6 +1122,9 @@ if(l!=='en'&&l!=='ms'){{l=(navigator.language||'').toLowerCase().indexOf('ms')==
 """
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(chooser)
+    # Pages check this on load and reload themselves if the browser showed an old saved copy.
+    with open(os.path.join(OUT, "version.json"), "w", encoding="utf-8") as f:
+        json.dump({"v": VER}, f)
     robots = "User-agent: *\nAllow: /\n"
     if config.BASE_URL:
         robots += f"Sitemap: {config.BASE_URL}/sitemap.xml\n"

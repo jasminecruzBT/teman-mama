@@ -415,3 +415,51 @@ html.pinned .chat-panel { right: 24px; }
   .quotes { gap: 8px; }
   .quote { padding: 10px; }
 }
+
+/* ---------- modern page headers (every page) */
+.page-head { display: flex; gap: 16px; align-items: flex-start; margin: 26px 0 20px; }
+.ph-ico { width: 58px; height: 58px; flex: none; display: grid; place-items: center; border-radius: 18px; font-size: 1.7rem; background: var(--faint); box-shadow: var(--shadow); }
+.ph-text { min-width: 0; }
+.ph-eyebrow { margin: 0 0 2px; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand); display: flex; align-items: center; gap: 8px; }
+.page-head h1 { margin: 0; font-size: 1.6rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.page-head .lead { margin: 4px 0 0; font-size: .95rem; }
+.t-home .ph-ico { background: #fde4ec; } .t-weeks .ph-ico { background: #ede5fb; } .t-pantang .ph-ico { background: #ffe9d6; }
+.t-cost .ph-ico { background: #fff0bf; } .t-bag .ph-ico { background: #d9f2ee; } .t-leave .ph-ico { background: #dfeafd; }
+.t-prices .ph-ico { background: #e2f4dc; } .t-nursery .ph-ico { background: #ffe0dc; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ph-ico { background: var(--surface) !important; } }
+@media (min-width: 640px) { .page-head h1 { font-size: 1.9rem; } .ph-ico { width: 64px; height: 64px; } }
+
+/* ---------- week page */
+.week-hero { display: flex; gap: 18px; align-items: center; margin: 22px 0 14px; }
+.wh-emoji { width: 88px; height: 88px; flex: none; display: grid; place-items: center; font-size: 3.2rem; border-radius: 26px;
+  background: linear-gradient(135deg, var(--brand-soft), var(--surface)); box-shadow: var(--shadow); }
+.week-hero h1 { margin: 0 0 8px; font-size: 1.45rem; line-height: 1.2; }
+.chips-static { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-static { font-size: .78rem; font-weight: 600; color: var(--muted); background: var(--surface); padding: 4px 10px; border-radius: 999px; box-shadow: var(--shadow); }
+.wk-progress { margin: 0 0 18px; }
+.info-grid { display: grid; gap: 12px; }
+.info-grid .card { margin: 0; }
+.card h2 { font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.card h2 > span[aria-hidden] { font-size: 1.15rem; }
+.todo-card { background: linear-gradient(135deg, var(--brand-soft), var(--surface) 75%); margin-top: 12px; }
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+.pg { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); text-decoration: none; color: var(--ink); font-weight: 700; transition: transform .12s ease; }
+.pg small { font-weight: 400; color: var(--muted); font-size: .8rem; }
+.pg:hover { transform: translateY(-2px); }
+.pg-next { text-align: right; align-items: flex-end; }
+@media (min-width: 640px) { .info-grid { grid-template-columns: 1fr 1fr; } .week-hero h1 { font-size: 1.8rem; } .wh-emoji { width: 104px; height: 104px; font-size: 3.8rem; } }
+
+/* ---------- hospital bag progress */
+.bag-progress { padding: 14px 16px; }
+.bp-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.bag-progress .progress { margin: 10px 0 0; }
+.card .checklist .check { padding: 10px 0; }
+
+/* ---------- leave result tiles */
+.stats { display: grid; gap: 10px; margin-top: 16px; }
+.stat { background: var(--faint); border-radius: 14px; padding: 14px; }
+.stat.t1 { background: var(--brand-soft); } .stat.t2 { background: var(--accent-soft); }
+.stat-label { margin: 0; font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.stat-big { margin: 4px 0 2px; font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+.stat-small { margin: 0; font-size: .82rem; color: var(--muted); }
+@media (min-width: 640px) { .stats { grid-template-columns: repeat(3, 1fr); } }

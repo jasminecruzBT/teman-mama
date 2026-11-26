@@ -328,6 +328,7 @@
     function upd() {
       var n = boxes.filter(function (b) { return b.checked; }).length;
       prog.textContent = n === boxes.length ? S.bagDone : fill(S.bagProgress, { n: n, t: boxes.length });
+      var bar = $("#bag-bar"); if (bar) bar.style.width = Math.round(n / boxes.length * 100) + "%";
     }
     boxes.forEach(function (b) {
       b.checked = !!st[b.getAttribute("data-key")];
@@ -349,12 +350,17 @@
       if (!b) { out.innerHTML = '<p class="err">' + esc(S.lvNeed) + "</p>"; return; }
       set("tm_leave", { birth: birth.value, ms: ms.value, ps: ps.value });
       var m = parseDate(ms.value) || b, p = parseDate(ps.value) || b;
-      var h = '<div class="result" style="margin-top:14px">';
-      h += '<p class="big">' + esc(S.lvMat) + "</p><p>" + esc(fill(S.lvRange, { a: fmt(m), b: fmt(addDays(m, 97)) })) + "</p>";
-      h += '<p class="muted">' + esc(fill(S.lvBack, { d: fmt(addDays(m, 98)) })) + "</p>";
+      // three stat tiles: mum's leave, back to work, dad's leave
+      function tile(label, big, small, cls) {
+        return '<div class="stat ' + (cls || "") + '"><p class="stat-label">' + esc(label) + '</p><p class="stat-big">' + esc(big) + "</p>" +
+          (small ? '<p class="stat-small">' + esc(small) + "</p>" : "") + "</div>";
+      }
+      var h = '<div class="stats">' +
+        tile(S.lvMatEnds, fmt(addDays(m, 97)), fill(S.lvStarts, { a: fmt(m), n: 98 }), "t1") +
+        tile(S.lvBackLbl, fmt(addDays(m, 98)), S.lvBackNote, "t2") +
+        tile(S.lvPatEnds, fmt(addDays(p, 6)), fill(S.lvStarts, { a: fmt(p), n: 7 }), "t3") + "</div>";
       if (diffDays(m, b) > 30) h += '<p class="err">' + esc(S.lvEarly) + "</p>";
-      h += '<p class="big" style="margin-top:12px">' + esc(S.lvPat) + "</p><p>" + esc(fill(S.lvRange, { a: fmt(p), b: fmt(addDays(p, 6)) })) + "</p>";
-      out.innerHTML = h + "</div>";
+      out.innerHTML = h;
     }
     $("#lv-go").addEventListener("click", run);
     if (birth.value) run();
@@ -527,6 +533,17 @@
     }).catch(function () { /* near-me buttons still work */ });
   }
 
+  // ---------- freshness: GitHub Pages lets browsers keep pages ~10 min; if this page is an old saved copy, reload once
+  function freshness() {
+    if (!TM.ver || !window.fetch) return;
+    fetch(TM.root + "version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.v || j.v === TM.ver) return;
+      var key = "tm_reloaded_" + j.v;
+      try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, "1"); } catch (e) { return; }
+      location.reload();
+    }).catch(function () { /* offline: keep the saved copy */ });
+  }
+
   // ---------- menu (a <details> drop-down on the left): close on outside click, Escape or after picking
   // On laptops (>= 1100px wide) the menu is pinned open as a sidebar on the left; on phones it's the ☰ drop-down.
   function menu() {
@@ -642,5 +659,5 @@
     $(".chat-form", panel).addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); input.value = ""; });
   }
 
-  tips(); menu(); dueTool(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery(); bot();
+  freshness(); tips(); menu(); dueTool(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery(); bot();
 })();
