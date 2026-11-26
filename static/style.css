@@ -740,3 +740,11 @@ html.pinned .chat-panel { right: 24px; }
 .typ-list li { gap: 10px; }
 .typ-list .link-btn { padding: 0; font-size: .85rem; white-space: nowrap; }
 .nanny-card .pc-actions { margin-top: 10px; }
+
+/* kick counter + contraction timer: side by side on tablets/laptops (tabs only on phones) */
+@media (min-width: 640px) {
+  .dtabs[data-group="lb"], p.dtabs-q:has(+ .dtabs[data-group="lb"]) { display: none; }
+  .lb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .lb-grid > .dpanel[hidden] { display: block !important; }
+  .lb-grid > .dpanel > .card { height: 100%; margin: 0; }
+}

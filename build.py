@@ -738,6 +738,7 @@ def p_labour(lang):
 {tabbar(x, "lb", [("kick", "👣", "Kick counter", "Pengira tendangan", x("Count 10 moves", "Kira 10 gerakan"), "from about 28 weeks", "dari lebih kurang 28 minggu", False),
                     ("con", "⏱️", "Contractions", "Kontraksi", x("How far apart?", "Berapa jarak?"), "time each one", "kira setiap satu", False)],
                 prompt=x("Which tool?", "Alat yang mana?"))}
+<div class="lb-grid">
 <div class="dpanel" role="tabpanel" id="tp-lb-kick" aria-labelledby="tb-lb-kick" data-group="lb" data-tab="kick">
 <section class="card" id="kick-tool">
   <h2><span aria-hidden="true">👣</span> {x("Kick counter", "Pengira tendangan")} {tip(x("From about 28 weeks, get to know your baby's usual pattern. Pick a time when baby is usually active and count movements. If movements slow down or change, go to your clinic or hospital the same day - don't wait.",
@@ -756,6 +757,7 @@ def p_labour(lang):
   <ol class="con-log" id="con-log"></ol>
   <p><button type="button" class="link-btn muted" id="con-reset">{x("Clear", "Padam")}</button></p>
 </section>
+</div>
 </div>
 {danger(x)}
 {ad("in_content", x)}
