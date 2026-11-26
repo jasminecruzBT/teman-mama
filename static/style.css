@@ -770,3 +770,63 @@ html.pinned .chat-panel { right: 24px; }
 .menu-grp[open] > summary { color: var(--brand); }
 .menu-grp > ul { padding: 0 0 6px !important; }
 .menu-panel > ul > li:first-child + .menu-sec .menu-group { border-top: 0; }
+
+/* ---------- new topic pages (antenatal, healthy pregnancy, budget, feelings, aqiqah, jaundice, growth, solids) */
+.t-ante .mi-ico, .t-ante .tool-ico, .t-ante .ph-ico { background: #e0f2f1; }
+.t-healthy .mi-ico, .t-healthy .tool-ico, .t-healthy .ph-ico { background: #e8f5d8; }
+.t-budget .mi-ico, .t-budget .tool-ico, .t-budget .ph-ico { background: #fbf0d9; }
+.t-mind .mi-ico, .t-mind .tool-ico, .t-mind .ph-ico { background: #fff4c7; }
+.t-aqiqah .mi-ico, .t-aqiqah .tool-ico, .t-aqiqah .ph-ico { background: #e6efe2; }
+.t-jaun .mi-ico, .t-jaun .tool-ico, .t-jaun .ph-ico { background: #fff6cf; }
+.t-growth .mi-ico, .t-growth .tool-ico, .t-growth .ph-ico { background: #e2ecfb; }
+.t-solids .mi-ico, .t-solids .tool-ico, .t-solids .ph-ico { background: #fde9dc; }
+.src-line { margin: 18px 0 8px; line-height: 1.5; }
+.tool-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+/* antenatal */
+.ante-now { font-weight: 700; margin: 0 0 4px; }
+.ante-list .vax-main { display: flex; flex-direction: column; gap: 2px; }
+.ante-tip { font-size: .86rem; color: var(--muted); }
+.ante-link { font-size: .86rem; font-weight: 600; }
+.ante-miss { font-size: .8rem; color: var(--warn-ink); }
+.vax-list li.now { background: var(--accent-soft); border-radius: 12px; padding-left: 10px; padding-right: 10px; }
+.ante-list .vax-date { text-align: right; font-size: .84rem; max-width: 9.5em; white-space: normal; }
+/* healthy pregnancy */
+.air-card h3 { margin: 0 0 8px; }
+.air-card p { margin: 0 0 8px; }
+@media (min-width: 640px) { .info-grid:has(.air-card) { grid-template-columns: 1fr 1fr; } }
+/* budget */
+.bud-grid { display: grid; gap: 0 12px; }
+@media (min-width: 640px) { .bud-grid { grid-template-columns: 1fr 1fr; } }
+.bud-grid select, .bud-grid input { width: 100%; }
+.bud-lines { list-style: none; padding: 0; margin: 16px 0 0; }
+.bud-lines li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 2px; border-bottom: 1px solid var(--line); margin: 0; }
+.bud-lines strong { white-space: nowrap; }
+.bud-total { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-top: 12px; padding: 14px 16px; border-radius: 14px; background: var(--brand-soft); }
+.bud-total span { font-weight: 700; }
+.bud-total strong { font-size: 1.5rem; font-weight: 800; }
+.bud-total small { flex-basis: 100%; text-align: right; color: var(--muted); }
+/* feelings (EPDS) */
+.epds-q { border: 0; padding: 14px 0; margin: 0; border-bottom: 1px solid var(--line); }
+.epds-q legend { font-weight: 700; padding: 0; margin-bottom: 10px; display: block; }
+.epds-q legend small, .epds-opt small { display: block; font-weight: 400; color: var(--muted); font-size: .84rem; }
+.epds-n { display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--brand-soft); color: var(--brand); font-size: .82rem; margin-right: 4px; }
+.epds-opt { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px; border-radius: 10px; cursor: pointer; margin: 0 0 4px; font-weight: 400; }
+.epds-opt:has(input:checked) { background: var(--brand-soft); }
+.epds-opt input { margin-top: 3px; flex: none; }
+#epds-result { margin-top: 16px; }
+.epds-score { font-size: 1.2rem; font-weight: 800; }
+.epds-res.high { background: var(--warn-bg); }
+.epds-urgent { margin: 0 0 12px; }
+/* aqiqah, solids */
+.stat.past { opacity: .6; }
+/* growth */
+.gr-fields { grid-template-columns: 1fr 1fr; }
+#gr-add { margin-top: 4px; }
+#gr-result { margin-top: 14px; }
+.gr-res .gr-age { font-weight: 700; }
+.gr-line { margin: 0 0 6px; }
+.gr-line.out strong, .gr-table small.out { color: var(--warn-ink); }
+.gr-h { margin: 18px 0 8px; font-size: 1rem; }
+.gr-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.gr-table th, .gr-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.gr-table small { color: var(--muted); }

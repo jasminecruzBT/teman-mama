@@ -1067,6 +1067,232 @@
     $(".chat-form", panel).addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); input.value = ""; });
   }
 
+  // ---------- shared: baby's birth date typed on any page (vaccines, documents, aqiqah, growth, solids)
+  function babyBirth() {
+    var b = get("tm_baby_birth", "");
+    if (b) return b;
+    var vx = get("tm_vax", {}), dc = get("tm_docs_info", {}), pt = get("tm_pantang", {});
+    return vx.birth || dc.birth || (pt.kind === "birth" ? pt.date : "") || "";
+  }
+  function addMonthsU(d, m) { var x = new Date(d.getTime()); x.setUTCMonth(x.getUTCMonth() + m); return x; }
+
+  // ---------- antenatal check-ups: dated list from the due date (LMP = due - 280 days), ticks saved
+  function antenatal() {
+    var box = $("#ante-tool"); if (!box) return;
+    var input = $("#ante-due"), out = $("#ante-result"), st = get("tm_ante", { due: "", done: {} });
+    input.value = st.due || get("tm_due", "") || "";
+    function render() {
+      var due = parseDate(input.value);
+      if (!due) { out.innerHTML = ""; return; }
+      var lmp = addDays(due, -280), t = today(), ga = diffDays(lmp, t);
+      if (ga < -30 || ga > 50 * 7) { out.innerHTML = '<p class="err">' + esc(S.badDate) + "</p>"; return; }
+      st.due = input.value; set("tm_ante", st); set("tm_due", input.value);
+      var html = ga >= 0 && ga <= 42 * 7 ? '<p class="ante-now">' + esc(fill(S.weeksDays, { w: Math.floor(ga / 7), d: ga % 7 })) + "</p>" : "";
+      var nextDone = false;
+      html += '<ol class="vax-list ante-list">';
+      (TM.ante || []).forEach(function (it) {
+        var k = it[0], a = it[1], b = it[2], start = addDays(lmp, a * 7), end = addDays(lmp, b * 7 + (b > a ? -1 : 0));
+        var done = !!st.done[k], when, cls = done ? "done" : "";
+        if (k === "booking") when = fill(S.anteBefore, { d: fmt(addDays(lmp, 12 * 7)) });
+        else if (a === b) when = fmt(start);
+        else when = fmt(start) + " – " + fmt(end);
+        var label = k === "post" ? S.antePost : a === 0 ? fill(S.anteBeforeWk, { b: b }) : a === b ? fill(S.anteWeek, { a: a }) : fill(S.anteWeeks, { a: a, b: b });
+        if (!done) {
+          if (t >= start && t <= end && k !== "kicks") cls = "now";
+          else if (t > end) cls = "late";
+          if (!nextDone && t <= end && k !== "kicks") { cls += " next"; nextDone = true; }
+        }
+        html += '<li class="' + cls + '"><label class="vax-check"><input type="checkbox" data-k="' + esc(k) + '"' + (done ? " checked" : "") + ' aria-label="' + esc(it[4]) + '"></label>' +
+          '<div class="vax-main"><span class="vax-age">' + esc(label) + "</span><strong>" + esc(it[3] + " " + it[4]) + "</strong>" +
+          (it[5] ? '<span class="ante-tip">' + esc(it[5]) + "</span>" : "") +
+          (it[6] ? ' <a class="ante-link" href="' + esc(it[6]) + '">' + esc(S.anteOpen) + " →</a>" : "") +
+          (cls.indexOf("late") >= 0 && k !== "post" && k !== "due" ? '<span class="ante-miss">' + esc(S.anteMissed) + "</span>" : "") +
+          '</div><span class="vax-date">' + esc(when) + "</span></li>";
+      });
+      out.innerHTML = html + "</ol>";
+    }
+    input.addEventListener("change", render);
+    out.addEventListener("change", function (e) {
+      var cb = e.target.closest("input[data-k]"); if (!cb) return;
+      st.done[cb.getAttribute("data-k")] = cb.checked; set("tm_ante", st); render();
+    });
+    render();
+  }
+
+  // ---------- first-year budget: all numbers editable, saved as typed
+  function rm0(n) { return "RM" + Math.round(n).toLocaleString("en-MY"); }
+  function budget() {
+    var box = $("#bud-tool"); if (!box) return;
+    var out = $("#bud-result"), st = get("tm_budget", {});
+    var fields = $$("select[name], input[name]", box);
+    fields.forEach(function (f) { if (st[f.name] !== undefined && st[f.name] !== null) f.value = st[f.name]; });
+    function num(name) { var f = $('[name="' + name + '"]', box), v = parseFloat(f && f.value); return isFinite(v) && v > 0 ? v : 0; }
+    function pick(name) {
+      var sel = $('select[name="' + name + '"]', box), custom = sel.value === "custom";
+      $('.bud-custom[data-for="' + name + '"]', box).hidden = !custom;
+      return custom ? num(name + "_rm") : parseFloat(sel.value) || 0;
+    }
+    function render() {
+      var rows = [
+        [S.budDeliv, pick("deliv")],
+        [S.budConf, pick("conf")],
+        [fill(S.budDiaper, { n: num("dpd") }), num("dpd") * num("dprice") * 365],
+        [S.budMilk, num("milk") * 12],
+        [S.budItems, num("items")],
+        [fill(S.budCare, { m: Math.min(12, num("care_m")) }), num("care") * Math.min(12, num("care_m"))]
+      ];
+      var total = rows.reduce(function (s, r) { return s + r[1]; }, 0);
+      var html = '<ul class="bud-lines">' + rows.map(function (r) {
+        return "<li><span>" + esc(r[0]) + "</span><strong>" + esc(rm0(r[1])) + "</strong></li>";
+      }).join("") + "<li><span>" + esc(S.budVax) + "</span><strong>" + esc(S.budFree) + "</strong></li></ul>" +
+        '<div class="bud-total"><span>' + esc(S.budTotal) + '</span><strong>' + esc(rm0(total)) + "</strong>" +
+        '<small>' + esc(fill(S.budMonth, { rm: rm0(total / 12) })) + "</small></div>";
+      out.innerHTML = html;
+      fields.forEach(function (f) { st[f.name] = f.value; });
+      set("tm_budget", st);
+    }
+    box.addEventListener("input", render);
+    box.addEventListener("change", render);
+    render();
+  }
+
+  // ---------- EPDS: scored on this page only, nothing saved
+  function epds() {
+    var form = $("#epds"); if (!form) return;
+    var out = $("#epds-result");
+    function render() {
+      var n = 0, score = 0, q10 = 0;
+      for (var i = 1; i <= 10; i++) {
+        var c = $('input[name="q' + i + '"]:checked', form);
+        if (c) { n++; score += +c.value; if (i === 10) q10 = +c.value; }
+      }
+      var html = "";
+      if (q10 > 0) html += '<div class="box danger epds-urgent"><p><strong>' + esc(S.epdsUrgent) + "</strong></p></div>";
+      if (n < 10) { out.innerHTML = html + '<p class="hint">' + esc(fill(S.epdsDone, { n: n })) + "</p>"; return; }
+      var high = score >= 12;
+      html += '<div class="result epds-res ' + (high ? "high" : "low") + '"><p class="epds-score">' + esc(fill(S.epdsScore, { s: score })) + "</p>" +
+        "<p>" + esc(high ? S.epdsHigh : S.epdsLow) + '</p><p class="small muted">' + esc(S.epdsPrivate) + "</p></div>";
+      out.innerHTML = html;
+    }
+    form.addEventListener("change", render);
+    render();
+  }
+
+  // ---------- aqiqah: 7th / 14th / 21st day (birth day = day 1)
+  function aqiqah() {
+    var box = $("#aq-tool"); if (!box) return;
+    var input = $("#aq-birth"), out = $("#aq-result");
+    input.value = babyBirth();
+    function render() {
+      var b = parseDate(input.value);
+      if (!b) { out.innerHTML = ""; return; }
+      set("tm_baby_birth", input.value);
+      var t = today(), html = '<div class="stats">';
+      [[7, S.aq7], [14, S.aq14], [21, S.aq21]].forEach(function (d, i) {
+        var day = addDays(b, d[0] - 1), left = diffDays(t, day);
+        var small = left > 0 ? fill(S.aqLeft, { n: left }) : left === 0 ? S.aqToday : S.aqPassed;
+        html += '<div class="stat' + (i < 2 ? " t" + (i + 1) : "") + (left < 0 ? " past" : "") + '"><p class="stat-label">' + esc(d[1]) + '</p><p class="stat-big">' +
+          esc(fmt(day)) + '</p><p class="stat-small">' + esc(small) + "</p></div>";
+      });
+      out.innerHTML = html + "</div>";
+    }
+    input.addEventListener("change", render);
+    render();
+  }
+
+  // ---------- first foods: 6-month and 1-year dates
+  function solids() {
+    var box = $("#sol-tool"); if (!box) return;
+    var input = $("#sol-birth"), out = $("#sol-result");
+    input.value = babyBirth();
+    function render() {
+      var b = parseDate(input.value);
+      if (!b) { out.innerHTML = ""; return; }
+      set("tm_baby_birth", input.value);
+      var t = today(), six = addMonthsU(b, 6), one = addMonthsU(b, 12), l6 = diffDays(t, six), l12 = diffDays(t, one);
+      out.innerHTML = '<div class="stats"><div class="stat t1' + (l6 < 0 ? " past" : "") + '"><p class="stat-label">' + esc(S.solSix) + '</p><p class="stat-big">' + esc(fmt(six)) +
+        '</p><p class="stat-small">' + esc(l6 > 0 ? fill(S.aqLeft, { n: l6 }) : S.solStarted) + '</p></div><div class="stat t2' + (l12 < 0 ? " past" : "") + '"><p class="stat-label">' + esc(S.solOne) +
+        '</p><p class="stat-big">' + esc(fmt(one)) + '</p><p class="stat-small">' + esc(S.solOneSmall) + "</p></div></div>";
+    }
+    input.addEventListener("change", render);
+    render();
+  }
+
+  // ---------- baby growth: WHO LMS z-score -> "heavier than about N in 100 babies"
+  function growth() {
+    var box = $("#gr-tool"); if (!box || !TM.who) return;
+    var st = get("tm_growth", { sex: "b", birth: "", list: [] });
+    if (!st.birth) st.birth = babyBirth();
+    var birth = $("#gr-birth"), date = $("#gr-date"), w = $("#gr-w"), l = $("#gr-l"), out = $("#gr-result");
+    var sexBtns = $$(".pill-opt[data-sex]", box);
+    birth.value = st.birth || ""; date.value = iso(today());
+    function setSex(s) { st.sex = s; sexBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-sex") === s ? "true" : "false"); }); }
+    function lms(tab, months) {
+      var i = Math.max(0, Math.min(23, Math.floor(months))), f = Math.max(0, Math.min(1, months - i)), a = tab[i], b = tab[i + 1];
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
+    }
+    function zOf(v, p) { return Math.abs(p[0]) < 1e-9 ? Math.log(v / p[1]) / p[2] : (Math.pow(v / p[1], p[0]) - 1) / (p[0] * p[2]); }
+    function cdf(z) {  // normal CDF (Abramowitz-Stegun 7.1.26)
+      var t = 1 / (1 + 0.3275911 * Math.abs(z) / Math.SQRT2), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z / 2);
+      return z >= 0 ? (1 + y) / 2 : (1 - y) / 2;
+    }
+    function judge(v, kind, months, sex) {
+      if (!v) return null;
+      var p = lms(TM.who[kind][sex], months), z = zOf(v, p), pc = Math.round(cdf(z) * 100);
+      pc = Math.max(1, Math.min(99, pc));
+      var verdict = z < -2 ? S.grLow : z > 2 ? S.grHigh : S.grOk;
+      return { z: z, pc: pc, cls: z < -2 || z > 2 ? "out" : "ok", txt: fill(kind === "w" ? S.grPctW : S.grPctL, { p: pc }), verdict: verdict, med: p[1] };
+    }
+    function ageOf(b, d) { return diffDays(b, d) / 30.4375; }
+    function line(r) { return r ? '<p class="gr-line ' + r.cls + '">' + esc(r.txt) + " <strong>" + esc(r.verdict) + "</strong></p>" : ""; }
+    function history() {
+      var b = parseDate(st.birth); if (!b || !st.list.length) return "";
+      var rows = st.list.slice().sort(function (a, c) { return a.d < c.d ? 1 : -1; }).map(function (m) {
+        var d = parseDate(m.d), mo = ageOf(b, d); if (mo < 0 || mo > 24) return "";
+        var rw = judge(m.w, "w", mo, st.sex), rl = judge(m.l, "l", mo, st.sex);
+        return "<tr><td>" + esc(fmt(d)) + "<br><small>" + esc(fill(S.grAge, { m: Math.floor(mo) })) + "</small></td><td>" + (m.w ? esc(m.w + " kg") + (rw ? '<br><small class="' + rw.cls + '">' + rw.pc + "/100</small>" : "") : "–") +
+          "</td><td>" + (m.l ? esc(m.l + " cm") + (rl ? '<br><small class="' + rl.cls + '">' + rl.pc + "/100</small>" : "") : "–") +
+          '</td><td><button type="button" class="link-btn muted" data-del="' + esc(m.d) + '" aria-label="' + esc(S.grDel) + '">✕</button></td></tr>';
+      }).join("");
+      return '<h3 class="gr-h">' + esc(S.grHist) + '</h3><div class="table-wrap"><table class="gr-table"><thead><tr><th>' + esc(S.grWhen) + "</th><th>" + esc(S.grW) + "</th><th>" + esc(S.grL) +
+        "</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div>";
+    }
+    function show(msg) {
+      var b = parseDate(birth.value), d = parseDate(date.value), html = "";
+      if (msg) html += '<p class="err">' + esc(msg) + "</p>";
+      var last = st.list.filter(function (m) { return m.d === date.value; })[0];
+      if (b && d && last) {
+        var mo = ageOf(b, d);
+        if (mo >= 0 && mo <= 24) {
+          var rw = judge(last.w, "w", mo, st.sex), rl = judge(last.l, "l", mo, st.sex), p = lms(TM.who.w[st.sex], mo), q = lms(TM.who.l[st.sex], mo);
+          html += '<div class="result gr-res"><p class="gr-age">' + esc(fill(S.grAge, { m: Math.floor(mo) })) + " · " + esc(fmt(d)) + "</p>" + line(rw) + line(rl) +
+            '<p class="small muted">' + esc(fill(S.grMed, { w: p[1].toFixed(1), l: q[1].toFixed(1) })) + "</p></div>";
+        }
+      }
+      out.innerHTML = html + history();
+    }
+    sexBtns.forEach(function (b) { b.addEventListener("click", function () { setSex(b.getAttribute("data-sex")); set("tm_growth", st); show(); }); });
+    birth.addEventListener("change", function () { st.birth = birth.value; set("tm_growth", st); if (birth.value) set("tm_baby_birth", birth.value); show(); });
+    $("#gr-add").addEventListener("click", function () {
+      var b = parseDate(birth.value), d = parseDate(date.value), wv = parseFloat(w.value), lv = parseFloat(l.value);
+      if (!b || !d || (!(wv > 0) && !(lv > 0))) return show(S.grNeed);
+      if (d < b || d > today()) return show(S.badDate);
+      if (ageOf(b, d) > 24) return show(S.grOld);
+      if ((wv > 0 && (wv < 1 || wv > 25)) || (lv > 0 && (lv < 40 || lv > 100))) return show(S.badDate);
+      st.birth = birth.value; set("tm_baby_birth", birth.value);
+      st.list = st.list.filter(function (m) { return m.d !== date.value; });
+      st.list.push({ d: date.value, w: wv > 0 ? wv : null, l: lv > 0 ? lv : null });
+      set("tm_growth", st); w.value = ""; l.value = ""; show();
+    });
+    out.addEventListener("click", function (e) {
+      var del = e.target.closest("[data-del]"); if (!del) return;
+      st.list = st.list.filter(function (m) { return m.d !== del.getAttribute("data-del"); }); set("tm_growth", st); show();
+    });
+    setSex(st.sex || "b");
+    show();
+  }
+
   freshness(); tips(); menu(); dueTool(); homeTabs(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery();
   themeSwitch(); vaccines(); afterBirth(); deliveryCost(); stateChips(); cardSort(); tabGroups(); milk(); names(); fertility(); labour(); bot();
+  antenatal(); budget(); epds(); aqiqah(); solids(); growth();
 })();

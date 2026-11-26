@@ -17,6 +17,7 @@ from urllib.parse import quote_plus
 import config
 from content import extra
 from content import weeks as wk
+from content import topics as tp
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "site")
@@ -43,19 +44,27 @@ NAV = [
     ("planning.html", "Planning a pregnancy", "Persediaan hamil", "📝", "t-plan"),
     ("#preg", "Pregnant", "Sedang hamil", "🤰", ""),
     ("weeks/index.html", "Week by week", "Minggu demi minggu", "📅", "t-weeks"),
+    ("antenatal.html", "Antenatal check-ups", "Pemeriksaan antenatal", "🩺", "t-ante"),
+    ("healthy-pregnancy.html", "Healthy pregnancy", "Hamil sihat", "🥗", "t-healthy"),
     ("names.html", "Baby names", "Nama bayi", "✨", "t-names"),
     ("labour.html", "Kicks & contractions", "Tendangan & kontraksi", "⏱️", "t-labour"),
     ("hospital-bag.html", "Hospital bag", "Beg hospital", "👜", "t-bag"),
     ("delivery-cost.html", "Delivery cost", "Kos bersalin", "🏥", "t-deliv"),
     ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
+    ("budget.html", "Baby's first-year budget", "Bajet bayi tahun pertama", "🧾", "t-budget"),
     ("#new", "New mum", "Ibu baharu", "👶", ""),
     ("pantang.html", "Pantang planner", "Perancang pantang", "🍲", "t-pantang"),
+    ("feelings.html", "How are you feeling?", "Kesihatan emosi ibu", "💛", "t-mind"),
     ("after-birth.html", "Documents & savings", "Dokumen & simpanan", "📄", "t-docs"),
+    ("aqiqah.html", "Aqiqah & cukur jambul", "Aqiqah & cukur jambul", "🐐", "t-aqiqah"),
     ("vaccines.html", "Vaccination dates", "Jadual imunisasi", "💉", "t-vax"),
+    ("jaundice.html", "Jaundice & G6PD", "Kuning (jaundis) & G6PD", "🟡", "t-jaun"),
     ("breastmilk.html", "Breast milk storage", "Simpan susu ibu", "🤱", "t-milk"),
     ("newborn.html", "Newborn essentials", "Barang bayi baru lahir", "🧺", "t-kit"),
     ("leave.html", "Maternity leave", "Cuti bersalin", "🗓️", "t-leave"),
     ("#kids", "Mum & kids", "Ibu & anak", "🧒", ""),
+    ("growth.html", "Baby's growth", "Tumbesaran bayi", "📈", "t-growth"),
+    ("solids.html", "Baby's first foods", "Makanan pertama bayi", "🥣", "t-solids"),
     ("prices.html", "Prices: milk, diapers & essentials", "Harga barang keperluan", "🍼", "t-prices"),
     ("nursery.html", "Taska & tadika", "Taska & tadika", "🧸", "t-nursery"),
 ]
@@ -255,6 +264,50 @@ JS_STR = {
     },
 }
 
+
+JS_STR["en"].update({
+    "anteWeeks": "Weeks {a}-{b}", "anteWeek": "Week {a}", "anteBeforeWk": "Before week {b}", "anteBefore": "before {d}",
+    "antePost": "About 6 weeks after birth", "anteOpen": "Open", "anteMissed": "Missed it? Tell your klinik at your next visit.",
+    "budDeliv": "Giving birth", "budConf": "Confinement", "budDiaper": "Diapers ({n} a day for a year)", "budMilk": "Formula milk (12 months)",
+    "budItems": "Baby items", "budCare": "Childcare ({m} months)", "budVax": "Vaccines at klinik kesihatan", "budFree": "Free",
+    "budTotal": "First year, about", "budMonth": "about {rm} a month",
+    "epdsDone": "Answered {n} of 10 - your result shows when all 10 are answered.",
+    "epdsScore": "Your score: {s} out of 30",
+    "epdsLow": "Your score is below the level that usually needs follow-up. If you still feel low, or it lasts more than two weeks, talk to your klinik or doctor - and check again in two weeks.",
+    "epdsHigh": "Your score suggests you may have depression. Please see your klinik kesihatan or doctor soon and tell them your score. It's common and it can be treated - you're not alone.",
+    "epdsUrgent": "You said you've had thoughts of harming yourself. Please get help today: go to the nearest hospital emergency department, call 999, or call Talian HEAL 15555.",
+    "epdsPrivate": "This score is not saved anywhere. You can take a screenshot to show your nurse or doctor.",
+    "aq7": "7th day", "aq14": "14th day", "aq21": "21st day", "aqLeft": "in {n} days", "aqToday": "today", "aqPassed": "passed",
+    "solSix": "6 months old - first foods", "solStarted": "time to start (if your klinik agrees)", "solOne": "1 year old",
+    "solOneSmall": "until then: no salt, sugar, juice or honey",
+    "grPctW": "Heavier than about {p} in 100 babies of the same age and sex.", "grPctL": "Longer than about {p} in 100 babies of the same age and sex.",
+    "grOk": "Within the usual range.", "grLow": "Below the usual range - ask your klinik to check.", "grHigh": "Above the usual range - ask your klinik to check.",
+    "grMed": "Middle (median) for this age: {w} kg · {l} cm", "grAge": "{m} months old", "grHist": "Saved measurements", "grDel": "Delete",
+    "grWhen": "Date", "grW": "Weight", "grL": "Length",
+    "grNeed": "Enter the birth date, the date measured and the weight or length.", "grOld": "This WHO chart covers birth to 2 years. For older children, use the chart in your child's health book.",
+})
+JS_STR["ms"].update({
+    "anteWeeks": "Minggu {a}-{b}", "anteWeek": "Minggu {a}", "anteBeforeWk": "Sebelum minggu {b}", "anteBefore": "sebelum {d}",
+    "antePost": "Lebih kurang 6 minggu selepas bersalin", "anteOpen": "Buka", "anteMissed": "Terlepas? Beritahu klinik pada lawatan seterusnya.",
+    "budDeliv": "Bersalin", "budConf": "Berpantang", "budDiaper": "Lampin ({n} sehari selama setahun)", "budMilk": "Susu formula (12 bulan)",
+    "budItems": "Barang bayi", "budCare": "Taska ({m} bulan)", "budVax": "Vaksin di klinik kesihatan", "budFree": "Percuma",
+    "budTotal": "Tahun pertama, lebih kurang", "budMonth": "lebih kurang {rm} sebulan",
+    "epdsDone": "Dijawab {n} daripada 10 - keputusan dipaparkan selepas kesemua 10 dijawab.",
+    "epdsScore": "Skor anda: {s} daripada 30",
+    "epdsLow": "Skor anda di bawah tahap yang biasanya perlu susulan. Jika anda masih berasa sedih, atau ia berlarutan lebih dua minggu, berbincang dengan klinik atau doktor - dan semak semula dalam dua minggu.",
+    "epdsHigh": "Skor anda menunjukkan anda mungkin mengalami kemurungan. Sila jumpa klinik kesihatan atau doktor secepat mungkin dan beritahu skor anda. Ia biasa berlaku dan boleh dirawat - anda tidak keseorangan.",
+    "epdsUrgent": "Anda menyatakan pernah terfikir untuk mencederakan diri. Sila dapatkan bantuan hari ini: pergi ke jabatan kecemasan hospital terdekat, hubungi 999, atau Talian HEAL 15555.",
+    "epdsPrivate": "Skor ini tidak disimpan di mana-mana. Anda boleh mengambil tangkapan skrin untuk ditunjukkan kepada jururawat atau doktor.",
+    "aq7": "Hari ke-7", "aq14": "Hari ke-14", "aq21": "Hari ke-21", "aqLeft": "lagi {n} hari", "aqToday": "hari ini", "aqPassed": "sudah lepas",
+    "solSix": "Umur 6 bulan - makanan pertama", "solStarted": "masa untuk mula (jika klinik bersetuju)", "solOne": "Umur 1 tahun",
+    "solOneSmall": "sebelum itu: tiada garam, gula, jus atau madu",
+    "grPctW": "Lebih berat daripada lebih kurang {p} daripada 100 bayi sebaya dan sama jantina.", "grPctL": "Lebih panjang daripada lebih kurang {p} daripada 100 bayi sebaya dan sama jantina.",
+    "grOk": "Dalam julat biasa.", "grLow": "Di bawah julat biasa - minta klinik menyemak.", "grHigh": "Di atas julat biasa - minta klinik menyemak.",
+    "grMed": "Nilai tengah (median) untuk umur ini: {w} kg · {l} cm", "grAge": "Umur {m} bulan", "grHist": "Ukuran yang disimpan", "grDel": "Padam",
+    "grWhen": "Tarikh", "grW": "Berat", "grL": "Panjang",
+    "grNeed": "Masukkan tarikh lahir, tarikh diukur dan berat atau panjang.", "grOld": "Carta WHO ini untuk lahir hingga 2 tahun. Untuk kanak-kanak lebih besar, guna carta dalam buku kesihatan anak.",
+})
+
 # ---------------------------------------------------------------- helper bot (no AI: keyword matching)
 # Keywords work in both languages. A keyword starting with "=" must match a whole word
 # (so "hi" doesn't match "which"); others match the start of a word or a phrase.
@@ -303,6 +356,20 @@ BOT_KW = {
     "planning": ["asid folik", "folic", "sebelum hamil", "before pregnancy", "pre-pregnancy", "prakehamilan", "plan pregnancy",
                  "planning pregnancy", "rancang hamil", "ujian hamil", "pregnancy test", "test hamil", "=upt", "=ivf", "=iui",
                  "infertil", "kesuburan", "tak hamil", "susah hamil", "not getting pregnant", "lppkn"],
+    "antenatal": ["antenatal", "check-up", "checkup", "pemeriksaan", "buku pink", "pink book", "=ogtt", "glukosa", "kencing manis hamil",
+                  "gestational diabetes", "diabetes hamil", "=tdap", "batuk kokol", "whooping", "klinik ibu", "booking"],
+    "healthy": ["makan apa", "what to eat", "pantang makan hamil", "boleh makan", "can i eat", "food to avoid", "makanan hamil",
+                "puasa", "fasting", "ramadan", "ramadhan", "fidyah", "qada", "terbang", "flight", "=fly", "flying", "kapal terbang", "airasia",
+                "malaysia airlines", "kafein", "caffeine", "kopi", "durian", "nanas", "pineapple", "sushi"],
+    "budget": ["bajet", "budget", "belanja bayi", "cost of baby", "kos bayi", "kos anak", "how much does a baby cost", "first year", "tahun pertama"],
+    "feelings": ["sedih selepas bersalin", "rasa sedih", "kemurungan selepas bersalin", "postnatal depression", "postpartum depression", "sad after", "feel sad", "feeling low", "sedih", "=sad", "murung", "depress", "kemurungan", "baby blues", "stress", "tertekan", "anxious",
+                 "cemas", "=epds", "mental", "emosi", "lonely", "sunyi", "tak larat"],
+    "aqiqah": ["aqiqah", "akikah", "aqikah", "cukur jambul", "cukur rambut", "kambing", "goat", "zakat rambut"],
+    "jaundice": ["kuning", "jaundice", "jaundis", "=g6pd", "bilirubin", "phototherapy", "fototerapi", "jemur", "ubat gegat", "mothball"],
+    "growth": ["berat bayi", "baby weight", "tinggi bayi", "panjang bayi", "growth", "tumbesaran", "percentile", "persentil", "milestone",
+               "perkembangan", "merangkak", "crawl", "first steps", "mula berjalan", "mula bercakap", "first words", "tidur bayi", "baby sleep", "how much sleep"],
+    "solids": ["makanan pejal", "solid food", "solids", "first food", "makanan pertama", "=mpasi", "bubur bayi", "baby porridge", "puree",
+               "madu", "honey"],
     "hello": ["=hi", "=hello", "=hai", "=helo", "=hey", "salam", "assalamualaikum", "good morning", "selamat pagi"],
     "thanks": ["thank", "terima kasih", "=tq", "=tqvm", "=ty"],
 }
@@ -364,6 +431,30 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
     "planning": ("planning.html", "Planning a baby? KKM advises starting folic acid 3 months before pregnancy and a pre-pregnancy check at your klinik kesihatan. Most home pregnancy tests work from the day your period is due.",
                  "Merancang untuk hamil? KKM menasihatkan mula mengambil asid folik 3 bulan sebelum hamil dan pemeriksaan prakehamilan di klinik kesihatan. Kebanyakan ujian kehamilan di rumah boleh dibuat mulai hari haid dijangka.",
                  "Open the planning checklist", "Buka senarai persediaan"),
+    "antenatal": ("antenatal.html", "Register at your klinik kesihatan before 12 weeks. You'll have a glucose test (OGTT) at 24-28 weeks and a free Tdap vaccine at 28-32 weeks. Enter your due date to see your own dates.",
+                  "Daftar di klinik kesihatan sebelum 12 minggu. Anda akan menjalani ujian glukosa (OGTT) pada 24-28 minggu dan menerima vaksin Tdap percuma pada 28-32 minggu. Masukkan tarikh jangkaan untuk melihat tarikh anda.",
+                  "See your check-up dates", "Lihat tarikh pemeriksaan anda"),
+    "healthy": ("healthy-pregnancy.html", "Eat a variety, drink plain water, and avoid raw or undercooked food, unpasteurised milk and too much caffeine. We also cover fasting in Ramadan and airline rules for flying while pregnant.",
+                "Makan pelbagai, minum air kosong, dan elakkan makanan mentah atau separa masak, susu tidak dipasteur dan kafein berlebihan. Kami juga menerangkan puasa Ramadan dan peraturan syarikat penerbangan untuk ibu hamil.",
+                "Food, fasting & flying", "Makanan, puasa & terbang"),
+    "budget": ("budget.html", "Add up delivery, confinement, diapers, milk, baby items and childcare for baby's first year - every number can be changed.",
+               "Kira kos bersalin, berpantang, lampin, susu, barang bayi dan taska untuk tahun pertama bayi - setiap angka boleh diubah.",
+               "Open the budget calculator", "Buka kalkulator bajet"),
+    "feelings": ("feelings.html", "Feeling low after having a baby is common, and it can be treated. Try our private 10-question check, and talk to your klinik. If you're thinking of harming yourself, call 999 or Talian HEAL 15555 now.",
+                 "Berasa sedih selepas bersalin adalah biasa, dan boleh dirawat. Cuba semakan peribadi 10 soalan kami, dan berbincang dengan klinik. Jika terfikir untuk mencederakan diri, hubungi 999 atau Talian HEAL 15555 sekarang.",
+                 "Open the feelings check", "Buka semakan emosi"),
+    "aqiqah": ("aqiqah.html", "Aqiqah and cukur jambul are sunnah on the 7th day (or the 14th or 21st). Enter baby's birth date to see the dates.",
+               "Aqiqah dan cukur jambul sunat pada hari ketujuh (atau ke-14 atau ke-21). Masukkan tarikh lahir bayi untuk melihat tarikhnya.",
+               "See aqiqah dates", "Lihat tarikh aqiqah"),
+    "jaundice": ("jaundice.html", "Yellow skin in the first 24 hours, a baby who is very yellow, drowsy or not feeding well, or pale stools need a klinik straight away. Don't 'sun' your baby - KKM says it can harm them.",
+                 "Kulit kuning dalam 24 jam pertama, bayi sangat kuning, lemah atau tidak mahu menyusu, atau najis pucat perlu ke klinik segera. Jangan 'jemur' bayi - KKM menyatakan ia boleh membahayakan.",
+                 "Jaundice & G6PD guide", "Panduan kuning & G6PD"),
+    "growth": ("growth.html", "Check your baby's weight and length on the WHO chart (0-2 years), see milestones by month and how much sleep babies need.",
+               "Semak berat dan panjang bayi pada carta WHO (0-2 tahun), perkembangan mengikut bulan dan berapa banyak tidur yang bayi perlukan.",
+               "Open baby's growth", "Buka tumbesaran bayi"),
+    "solids": ("solids.html", "KKM: start other food at 6 months and keep breastfeeding to 2 years. No salt, sugar, juice or honey before 1 year.",
+               "KKM: mula beri makanan lain pada 6 bulan dan teruskan menyusu hingga 2 tahun. Tiada garam, gula, jus atau madu sebelum 1 tahun.",
+               "Baby's first foods", "Makanan pertama bayi"),
     "hello": ("", "Hi! Ask me about your pregnancy week, pantang, confinement costs, maternity leave, milk prices or taska.",
               "Hai! Tanya saya tentang minggu kehamilan, pantang, kos berpantang, cuti bersalin, harga susu atau taska.", "", ""),
     "thanks": ("", "You're welcome! Take care.", "Sama-sama! Jaga diri.", "", ""),
@@ -1224,6 +1315,14 @@ def p_home(lang):
         "vaccines.html": ("Your baby's KKM vaccine dates", "Tarikh vaksin bayi (KKM)"),
         "breastmilk.html": ("How long it keeps (KKM)", "Berapa lama tahan (KKM)"),
         "newborn.html": ("What to buy before baby", "Apa perlu dibeli sebelum bayi"),
+        "antenatal.html": ("Klinik visits, tests & Tdap - dated", "Lawatan klinik, ujian & Tdap - bertarikh"),
+        "healthy-pregnancy.html": ("Food, fasting & flying", "Makanan, puasa & terbang"),
+        "budget.html": ("Add up baby's first year", "Kira kos tahun pertama bayi"),
+        "feelings.html": ("Private postnatal depression check", "Semakan kemurungan selepas bersalin"),
+        "aqiqah.html": ("7th, 14th & 21st day dates", "Tarikh hari ke-7, 14 & 21"),
+        "jaundice.html": ("Warning signs & what to avoid", "Tanda bahaya & apa perlu dielak"),
+        "growth.html": ("WHO chart, milestones & sleep", "Carta WHO, perkembangan & tidur"),
+        "solids.html": ("Starting food at 6 months", "Mula makanan pada 6 bulan"),
     })
     stages, cur_stage = [], None
     for h, en, ms, ico, cls in NAV:
@@ -1891,6 +1990,310 @@ def p_nursery(lang):
                body, {"nu": NU})
 
 
+def src_line(x, items):
+    """'Sources:' line with links. items: [(label, url)]"""
+    return (f'<p class="small muted src-line">{x("Sources", "Sumber")}: '
+            + " · ".join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(l)}</a>' for l, u in items)
+            + f'. {x("General information only - follow your doctor or klinik.", "Maklumat umum sahaja - ikut nasihat doktor atau klinik anda.")}</p>')
+
+
+def p_antenatal(lang):
+    x = tr(lang)
+    items = [[k, a, b, ico, x(en, ms), x(te, tm), ln] for k, a, b, ico, en, ms, te, tm, ln in tp.ANTENATAL]
+    body = f"""
+{page_head(x, "🩺", "t-ante", x("Pregnant", "Sedang hamil"), x("Antenatal check-ups", "Pemeriksaan antenatal"),
+           x("Your klinik visits, tests and vaccines - with dates.", "Lawatan klinik, ujian dan vaksin anda - beserta tarikh."))}
+<section class="card" id="ante-tool">
+  <div class="due-row"><label class="field grow">{x("Your due date", "Tarikh jangkaan bersalin")}<input type="date" id="ante-due"></label></div>
+  <div id="ante-result" aria-live="polite"></div>
+  <p class="hint">{x("How often: once a month until 28 weeks, every 2 weeks from 28 to 35 weeks, then every week from 36 weeks. Tick each one when it's done - saved on this phone.",
+                     "Kekerapan: sebulan sekali sehingga 28 minggu, setiap 2 minggu dari 28 hingga 35 minggu, kemudian setiap minggu dari 36 minggu. Tandakan setiap satu apabila selesai - disimpan dalam telefon ini.")}</p>
+</section>
+{danger(x)}
+{ad("in_content", x)}
+{src_line(x, [("KKM Perinatal Care Manual", "https://hq.moh.gov.my/bpkk/images/PERINATAL_CARE_MANUAL_4th_Edition_2020_11Mei2023.pdf"),
+              ("MyHEALTH", "http://www.myhealth.gov.my/en/antenal-care/"),
+              (x("KKM Tdap vaccine", "Vaksin Tdap KKM"), "https://www.moh.gov.my/images/kenyataan-media/2023/KENYATAAN_MEDIA_KKM_28_OGOS_2023_-_VAKSIN_TDAP_UNTUK_IBU_HAMIL.pdf")])}
+"""
+    write_page(lang, "antenatal.html", x("Antenatal check-up schedule Malaysia (KKM)", "Jadual pemeriksaan antenatal (KKM)"),
+               x("When to see your klinik kesihatan in pregnancy: booking before 12 weeks, glucose test at 24-28 weeks, free Tdap vaccine at 28-32 weeks and more - with your dates.",
+                 "Bila perlu ke klinik kesihatan semasa hamil: daftar sebelum 12 minggu, ujian glukosa 24-28 minggu, vaksin Tdap percuma 28-32 minggu dan lain-lain - beserta tarikh anda."),
+               body, {"ante": items})
+
+
+def p_healthy(lang):
+    x = tr(lang)
+    avoid = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.FOOD_AVOID)
+    do = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.FOOD_DO)
+    brk = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.FAST_BREAK)
+    air = "".join(
+        f'<article class="card air-card"><h3>✈️ {esc(n)}</h3><p><strong>{x("One baby", "Seorang bayi")}:</strong> {esc(x(se, sm))}</p>'
+        f'<p><strong>{x("Twins or more", "Kembar atau lebih")}:</strong> {esc(x(me, mm))}</p><p>{esc(x(le, lm))}</p>'
+        f'<p class="small muted"><a href="{esc(u)}" target="_blank" rel="noopener">{x("Airline page", "Laman syarikat penerbangan")} ↗</a> · {x("checked", "disemak")} {_dmy(c, lang)}</p></article>'
+        for n, se, sm, me, mm, le, lm, u, c in tp.AIRLINES)
+    tabs = tabbar(x, "hp", [
+        ("food", "🥗", "Food", "Makanan", x("Eat & avoid", "Makan & elak"), "", "", False),
+        ("fast", "🌙", "Fasting", "Puasa", x("Ramadan", "Ramadan"), "pregnant & breastfeeding", "hamil & menyusu", False),
+        ("fly", "✈️", "Flying", "Terbang", x("Airline rules", "Peraturan"), "by week", "ikut minggu", False),
+    ], hash_ok=True, prompt=x("What do you want to know?", "Apa yang anda mahu tahu?"))
+    body = f"""
+{page_head(x, "🥗", "t-healthy", x("Pregnant", "Sedang hamil"), x("Healthy pregnancy", "Hamil sihat"),
+           x("Food, fasting and flying while you're pregnant.", "Makanan, puasa dan menaiki kapal terbang semasa hamil."))}
+{tabs}
+{tabpanel("hp", "food", f'''<section class="card"><h2>✅ {x("Do", "Amalkan")}</h2><ul>{do}</ul></section>
+<section class="card"><h2>🚫 {x("Avoid or limit", "Elakkan atau hadkan")}</h2><ul>{avoid}</ul></section>
+{src_line(x, [("MyHEALTH", "http://www.myhealth.gov.my/pemakanan-semasa-mengandung/"), (x("MyHEALTH cravings", "MyHEALTH mengidam"), "http://www.myhealth.gov.my/mengidam-semasa-mengandung/")])}''')}
+{tabpanel("hp", "fast", f'''<section class="card"><h2>🩺 {x("Your health", "Kesihatan anda")}</h2>
+<p>{x("Talk to your doctor before you fast - especially if you have diabetes, anaemia or another health problem. Between iftar and sahur, drink enough plain water.",
+     "Berbincang dengan doktor sebelum berpuasa - terutama jika anda menghidap diabetes, anemia atau masalah kesihatan lain. Antara berbuka dan sahur, minum air kosong secukupnya.")}</p>
+<p><strong>{x("Break your fast straight away if you have:", "Berbuka segera jika anda mengalami:")}</strong></p><ul>{brk}</ul></section>
+<section class="card"><h2>🕌 {x("The ruling (Mufti of the Federal Territories)", "Hukum (Mufti Wilayah Persekutuan)")}</h2><ul>
+<li>{x("Pregnant and breastfeeding mothers may skip fasting if they worry about their own health or their baby's.", "Ibu hamil dan menyusu boleh tidak berpuasa jika bimbang akan kesihatan diri atau bayi.")}</li>
+<li>{x("Worried about yourself (or yourself and baby): replace the fast later (qada) - no fidyah.", "Bimbang akan diri sendiri (atau diri dan bayi): ganti puasa (qada) sahaja - tanpa fidyah.")}</li>
+<li>{x("Worried about the baby only: qada and fidyah (the main Syafi'i view).", "Bimbang akan bayi sahaja: qada dan fidyah (pandangan muktamad mazhab Syafi'i).")}</li>
+<li>{x("If pregnancy or breastfeeding delays your qada past next Ramadan, there's no extra fidyah for the delay.", "Jika hamil atau menyusu menyebabkan qada tertangguh melepasi Ramadan berikutnya, tiada fidyah tambahan kerana kelewatan itu.")}</li>
+</ul><p class="small muted">{x("Scholars differ on some points - ask your state mufti or ustaz/ustazah.", "Terdapat perbezaan pandangan ulama - rujuk mufti negeri atau ustaz/ustazah anda.")}</p></section>
+{src_line(x, [("MyHEALTH", "http://www.myhealth.gov.my/puasa-dan-ubat/"), ("Mufti WP Irsyad 31", "https://www.muftiwp.gov.my/ms/artikel/irsyad-hukum/umum/1969-31"),
+              ("Mufti WP Irsyad 232", "https://www.muftiwp.gov.my/ms/artikel/irsyad-hukum/edisi-ramadhan/5594-irsyad-fatwa-edisi-khas-ramadhan-siri-ke-232-siapakah-golongan-yang-wajib-membayar-fidyah-puasa")])}''')}
+{tabpanel("hp", "fly", f'''<p class="dp-intro">{x("Each airline has its own rules - check yours before you book, and carry your pink book.", "Setiap syarikat penerbangan ada peraturan sendiri - semak sebelum menempah, dan bawa buku pink anda.")}</p>
+<div class="info-grid">{air}</div>
+<p class="small muted">{x("Ask your doctor whether flying is safe for you, especially with complications or twins.", "Tanya doktor sama ada selamat untuk anda terbang, terutama jika ada komplikasi atau kembar.")}</p>''')}
+{danger(x)}
+{ad("in_content", x)}
+"""
+    write_page(lang, "healthy-pregnancy.html", x("Healthy pregnancy: food, fasting & flying", "Hamil sihat: makanan, puasa & terbang"),
+               x("What to eat and avoid in pregnancy (KKM), fasting in Ramadan while pregnant or breastfeeding, and AirAsia and Malaysia Airlines rules for flying while pregnant.",
+                 "Makanan yang perlu diambil dan dielak semasa hamil (KKM), puasa Ramadan ketika hamil atau menyusu, dan peraturan AirAsia serta Malaysia Airlines untuk ibu hamil."),
+               body)
+
+
+def p_budget(lang):
+    x = tr(lang)
+    with open(os.path.join(HERE, "site-data", "delivery.json"), encoding="utf-8") as f:
+        DD = json.load(f)
+    gov_min = DD["gov"]["delivery"]["normal"]["c3"] + 2 * DD["gov"]["ward_per_day"]["c3"][0]
+    privs = sorted(h["price_from_rm"] for h in DD["private"])
+    priv_mid = privs[len(privs) // 2]
+    hctm = next(u for u in DD["university"] if u.get("fees"))
+    uni = hctm["fees"]["normal"] + 2 * (hctm["fees"]["ward_per_day"] + hctm["fees"]["care_per_day"])
+    try:
+        with open(os.path.join(HERE, "site-data", "prices-summary.json"), encoding="utf-8") as f:
+            PS = json.load(f)
+        my = PS["areas"]["MY"]
+        dp = sorted(my[c][0] / it["pc"] for c, it in PS["items"].items() if it["g"] == "diaper" and it.get("pc") and c in my)
+        per_diaper = round(dp[len(dp) // 2], 2) if dp else 0.5
+        tins = sorted(my[c][0] for c, it in PS["items"].items() if it["g"] == "infant" and c in my)
+    except (OSError, ValueError, KeyError):
+        per_diaper, tins = 0.5, []
+    tin_hint = (x(f"A tin of Step 1 formula costs about {_rm(round(tins[0]))}-{_rm(round(tins[-1]))} in shops (KPDN survey).",
+                  f"Setin susu formula Langkah 1 berharga lebih kurang {_rm(round(tins[0]))}-{_rm(round(tins[-1]))} di kedai (tinjauan KPDN).") if tins else "")
+    def opt(v, en, ms):
+        return f'<option value="{v}">{esc(x(en, ms))}</option>'
+    body = f"""
+{page_head(x, "🧾", "t-budget", x("Pregnant", "Sedang hamil"), x("Baby's first-year budget", "Bajet bayi tahun pertama"),
+           x("Add up the big costs of baby's first year. Change any number - saved on this phone.", "Kira kos besar tahun pertama bayi. Ubah mana-mana angka - disimpan dalam telefon ini."))}
+<section class="card" id="bud-tool">
+  <div class="bud-grid">
+    <label class="field">{x("Giving birth", "Bersalin")}<select name="deliv">
+      {opt(gov_min, f"Government hospital, 3rd class - {_rm(gov_min)}", f"Hospital kerajaan, kelas 3 - {_rm(gov_min)}")}
+      {opt(uni, f"University hospital, public ward - about {_rm(uni)}", f"Hospital universiti, wad awam - lebih kurang {_rm(uni)}")}
+      {opt(priv_mid, f"Private hospital package - about {_rm(priv_mid)}", f"Pakej hospital swasta - lebih kurang {_rm(priv_mid)}")}
+      {opt("custom", "My own amount", "Jumlah sendiri")}</select></label>
+    <label class="field">{x("Confinement", "Berpantang")}<select name="conf">
+      {opt(0, "At home with family - RM0", "Di rumah dengan keluarga - RM0")}
+      {opt(7000, "Live-in nanny - about RM7,000", "Pengasuh tinggal bersama - lebih kurang RM7,000")}
+      {opt(10500, "Budget centre - about RM10,500", "Pusat bajet - lebih kurang RM10,500")}
+      {opt(15000, "Mid-range centre - about RM15,000", "Pusat pertengahan - lebih kurang RM15,000")}
+      {opt("custom", "My own amount", "Jumlah sendiri")}</select></label>
+    <label class="field bud-custom" data-for="deliv" hidden>{x("Birth cost (RM)", "Kos bersalin (RM)")}<input type="number" name="deliv_rm" min="0" inputmode="decimal"></label>
+    <label class="field bud-custom" data-for="conf" hidden>{x("Confinement cost (RM)", "Kos berpantang (RM)")}<input type="number" name="conf_rm" min="0" inputmode="decimal"></label>
+    <label class="field">{x("Diapers a day", "Lampin sehari")}<input type="number" name="dpd" min="0" max="15" value="6" inputmode="numeric"></label>
+    <label class="field">{x("Price per diaper (RM)", "Harga selampin (RM)")}<input type="number" name="dprice" min="0" step="0.01" value="{per_diaper}" inputmode="decimal"></label>
+    <label class="field">{x("Formula milk per month (RM, 0 if breastfeeding)", "Susu formula sebulan (RM, 0 jika menyusu badan)")}<input type="number" name="milk" min="0" value="0" inputmode="decimal"></label>
+    <label class="field">{x("Baby items - cot, car seat, clothes (RM)", "Barang bayi - katil, kerusi kereta, pakaian (RM)")}<input type="number" name="items" min="0" value="0" inputmode="decimal"></label>
+    <label class="field">{x("Childcare per month (RM)", "Taska sebulan (RM)")}<input type="number" name="care" min="0" value="0" inputmode="decimal"></label>
+    <label class="field">{x("Months of childcare in year 1", "Bulan taska dalam tahun pertama")}<input type="number" name="care_m" min="0" max="12" value="9" inputmode="numeric"></label>
+  </div>
+  <p class="hint">{x(f"Diaper price {_rm(per_diaper)} = middle price per size-M diaper in Malaysian shops (KPDN survey). Vaccines are free at klinik kesihatan.",
+                     f"Harga lampin {_rm(per_diaper)} = harga pertengahan selampin saiz M di kedai Malaysia (tinjauan KPDN). Vaksin percuma di klinik kesihatan.")} {esc(tin_hint)}</p>
+  <div id="bud-result" aria-live="polite"></div>
+</section>
+<p class="tool-links"><a class="btn ghost" href="delivery-cost.html">🏥 {x("Delivery cost", "Kos bersalin")} →</a> <a class="btn ghost" href="confinement-cost.html">💰 {x("Confinement cost", "Kos berpantang")} →</a>
+<a class="btn ghost" href="newborn.html">🧺 {x("Newborn essentials", "Barang bayi")} →</a> <a class="btn ghost" href="nursery.html">🧸 {x("Taska & tadika", "Taska & tadika")} →</a></p>
+{ad("in_content", x)}
+"""
+    write_page(lang, "budget.html", x("Baby first-year budget calculator Malaysia", "Kalkulator bajet bayi tahun pertama"),
+               x("How much does a baby cost in the first year in Malaysia? Add up delivery, confinement, diapers, milk, baby items and childcare - with real prices.",
+                 "Berapa kos bayi pada tahun pertama di Malaysia? Kira kos bersalin, berpantang, lampin, susu, barang bayi dan taska - dengan harga sebenar."),
+               body)
+
+
+def p_feelings(lang):
+    x = tr(lang)
+    qs = []
+    for i, (q, qms, ans) in enumerate(tp.EPDS, start=1):
+        opts = "".join(
+            f'<label class="epds-opt"><input type="radio" name="q{i}" value="{sc}"><span>{esc(a)}'
+            + (f'<small>{esc(tp.EPDS_ANS_MS.get(a, ""))}</small>' if lang == "ms" else "") + "</span></label>"
+            for a, sc in ans)
+        qs.append(f'<fieldset class="epds-q"><legend><span class="epds-n">{i}</span> {esc(q)}'
+                  + (f'<small>{esc(qms)}</small>' if lang == "ms" else "") + f"</legend>{opts}</fieldset>")
+    body = f"""
+{page_head(x, "💛", "t-mind", x("New mum", "Ibu baharu"), x("How are you feeling?", "Bagaimana perasaan anda?"),
+           x("A short private check for postnatal depression. Nothing you tick is saved or sent anywhere.", "Semakan ringkas dan peribadi untuk kemurungan selepas bersalin. Apa yang anda tanda tidak disimpan atau dihantar ke mana-mana."))}
+<aside class="box note"><p>{x("Feeling weepy or up and down in the first two weeks ('baby blues') is common. If it lasts longer than two weeks, or feels heavy, it may be postnatal depression - which is common and treatable.",
+                              "Mudah menangis atau emosi turun naik dalam dua minggu pertama ('baby blues') adalah biasa. Jika lebih lama daripada dua minggu, atau terasa berat, ia mungkin kemurungan selepas bersalin - yang biasa dan boleh dirawat.")}</p></aside>
+<form class="card" id="epds" onsubmit="return false">
+  <p class="field-label">{x("Think about the past 7 days, not just today.", "Fikirkan tentang 7 hari yang lalu, bukan hari ini sahaja.")}
+  {tip(x("These are the 10 questions of the Edinburgh Postnatal Depression Scale, used by KKM clinics. Questions are in the original English.", "Ini 10 soalan Skala Kemurungan Postnatal Edinburgh (EPDS) yang digunakan di klinik KKM. Soalan dalam Bahasa Inggeris asal, dengan maksud ringkas dalam BM."), x)}</p>
+  {"".join(qs)}
+  <div id="epds-result" aria-live="polite"></div>
+</form>
+<aside class="box danger"><h2>{x("Need help now?", "Perlukan bantuan sekarang?")}</h2><ul>
+<li>{x("Thoughts of harming yourself or your baby: go to the nearest hospital emergency department or call 999.", "Terfikir untuk mencederakan diri atau bayi: pergi ke jabatan kecemasan hospital terdekat atau hubungi 999.")}</li>
+<li>{x("Talk to someone: Talian HEAL 15555 (Ministry of Health).", "Bercakap dengan seseorang: Talian HEAL 15555 (Kementerian Kesihatan).")}</li>
+<li>{x("Or see your klinik kesihatan or doctor - say how you've been feeling.", "Atau jumpa klinik kesihatan atau doktor - ceritakan perasaan anda.")}</li></ul></aside>
+<p class="small muted">EPDS: Cox JL, Holden JM, Sagovsky R. Detection of postnatal depression: development of the 10-item Edinburgh Postnatal Depression Scale. British Journal of Psychiatry 1987;150:782-786.
+{x("Score guide per KKM's depression guideline (2019).", "Panduan skor mengikut garis panduan kemurungan KKM (2019).")} <a href="https://www.moh.gov.my/images/04-penerbitan/penerbitan-klinikal/panduan-amalan-klinikal/CPG_Management_of_MDD_Second_Edition_04092020.pdf" target="_blank" rel="noopener">KKM CPG ↗</a>.
+{x("This check is not a diagnosis.", "Semakan ini bukan diagnosis.")}</p>
+"""
+    write_page(lang, "feelings.html", x("Postnatal depression check (EPDS)", "Semakan kemurungan selepas bersalin (EPDS)"),
+               x("A free, private 10-question check for postnatal depression (Edinburgh Postnatal Depression Scale), with where to get help in Malaysia.",
+                 "Semakan 10 soalan percuma dan peribadi untuk kemurungan selepas bersalin (EPDS), serta tempat mendapatkan bantuan di Malaysia."),
+               body)
+
+
+def p_aqiqah(lang):
+    x = tr(lang)
+    steps = "".join(
+        f'<li><label class="check"><input type="checkbox" data-key="aq_{k}"> {esc(x(en, ms))}</label>{tip(x(te, tm), x) if te else ""}</li>'
+        for k, en, ms, te, tm in tp.AQIQAH_STEPS)
+    body = f"""
+<div data-store="tm_aqiqah" data-progress="{x("{n} of {t} done", "{n} daripada {t} selesai")}" data-done="{x("All done - alhamdulillah!", "Semua selesai - alhamdulillah!")}"></div>
+{page_head(x, "🐐", "t-aqiqah", x("New mum", "Ibu baharu"), x("Aqiqah & cukur jambul", "Aqiqah & cukur jambul"),
+           x("The dates, and what to prepare - for Muslim families.", "Tarikh dan persediaan - untuk keluarga Muslim."))}
+<section class="card" id="aq-tool">
+  <div class="due-row"><label class="field grow">{x("Baby's birth date", "Tarikh lahir bayi")}<input type="date" id="aq-birth"></label></div>
+  <div id="aq-result" aria-live="polite"></div>
+  <p class="hint">{x("The 7th day counts the day of birth as day 1. If you can't do it on the 7th day, the 14th or 21st day is fine.",
+                     "Hari ketujuh dikira dengan hari lahir sebagai hari pertama. Jika tidak mampu pada hari ketujuh, boleh pada hari ke-14 atau ke-21.")}
+  {tip(x("Some scholars count differently for a baby born at night - ask your local mosque or ustaz.", "Sesetengah ulama mengira berbeza bagi bayi yang lahir pada waktu malam - tanya masjid atau ustaz berhampiran."), x)}</p>
+</section>
+<div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
+<div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
+<section class="card"><h2>🕌 {x("On the day", "Pada hari itu")}</h2><ul class="checklist">{steps}</ul></section>
+{ad("in_content", x)}
+{src_line(x, [("Mufti WP Irsyad 128", "https://www.muftiwp.gov.my/ms/artikel/irsyad-hukum/umum/1237-irsyad-al-fatwa-ke-128-adakah-cukup-aqiqah-seekor-kambing-bagi-bayi-lelaki"),
+              ("Al-Kafi #1646", "https://muftiwp.gov.my/ms/artikel/al-kafi-li-al-fatawi/4292-al-kafi-1646-adakah-boleh-melakukan-aqiqah-pada-hari-ke-5-kelahiran-bayi"),
+              ("Al-Kafi #1668", "https://www.muftiwp.gov.my/ms/artikel/al-kafi-li-al-fatawi/4346-al-kafi-1668-adakah-wujud-zakat-rambut-bayi"),
+              ("Al-Kafi #1746", "https://muftiwp.gov.my/ms/artikel/al-kafi-li-al-fatawi/4590-al-kafi-1746-bolehkah-cukur-rambut-bayi-terlebih-dahulu-sebelum-melakukan-aqiqah")])}
+"""
+    write_page(lang, "aqiqah.html", x("Aqiqah & cukur jambul: dates and checklist", "Aqiqah & cukur jambul: tarikh dan senarai semak"),
+               x("When to do aqiqah and cukur jambul (7th, 14th or 21st day), how many goats, and the gold or silver charity - from the Federal Territory Mufti's office.",
+                 "Bila buat aqiqah dan cukur jambul (hari ke-7, 14 atau 21), berapa ekor kambing, dan sedekah emas atau perak - daripada Jabatan Mufti Wilayah Persekutuan."),
+               body)
+
+
+def p_jaundice(lang):
+    x = tr(lang)
+    urgent = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.JAUNDICE_URGENT)
+    avoid = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.G6PD_AVOID)
+    body = f"""
+{page_head(x, "🟡", "t-jaun", x("New mum", "Ibu baharu"), x("Jaundice (kuning) & G6PD", "Kuning (jaundis) & G6PD"),
+           x("What's normal, when to go back to the klinik, and what to avoid if your baby has G6PD deficiency.", "Apa yang normal, bila perlu ke klinik semula, dan apa yang perlu dielak jika bayi kekurangan G6PD."))}
+<aside class="box danger"><h2>{x("Take your baby to a klinik or hospital straight away if:", "Bawa bayi ke klinik atau hospital segera jika:")}</h2><ul>{urgent}</ul>
+<p>{x("Your risk is higher if an older child had severe jaundice - tell the nurse.", "Risiko lebih tinggi jika anak sebelum ini pernah kuning teruk - beritahu jururawat.")}</p></aside>
+<section class="card"><h2>☀️ {x("Don't 'sun' your baby to treat jaundice", "Jangan 'jemur' bayi untuk merawat kuning")}</h2>
+<p>{x("The Ministry of Health warns that keeping a baby out in the morning sun can harm them. Jaundice that needs treatment is treated in hospital under a special blue light (phototherapy).",
+     "Kementerian Kesihatan mengingatkan bahawa mendedahkan bayi kepada cahaya matahari pagi secara berterusan boleh membahayakan bayi. Kuning yang perlu dirawat akan dirawat di hospital di bawah cahaya biru khas (fototerapi).")}</p></section>
+<section class="card"><h2>🧬 G6PD</h2>
+<p>{x("Every baby born in Malaysia is tested for G6PD deficiency using blood from the umbilical cord. It's lifelong but doesn't affect growth - your child just needs to avoid some things that can break down red blood cells:",
+     "Setiap bayi yang lahir di Malaysia diuji untuk kekurangan G6PD menggunakan darah tali pusat. Ia kekal seumur hidup tetapi tidak menjejaskan tumbesaran - anak hanya perlu mengelakkan beberapa perkara yang boleh memecahkan sel darah merah:")}</p>
+<ul>{avoid}</ul>
+<p>{x("Keep breastfeeding - but if you're breastfeeding, avoid these things too, as small amounts can pass into breast milk.", "Teruskan menyusu - tetapi jika anda menyusu, elakkan juga perkara ini kerana sedikit boleh masuk ke dalam susu ibu.")}</p></section>
+{ad("in_content", x)}
+{src_line(x, [(x("MyHEALTH: jaundice", "MyHEALTH: kekuningan"), "http://www.myhealth.gov.my/kekuningan-pada-bayi-baru-lahir/"),
+              (x("MyHEALTH: G6PD screening", "MyHEALTH: saringan G6PD"), "http://www.myhealth.gov.my/en/g6pd-screening-newborn/"),
+              (x("MyHEALTH: G6PD deficiency", "MyHEALTH: kekurangan G6PD"), "http://myhealth.moh.gov.my/en/g6pd-deficiency-2/")])}
+"""
+    write_page(lang, "jaundice.html", x("Newborn jaundice (kuning) & G6PD in Malaysia", "Kuning (jaundis) bayi & G6PD"),
+               x("Newborn jaundice: warning signs that need a klinik straight away, why sunbathing isn't a treatment, and what babies with G6PD deficiency must avoid - from KKM's MyHEALTH.",
+                 "Kuning pada bayi baru lahir: tanda bahaya yang perlu ke klinik segera, mengapa menjemur bayi bukan rawatan, dan apa yang perlu dielak oleh bayi kekurangan G6PD - daripada MyHEALTH KKM."),
+               body)
+
+
+def p_growth(lang):
+    x = tr(lang)
+    with open(os.path.join(HERE, "site-data", "who-growth.json"), encoding="utf-8") as f:
+        W = json.load(f)
+    ms = "".join(
+        f'<details class="acc"{" open" if i == 0 else ""}><summary>{m} {x("months", "bulan")}' + (f' ({m // 12} {x("year", "tahun") if m == 12 else x("years", "tahun")})' if m % 12 == 0 else "")
+        + "</summary><ul>" + "".join(f"<li>{esc(x(e, mm))}</li>" for e, mm in its) + "</ul></details>"
+        for i, (m, its) in enumerate(tp.MILESTONES))
+    sleep_rows = "".join(f'<li><span>{esc(x(a, b))}</span><strong>{h} {x("hours", "jam")}</strong></li>' for a, b, h in tp.SLEEP)
+    safe = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.SAFE_SLEEP)
+    tabs = tabbar(x, "gr", [
+        ("measure", "📏", "Weight & length", "Berat & panjang", x("WHO chart", "Carta WHO"), "0-2 years", "0-2 tahun", False),
+        ("milestones", "🧩", "Milestones", "Perkembangan", x("2-24 months", "2-24 bulan"), "", "", False),
+        ("sleep", "😴", "Sleep", "Tidur", x("Hours & safe sleep", "Jam & tidur selamat"), "", "", False),
+    ], hash_ok=True, prompt=x("What do you want to check?", "Apa yang anda mahu semak?"))
+    body = f"""
+{page_head(x, "📈", "t-growth", x("Mum & kids", "Ibu & anak"), x("Baby's growth", "Tumbesaran bayi"),
+           x("Weight and length on the WHO chart, milestones and sleep.", "Berat dan panjang pada carta WHO, perkembangan dan tidur."))}
+{tabs}
+{tabpanel("gr", "measure", f'''<section class="card" id="gr-tool">
+  <p class="field-label">{x("Baby is a", "Bayi ialah")}</p>
+  <div class="pill-group"><button type="button" class="pill-opt" data-sex="b" aria-pressed="true">👦 {x("Boy", "Lelaki")}</button><button type="button" class="pill-opt" data-sex="g" aria-pressed="false">👧 {x("Girl", "Perempuan")}</button></div>
+  <div class="q-fields gr-fields">
+    <label class="field">{x("Birth date", "Tarikh lahir")}<input type="date" id="gr-birth"></label>
+    <label class="field">{x("Measured on", "Diukur pada")}<input type="date" id="gr-date"></label>
+    <label class="field">{x("Weight (kg)", "Berat (kg)")}<input type="number" id="gr-w" min="1" max="25" step="0.01" inputmode="decimal" placeholder="7.5"></label>
+    <label class="field">{x("Length (cm)", "Panjang (cm)")}<input type="number" id="gr-l" min="40" max="100" step="0.1" inputmode="decimal" placeholder="68"></label>
+  </div>
+  <button type="button" class="btn" id="gr-add">{x("Check and save", "Semak dan simpan")}</button>
+  <div id="gr-result" aria-live="polite"></div>
+  <p class="hint">{x("Compares with the WHO Child Growth Standards (birth to 2 years) - the same charts as your child's health book. Saved only on this phone.",
+                     "Dibandingkan dengan Piawaian Tumbesaran Kanak-kanak WHO (lahir hingga 2 tahun) - carta yang sama dalam buku kesihatan anak anda. Disimpan dalam telefon ini sahaja.")}</p>
+</section>''')}
+{tabpanel("gr", "milestones", f'''<p class="dp-intro">{x("Things most children (3 in 4) can do by each age. If your child can't, has lost skills they had, or you're worried - don't wait: talk to your klinik or doctor.",
+                                                    "Perkara yang kebanyakan kanak-kanak (3 daripada 4) boleh buat pada setiap umur. Jika anak anda belum boleh, hilang kemahiran yang pernah ada, atau anda risau - jangan tunggu: berbincang dengan klinik atau doktor.")}</p>
+<div class="acc-list">{ms}</div>
+{src_line(x, [("CDC Learn the Signs. Act Early.", "https://www.cdc.gov/act-early/milestones/index.html")])}''')}
+{tabpanel("gr", "sleep", f'''<section class="card"><h2>🕒 {x("Sleep in 24 hours (including naps)", "Tidur dalam 24 jam (termasuk tidur siang)")}</h2><ul class="price-list">{sleep_rows}</ul>
+<p class="small muted">{x("Recommended ranges - every baby is different.", "Julat yang disyorkan - setiap bayi berbeza.")}</p></section>
+<section class="card"><h2>🛏️ {x("Safe sleep", "Tidur selamat")}</h2><ul>{safe}</ul></section>
+{src_line(x, [("AASM 2016", "https://jcsm.aasm.org/doi/10.5664/jcsm.5866"), ("National Sleep Foundation", "https://www.thensf.org/how-many-hours-of-sleep-do-you-really-need/"),
+              (x("MyHEALTH: baby sleep", "MyHEALTH: gaya tidur bayi"), "http://www.myhealth.gov.my/gaya-tidur-bayi/")])}''')}
+{ad("in_content", x)}
+"""
+    write_page(lang, "growth.html", x("Baby growth chart (WHO), milestones & sleep", "Carta tumbesaran bayi (WHO), perkembangan & tidur"),
+               x("Check your baby's weight and length on the WHO growth chart (0-2 years), see milestones by month, and how much sleep babies need.",
+                 "Semak berat dan panjang bayi pada carta tumbesaran WHO (0-2 tahun), perkembangan mengikut bulan, dan berapa banyak tidur yang bayi perlukan."),
+               body, {"who": {"w": W["weight"], "l": W["length"]}})
+
+
+def p_solids(lang):
+    x = tr(lang)
+    rules = "".join(f"<li>{esc(x(e, m))}</li>" for e, m in tp.SOLIDS)
+    body = f"""
+{page_head(x, "🥣", "t-solids", x("Mum & kids", "Ibu & anak"), x("Baby's first foods", "Makanan pertama bayi"),
+           x("Starting solids at 6 months - how much, what texture, and what to avoid.", "Mula makanan pejal pada 6 bulan - berapa banyak, tekstur dan apa yang perlu dielak."))}
+<section class="card" id="sol-tool">
+  <div class="due-row"><label class="field grow">{x("Baby's birth date", "Tarikh lahir bayi")}<input type="date" id="sol-birth"></label></div>
+  <div id="sol-result" aria-live="polite"></div>
+</section>
+<section class="card"><h2>📋 {x("The basics (KKM)", "Asas (KKM)")}</h2><ul>{rules}</ul></section>
+<p class="tool-links"><a class="btn ghost" href="prices.html#grp-food">🥣 {x("Baby food prices", "Harga makanan bayi")} →</a> <a class="btn ghost" href="growth.html">📈 {x("Baby's growth", "Tumbesaran bayi")} →</a></p>
+{ad("in_content", x)}
+{src_line(x, [(x("KKM infant feeding guideline", "Garis panduan pemakanan bayi KKM"), "https://hq.moh.gov.my/nutrition/wp-content/uploads/2023/12/GP_Baby_Book-1.pdf"),
+              (x("KKM diet guide for children 2026", "Panduan diet kanak-kanak KKM 2026"), "https://hq.moh.gov.my/nutrition/wp-content/uploads/2026/09/4.-NOTA-POKET-PANDUAN-DIET-MALAYSIA-UNTUK-KANAK-KANAK-DAN-REMAJA-2026.pdf")])}
+"""
+    write_page(lang, "solids.html", x("Starting solids at 6 months (KKM guide)", "Makanan pertama bayi pada 6 bulan (panduan KKM)"),
+               x("When and how to start solid food: 6 months, portions for 6-8 months, textures, and no salt, sugar, juice or honey before 1 year - from Malaysia's Ministry of Health.",
+                 "Bila dan bagaimana mula makanan pejal: 6 bulan, sukatan untuk 6-8 bulan, tekstur, dan tiada garam, gula, jus atau madu sebelum 1 tahun - daripada Kementerian Kesihatan."),
+               body)
+
+
 def p_privacy(lang):
     x = tr(lang)
     email = (f'<a href="mailto:{esc(config.CONTACT_EMAIL)}">{esc(config.CONTACT_EMAIL)}</a>'
@@ -2028,6 +2431,14 @@ def main():
         p_breastmilk(lang)
         p_newborn(lang)
         p_afterbirth(lang)
+        p_antenatal(lang)
+        p_healthy(lang)
+        p_budget(lang)
+        p_feelings(lang)
+        p_aqiqah(lang)
+        p_jaundice(lang)
+        p_growth(lang)
+        p_solids(lang)
         p_delivery(lang)
         p_planning(lang)
     root_files()
