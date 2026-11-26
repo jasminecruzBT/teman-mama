@@ -143,6 +143,8 @@ JS_STR = {
         "noShops": "No shop prices for this area yet.",
         "updated": "Prices collected {a} to {b} from {n} shops across Malaysia.",
         "allMy": "All Malaysia", "allDist": "All districts",
+        "cmpBtn": "Compare states", "cmpTitle": "Usual price in each state, cheapest first", "cmpRank": "{s} is number {r} cheapest of {n} states.",
+        "cmpMy": "All Malaysia: {p}", "cmpShops": "{n} shops", "cmpCheapest": "Cheapest: {s}, {d} less than {me}.", "cmpPick": "Pick your state above to see where it ranks.",
         "loading": "Loading prices...", "loadFail": "Couldn't load the prices. Check your connection and refresh the page.",
         "showing": "Showing prices for: {area}", "fewShops": "Few shops in this area - prices may not be typical.",
         "nuTaska": "Taska in {area}", "nuTadika": "Tadika in {area}",
@@ -226,6 +228,8 @@ JS_STR = {
         "noShops": "Belum ada harga kedai untuk kawasan ini.",
         "updated": "Harga dikumpul {a} hingga {b} dari {n} kedai di seluruh Malaysia.",
         "allMy": "Seluruh Malaysia", "allDist": "Semua daerah",
+        "cmpBtn": "Banding negeri", "cmpTitle": "Harga biasa di setiap negeri, paling murah dahulu", "cmpRank": "{s} ke-{r} paling murah daripada {n} negeri.",
+        "cmpMy": "Seluruh Malaysia: {p}", "cmpShops": "{n} kedai", "cmpCheapest": "Paling murah: {s}, {d} lebih rendah daripada {me}.", "cmpPick": "Pilih negeri anda di atas untuk melihat kedudukannya.",
         "loading": "Memuatkan harga...", "loadFail": "Harga tidak dapat dimuatkan. Semak sambungan internet dan muat semula halaman.",
         "showing": "Harga untuk: {area}", "fewShops": "Sedikit kedai di kawasan ini - harga mungkin tidak mewakili.",
         "nuTaska": "Taska di {area}", "nuTadika": "Tadika di {area}",
@@ -1821,6 +1825,7 @@ def p_prices(lang):
     <select id="pr-state" aria-label="{x("State", "Negeri")}"></select>
     <select id="pr-district" aria-label="{x("District", "Daerah")}" disabled></select>
   </div>
+  <div class="chip-scroll" id="pr-chips" role="group" aria-label="{x("Your state", "Negeri anda")}"></div>
   <label class="sort-row"><span>⇅ {x("Sort by", "Susun ikut")}</span>
     <select id="pr-sort">
       <option value="unit">{x("Cheapest per unit", "Seunit paling murah")}</option>

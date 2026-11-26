@@ -829,8 +829,8 @@
             var pic = pics[c] ?
               '<img class="thumb" src="https://down-my.img.susercontent.com/file/' + encodeURIComponent(pics[c]) + '_tn" alt="" loading="lazy" width="48" height="48">' : "";
             html += '<tr data-code="' + c + '" data-name="' + esc((it.n + " " + (it.nm || "") + " " + S.grp[g]).toLowerCase()) + '"><td class="prod"><div class="prod-row">' + pic + "<div>" + esc(nameOf(it)) + "<small>" + esc(pack) +
-              (a[2] < 3 ? " · " + esc(S.fewShops) : "") + '</small><button type="button" class="where-btn">' + esc(S.where) +
-              '</button></div></div></td><td class="num">' + rm(a[0]) + '</td><td class="num hide-sm">' + rm(a[1]) + '</td><td class="num">' + unit +
+              (a[2] < 3 ? " · " + esc(S.fewShops) : "") + '</small><span class="row-btns"><button type="button" class="where-btn">' + esc(S.where) +
+              '</button><button type="button" class="cmp-btn">' + esc(S.cmpBtn) + '</button></span></div></div></td><td class="num">' + rm(a[0]) + '</td><td class="num hide-sm">' + rm(a[1]) + '</td><td class="num">' + unit +
               '</td><td class="num hide-sm">' + a[2] + "</td></tr>";
           });
           html += "</tbody></table></div></section>";
@@ -848,8 +848,7 @@
           $$("tr[data-code]", sec).forEach(function (tr) {
             var ok = !q || q.split(/\s+/).every(function (w) { return tr.getAttribute("data-name").indexOf(w) >= 0; });
             tr.hidden = !ok;
-            var nx = tr.nextElementSibling;
-            if (nx && nx.classList.contains("shops")) nx.hidden = !ok;
+            $$('tr[data-for="' + tr.getAttribute("data-code") + '"]', sec).forEach(function (r) { r.hidden = !ok; });
             if (ok) n++;
           });
           sec.hidden = !n || (g && sec.getAttribute("data-g") !== g);
@@ -878,10 +877,10 @@
 
       tables.addEventListener("click", function (e) {
         var btn = e.target.closest(".where-btn"); if (!btn) return;
-        var tr = btn.closest("tr"), next = tr.nextElementSibling;
-        if (next && next.classList.contains("shops")) { next.remove(); btn.textContent = S.where; return; }
+        var tr = btn.closest("tr"), next = tr.parentNode.querySelector('tr.shops[data-for="' + tr.getAttribute("data-code") + '"]');
+        if (next) { next.remove(); btn.textContent = S.where; return; }
         var row = document.createElement("tr");
-        row.className = "shops";
+        row.className = "shops"; row.setAttribute("data-for", tr.getAttribute("data-code"));
         row.innerHTML = '<td colspan="5"></td>';
         tr.after(row);
         btn.textContent = S.hide;
@@ -911,7 +910,57 @@
         }).catch(function () { delete shopCache[st]; cell.textContent = S.loadFail; });
       });
 
+      // "Compare states": the item's usual price in every state, cheapest first
+      var SHORT = { "W.P. Kuala Lumpur": "KL", "W.P. Labuan": "Labuan", "W.P. Putrajaya": "Putrajaya", "Negeri Sembilan": "N. Sembilan", "Pulau Pinang": "P. Pinang" };
+      function shortName(st) { return SHORT[st] || st; }
+      tables.addEventListener("click", function (e) {
+        var btn = e.target.closest(".cmp-btn"); if (!btn) return;
+        var tr = btn.closest("tr"), code = tr.getAttribute("data-code");
+        var open = tr.parentNode.querySelector('tr.states-row[data-for="' + code + '"]');
+        if (open) { open.remove(); btn.textContent = S.cmpBtn; return; }
+        var list = Object.keys(states).filter(function (st) { return (data.areas["S|" + st] || {})[code]; })
+          .map(function (st) { return [st, data.areas["S|" + st][code]]; })
+          .sort(function (a, b) { return a[1][0] - b[1][0]; });
+        var my = (data.areas.MY || {})[code], me = cur.state, rank = 0;
+        list.forEach(function (x, i) { if (x[0] === me) rank = i + 1; });
+        var note = "";
+        if (me && rank) {
+          note = fill(S.cmpRank, { s: shortName(me), r: rank, n: list.length });
+          var mine = data.areas["S|" + me][code][0], low = list[0][1][0];
+          if (rank > 1 && mine - low >= 0.05) note += " " + fill(S.cmpCheapest, { s: shortName(list[0][0]), d: rm(mine - low), me: shortName(me) });
+        } else note = S.cmpPick;
+        var row = document.createElement("tr");
+        row.className = "states-row"; row.setAttribute("data-for", code);
+        row.innerHTML = '<td colspan="5"><p class="cmp-title">' + esc(S.cmpTitle) + (my ? ' <span class="muted">· ' + esc(fill(S.cmpMy, { p: rm(my[0]) })) + "</span>" : "") + "</p>" +
+          '<p class="cmp-note">' + esc(note) + '</p><ol class="cmp-list">' + list.map(function (x) {
+            return '<li class="' + (x[0] === me ? "me" : "") + '"><span class="cmp-st">' + esc(shortName(x[0])) + '</span><strong>' + rm(x[1][0]) + "</strong>" +
+              '<small>' + esc(fill(S.cmpShops, { n: x[1][2] })) + (x[1][2] < 3 ? " ⚠" : "") + "</small></li>";
+          }).join("") + "</ol></td>";
+        var after = tr.parentNode.querySelector('tr.shops[data-for="' + code + '"]') || tr;
+        after.after(row);
+        btn.textContent = S.hide;
+      });
+
+      // state buttons (same choice as the State drop-down)
+      var chipBox = $("#pr-chips"), stSel = $("#pr-state");
+      function syncChips() {
+        if (!chipBox) return;
+        $$(".chip-btn", chipBox).forEach(function (c) { c.setAttribute("aria-pressed", c.getAttribute("data-state") === stSel.value ? "true" : "false"); });
+        var on = $('.chip-btn[aria-pressed="true"]', chipBox);
+        if (on && on.scrollIntoView && chipBox.scrollWidth > chipBox.clientWidth) chipBox.scrollLeft = on.offsetLeft - 12;
+      }
+      if (chipBox) {
+        chipBox.innerHTML = ['<button type="button" class="chip-btn" data-state="">' + esc(S.allMy) + "</button>"].concat(
+          Object.keys(states).sort().map(function (st) { return '<button type="button" class="chip-btn" data-state="' + esc(st) + '">' + esc(shortName(st)) + "</button>"; })).join("");
+        chipBox.addEventListener("click", function (e) {
+          var c = e.target.closest(".chip-btn"); if (!c) return;
+          stSel.value = c.getAttribute("data-state");
+          stSel.dispatchEvent(new Event("change"));
+        });
+        stSel.addEventListener("change", syncChips);
+      }
       areaPicker($("#pr-state"), $("#pr-district"), states, draw);
+      syncChips();
     }).catch(function () { tables.innerHTML = '<p class="err">' + esc(S.loadFail) + "</p>"; });
   }
 

@@ -830,3 +830,20 @@ html.pinned .chat-panel { right: 24px; }
 .gr-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 .gr-table th, .gr-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .gr-table small { color: var(--muted); }
+
+/* ---------- prices: state buttons + compare states */
+.chip-scroll { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 8px; margin: 0 0 6px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+.chip-scroll .chip-btn { flex: none; white-space: nowrap; }
+.row-btns { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+.cmp-btn { border: 0; background: none; padding: 4px 0 0; font: inherit; font-size: .82rem; font-weight: 600; color: var(--accent, var(--brand)); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+tr.states-row td { background: var(--faint); padding: 12px 14px; }
+.cmp-title { margin: 0 0 4px; font-weight: 700; font-size: .9rem; }
+.cmp-note { margin: 0 0 10px; font-size: .86rem; }
+.cmp-list { list-style: none; counter-reset: cmp; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 12px; padding: 0; margin: 0; }
+.cmp-list li { counter-increment: cmp; display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 8px; margin: 0; font-size: .88rem; }
+.cmp-list li::before { content: counter(cmp); min-width: 1.4em; color: var(--muted); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.cmp-list .cmp-st { flex: 1 1 auto; min-width: 5.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmp-list strong { font-variant-numeric: tabular-nums; }
+.cmp-list small { color: var(--muted); font-size: .74rem; white-space: nowrap; }
+.cmp-list li.me { background: var(--brand-soft); box-shadow: inset 0 0 0 1.5px var(--brand); }
+@media (max-width: 480px) { .cmp-list { grid-template-columns: 1fr; gap: 0; } .cmp-list li { padding: 4px 8px; } }
