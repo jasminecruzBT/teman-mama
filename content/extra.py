@@ -5,6 +5,19 @@ Sources (checked 26 Nov 2026):
   4 & 6 months + booster 15 months per KKM press statement 24 Nov 2020; 6-in-1 at 2, 3, 5 months + booster 18 months).
   Always defer to the child's health record book - ages can differ by state/clinic.
 - Breast milk storage: KKM Bahagian Pemakanan poster "Penyusuan Susu Ibu (Ibu Bekerja)" (hq.moh.gov.my/nutrition).
+- After-birth documents (checked 26 Nov 2026 on the official sites):
+  JPN normal birth registration: Peninsular within 60 days, free; late (>60 days) RM50 + extra forms;
+  Sabah and Sarawak within 14 days (late after 42 days). Documents: JPN.LM01, hospital Birth Confirmation Form,
+  antenatal card, parents' IDs, marriage document (jpn.gov.my/en/services/birth/...).
+  MyKid: not compulsory, first application free (malaysia.gov.my; JPN statement 2023).
+  ASB: Bumiputera, from birth via a guardian, RM10 to open / RM1 after, ASNB branch or agent; minors can't use the
+  myASNB app (asnb.com.my product + registration + FAQ). ASM: guardian can open for any Malaysian minor, RM10.
+  SSPN Prime: RM20 to open, beneficiary from 1 day old (with birth certificate), myPTPTN app or PTPTN counter;
+  parents' tax relief up to RM8,000/year YA2025-2027 (ptptn.gov.my).
+  Tabung Haji: RM2 minimum, child under 18 with one guardian who has a TH account; THiJARI online then branch
+  within 30 days (tabunghaji.gov.my).
+  EPF: registration open from age 14 to below 75 (kwsp.gov.my article "How to Register EPF Account", 26 Nov 2025);
+  i-Simpan RM1 to RM100,000 a year.
 """
 
 # (age in months, vaccine EN, vaccine MS, note EN, note MS)
@@ -141,3 +154,87 @@ INDIAN_NAMES = [
 
 NAMES = ([n + ("malay",) for n in MALAY_NAMES] + [n + ("chinese",) for n in CHINESE_NAMES]
          + [n + ("indian",) for n in INDIAN_NAMES])
+
+# After-birth documents checklist: (title EN, title MS, icon, [(key, EN, MS, tip EN, tip MS)])
+AFTER_BIRTH = [
+    ("Register the birth at JPN", "Daftar kelahiran di JPN", "📝", [
+        ("confirm", "Birth confirmation form from the hospital (Borang Pengesahan Kelahiran)",
+         "Borang Pengesahan Kelahiran daripada hospital",
+         "Born at home or on the way? Bring a doctor's confirmation letter and ask JPN what else they need.",
+         "Lahir di rumah atau dalam perjalanan? Bawa surat pengesahan doktor dan tanya JPN dokumen lain yang diperlukan."),
+        ("lm01", "Birth registration form JPN.LM01, filled in", "Borang pendaftaran kelahiran JPN.LM01, diisi lengkap",
+         "Sabah and Sarawak use their own forms - ask at the hospital or JPN.",
+         "Sabah dan Sarawak menggunakan borang sendiri - tanya di hospital atau JPN."),
+        ("ic", "Both parents' MyKad (original + a copy)", "MyKad kedua-dua ibu bapa (asal + salinan)", "", ""),
+        ("nikah", "Marriage certificate (original + a copy)", "Sijil nikah / perkahwinan (asal + salinan)", "", ""),
+        ("pink", "Your antenatal card or 'pink book' (original + a copy)", "Kad antenatal atau buku pink (asal + salinan)", "", ""),
+        ("cert", "Check every name and date on the birth certificate before you leave the counter",
+         "Semak setiap nama dan tarikh pada sijil kelahiran sebelum meninggalkan kaunter", "", ""),
+        ("copies", "Make a few copies of the birth certificate - you'll need them for everything below",
+         "Buat beberapa salinan sijil kelahiran - anda akan memerlukannya untuk semua urusan di bawah", "", ""),
+    ]),
+    ("In the first weeks", "Dalam minggu-minggu pertama", "🩺", [
+        ("klinik", "Register baby at your klinik kesihatan and keep the baby's health record book safe",
+         "Daftar bayi di klinik kesihatan dan simpan buku rekod kesihatan bayi dengan baik",
+         "The book records every vaccine and growth check - bring it to every visit.",
+         "Buku ini merekod setiap vaksin dan pemeriksaan tumbesaran - bawa setiap kali ke klinik."),
+        ("hr", "Tell HR: add baby to your medical benefits and update your number of children",
+         "Beritahu HR: tambah bayi dalam faedah perubatan dan kemas kini bilangan anak",
+         "Your monthly tax deduction (PCB) takes your number of children into account.",
+         "Potongan cukai bulanan (PCB) mengambil kira bilangan anak anda."),
+        ("takaful", "Add baby to your family insurance or takaful, if you have one",
+         "Tambah bayi dalam insurans atau takaful keluarga, jika ada", "", ""),
+        ("str", "Getting STR? Add baby in MySTR (Kemas Kini Permohonan) with the birth certificate",
+         "Menerima STR? Tambah bayi dalam MySTR (Kemas Kini Permohonan) dengan sijil kelahiran",
+         "The STR amount depends on how many children you have.",
+         "Jumlah STR bergantung pada bilangan anak anda."),
+    ]),
+    ("Later, if you need them", "Kemudian, jika perlu", "🪪", [
+        ("mykid", "MyKid card - not compulsory; the first one is free at JPN",
+         "Kad MyKid - tidak wajib; permohonan pertama percuma di JPN",
+         "Bring the birth certificate and a parent's MyKad. The birth certificate is the document that matters most.",
+         "Bawa sijil kelahiran dan MyKad ibu atau bapa. Sijil kelahiran ialah dokumen yang paling penting."),
+        ("passport", "Passport - only if you'll travel abroad (apply at Imigresen)",
+         "Pasport - hanya jika akan ke luar negara (mohon di Imigresen)", "", ""),
+    ]),
+]
+
+# Savings accounts a baby can have. "who" is shown as a chip; epf=True means not open to babies yet.
+# (key, icon, name EN, name MS, who EN, who MS, start EN, start MS, bring EN, bring MS, where EN, where MS, url)
+SAVINGS = [
+    ("asb", "🌱", "ASB (Amanah Saham Bumiputera)", "ASB (Amanah Saham Bumiputera)",
+     "Bumiputera · from birth", "Bumiputera · dari lahir",
+     "RM10 to open, then top up from RM1", "RM10 untuk buka, kemudian tambah dari RM1",
+     "Birth certificate or MyKid, your MyKad, cash for the first deposit", "Sijil kelahiran atau MyKid, MyKad anda, wang tunai untuk deposit pertama",
+     "An ASNB branch or agent (many banks are agents). Children's accounts can't be opened in the myASNB app - it's for 18 and above.",
+     "Cawangan atau ejen ASNB (banyak bank ialah ejen). Akaun kanak-kanak tidak boleh dibuka dalam aplikasi myASNB - ia untuk 18 tahun ke atas.",
+     "https://www.asnb.com.my/product/amanah-saham-bumiputera"),
+    ("asm", "🌿", "ASM and other ASNB funds", "ASM dan dana ASNB lain",
+     "All Malaysians · from birth", "Semua rakyat Malaysia · dari lahir",
+     "RM10 to open, then top up from RM1", "RM10 untuk buka, kemudian tambah dari RM1",
+     "Birth certificate or MyKid, your MyKad", "Sijil kelahiran atau MyKid, MyKad anda",
+     "An ASNB branch or agent, as for ASB.", "Cawangan atau ejen ASNB, sama seperti ASB.",
+     "https://www.asnb.com.my/product/amanah-saham-malaysia"),
+    ("sspn", "🎓", "SSPN (PTPTN education savings)", "SSPN (simpanan pendidikan PTPTN)",
+     "All Malaysians · from 1 day old", "Semua rakyat Malaysia · dari umur 1 hari",
+     "SSPN Prime: RM20 to open. Parents can claim up to RM8,000 income tax relief a year (2025-2027).",
+     "SSPN Prime: RM20 untuk buka. Ibu bapa boleh menuntut pelepasan cukai sehingga RM8,000 setahun (2025-2027).",
+     "Baby's birth certificate, your MyKad", "Sijil kelahiran bayi, MyKad anda",
+     "The myPTPTN app or a PTPTN counter.", "Aplikasi myPTPTN atau kaunter PTPTN.",
+     "https://www.ptptn.gov.my/simpan-sspn/simpan-sspn-prime/"),
+    ("th", "🕋", "Tabung Haji", "Tabung Haji",
+     "Muslims · under 18", "Muslim · bawah 18 tahun",
+     "RM2 to open", "RM2 untuk buka",
+     "Birth certificate (and MyKid if you have one), your MyKad. You need your own TH account first.",
+     "Sijil kelahiran (dan MyKid jika ada), MyKad anda. Anda perlu ada akaun TH sendiri dahulu.",
+     "A TH branch - or start online on THiJARI, then visit a branch within 30 days to activate it.",
+     "Cawangan TH - atau mula dalam talian di THiJARI, kemudian ke cawangan dalam 30 hari untuk mengaktifkannya.",
+     "https://www.tabunghaji.gov.my/pembukaan-akaun"),
+    ("epf", "💼", "EPF (KWSP)", "KWSP (EPF)",
+     "Not for babies · from age 14", "Bukan untuk bayi · dari umur 14",
+     "From 14 your child can register with their MyKad; you can then top up with i-Simpan (RM1 to RM100,000 a year).",
+     "Dari umur 14, anak boleh mendaftar dengan MyKad mereka; anda kemudian boleh menambah simpanan melalui i-Simpan (RM1 hingga RM100,000 setahun).",
+     "Your child's MyKad", "MyKad anak anda",
+     "The KWSP i-Akaun app, an EPF kiosk or counter.", "Aplikasi KWSP i-Akaun, kiosk atau kaunter KWSP.",
+     "https://www.kwsp.gov.my/en/w/article/how-to-open-an-epf-account"),
+]

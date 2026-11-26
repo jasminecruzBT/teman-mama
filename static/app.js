@@ -372,6 +372,40 @@
     render();
   }
 
+  // ---------- after-birth documents: JPN deadline (60 days Peninsular, 14 Sabah/Sarawak), MyKad at 12, EPF from 14
+  function afterBirth() {
+    var box = $("#docs-tool"); if (!box) return;
+    var input = $("#docs-birth"), out = $("#docs-result"), pills = $$(".pill-opt[data-r]", box);
+    var st = get("tm_docs_info", null);
+    if (!st) {  // first visit: reuse a birth date the mum already typed on the vaccine or pantang page
+      var vx = get("tm_vax", {}), pt = get("tm_pantang", {});
+      st = { birth: vx.birth || (pt.kind === "birth" ? pt.date : "") || "", region: "pen" };
+    }
+    input.value = st.birth || "";
+    function addYears(d, y) { var x = new Date(d.getTime()); x.setUTCFullYear(x.getUTCFullYear() + y); return x; }
+    function setRegion(r) {
+      st.region = r;
+      pills.forEach(function (p) { p.setAttribute("aria-pressed", p.getAttribute("data-r") === r ? "true" : "false"); });
+    }
+    function render() {
+      var b = parseDate(input.value), epfLine = $("#sv-epf-date");
+      if (!b) { out.innerHTML = ""; if (epfLine) epfLine.hidden = true; return; }
+      st.birth = input.value; set("tm_docs_info", st);
+      var limit = st.region === "pen" ? 60 : 14, last = addDays(b, limit - 1), left = diffDays(today(), last);
+      var regSmall = left > 0 ? fill(S.dLeft, { n: left }) : left === 0 ? S.dLastDay : (st.region === "pen" ? S.dLatePen : S.dLateSS);
+      var epf = addYears(b, 14);
+      out.innerHTML = '<div class="stats">' +
+        '<div class="stat t1' + (left < 0 ? " late" : "") + '"><p class="stat-label">' + esc(S.dRegBy) + '</p><p class="stat-big">' + esc(fmt(last)) + '</p><p class="stat-small">' + esc(regSmall) + "</p></div>" +
+        '<div class="stat t2"><p class="stat-label">' + esc(S.dMyKad) + '</p><p class="stat-big">' + esc(fmt(addYears(b, 12))) + '</p><p class="stat-small">' + esc(S.dMyKadSmall) + "</p></div>" +
+        '<div class="stat"><p class="stat-label">' + esc(S.dEpf) + '</p><p class="stat-big">' + esc(fmt(epf)) + '</p><p class="stat-small">' + esc(S.dEpfSmall) + "</p></div></div>";
+      if (epfLine) { epfLine.textContent = fill(S.dEpfFrom, { d: fmt(epf) }); epfLine.hidden = false; }
+    }
+    pills.forEach(function (p) { p.addEventListener("click", function () { setRegion(p.getAttribute("data-r")); set("tm_docs_info", st); render(); }); });
+    input.addEventListener("change", render);
+    setRegion(st.region || "pen");
+    render();
+  }
+
   // ---------- breast milk: "use by" from when it was expressed and where it is stored (KKM times)
   function milk() {
     var box = $("#milk-tool"); if (!box) return;
@@ -487,11 +521,14 @@
   // ---------- hospital bag
   function bag() {
     var boxes = $$("input[data-key]"); if (!boxes.length) return;
-    var storeKey = (document.querySelector("[data-store]") || { getAttribute: function () { return "tm_bag"; } }).getAttribute("data-store");
+    var storeEl = document.querySelector("[data-store]");
+    var storeKey = storeEl ? storeEl.getAttribute("data-store") : "tm_bag";
+    var txtProg = (storeEl && storeEl.getAttribute("data-progress")) || S.bagProgress;
+    var txtDone = (storeEl && storeEl.getAttribute("data-done")) || S.bagDone;
     var st = get(storeKey, {}), prog = $("#bag-progress");
     function upd() {
       var n = boxes.filter(function (b) { return b.checked; }).length;
-      prog.textContent = n === boxes.length ? S.bagDone : fill(S.bagProgress, { n: n, t: boxes.length });
+      prog.textContent = n === boxes.length ? txtDone : fill(txtProg, { n: n, t: boxes.length });
       var bar = $("#bag-bar"); if (bar) bar.style.width = Math.round(n / boxes.length * 100) + "%";
     }
     boxes.forEach(function (b) {
@@ -824,5 +861,5 @@
   }
 
   freshness(); tips(); menu(); dueTool(); homeTabs(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery();
-  vaccines(); milk(); names(); fertility(); labour(); bot();
+  vaccines(); afterBirth(); milk(); names(); fertility(); labour(); bot();
 })();

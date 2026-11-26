@@ -47,6 +47,7 @@ NAV = [
     ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
     ("#new", "New mum", "Ibu baharu", "👶", ""),
     ("pantang.html", "Pantang planner", "Perancang pantang", "🍲", "t-pantang"),
+    ("after-birth.html", "Documents & savings", "Dokumen & simpanan", "📄", "t-docs"),
     ("vaccines.html", "Vaccination dates", "Jadual imunisasi", "💉", "t-vax"),
     ("breastmilk.html", "Breast milk storage", "Simpan susu ibu", "🤱", "t-milk"),
     ("newborn.html", "Newborn essentials", "Barang bayi baru lahir", "🧺", "t-kit"),
@@ -153,6 +154,11 @@ JS_STR = {
         "preCentreNote": "Published price for {d} days: {price}. Checked {date}. Prices change - confirm with the centre.",
         "preSource": "Centre's website", "preTypicalNote": "Typical price - change it to match your quote.",
         "preCentreNoteNoDays": "Published price: {price} (stay length not stated). Checked {date}. Prices change - confirm with the centre.",
+        "dRegBy": "Register the birth by", "dLeft": "{n} days left · free", "dLastDay": "Today is the last day · free",
+        "dLatePen": "Now a late registration - go to your nearest JPN office soon (RM50 fee in Peninsular Malaysia).",
+        "dLateSS": "Past 14 days - go to JPN as soon as you can. After 42 days it becomes a late registration with extra steps.",
+        "dMyKad": "Apply for MyKad", "dMyKadSmall": "compulsory at age 12",
+        "dEpf": "EPF account", "dEpfSmall": "earliest date (age 14)", "dEpfFrom": "Your child can open one from {d}.",
     },
     "ms": {
         "pickDate": "Sila pilih tarikh dahulu.",
@@ -226,6 +232,11 @@ JS_STR = {
         "preCentreNote": "Harga yang diterbitkan untuk {d} hari: {price}. Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
         "preSource": "Laman web pusat", "preTypicalNote": "Harga biasa - ubah supaya sama dengan sebut harga anda.",
         "preCentreNoteNoDays": "Harga yang diterbitkan: {price} (tempoh tidak dinyatakan). Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
+        "dRegBy": "Daftar kelahiran sebelum", "dLeft": "{n} hari lagi · percuma", "dLastDay": "Hari ini hari terakhir · percuma",
+        "dLatePen": "Kini pendaftaran lewat - pergi ke pejabat JPN terdekat segera (bayaran RM50 di Semenanjung).",
+        "dLateSS": "Sudah lebih 14 hari - pergi ke JPN secepat mungkin. Selepas 42 hari ia menjadi pendaftaran lewat dengan langkah tambahan.",
+        "dMyKad": "Mohon MyKad", "dMyKadSmall": "wajib pada umur 12 tahun",
+        "dEpf": "Akaun KWSP", "dEpfSmall": "tarikh paling awal (umur 14)", "dEpfFrom": "Anak anda boleh membukanya mulai {d}.",
     },
 }
 
@@ -256,7 +267,11 @@ BOT_KW = {
     "breastfeed": ["breastfeed", "breast feed", "breastmilk", "breast milk", "susu ibu", "menyusu", "penyusuan",
                    "lactation", "pam susu", "breast pump", "nipple", "puting"],
     "vaccine": ["vaccin", "vaksin", "imunisasi", "immunis", "immuniz", "=jab", "suntikan", "=bcg", "hepatitis"],
-    "birthreg": ["register", "daftar", "birth certificate", "sijil lahir", "sijil kelahiran", "=jpn", "mykid"],
+    "birthreg": ["register", "daftar", "birth certificate", "sijil lahir", "sijil kelahiran", "=jpn", "mykid", "dokumen",
+                 "document", "passport", "pasport", "=str", "mystr"],
+    "savings": ["=asb", "asnb", "amanah saham", "=asm", "=epf", "kwsp", "sspn", "ptptn", "tabung haji", "simpanan anak",
+                "savings for baby", "save for baby", "baby savings", "akaun anak", "child account", "account for baby",
+                "akaun bayi", "simpan duit", "invest for", "pelaburan anak"],
     "feedback": ["feedback", "cadangan", "suggest", "improve", "tambah baik", "complain", "aduan", "contact", "hubungi",
                  "=bug", "salah", "wrong"],
     "milkstore": ["simpan susu", "susu perah", "susu perahan", "=ebm", "freezer", "peti sejuk", "breast milk storage", "store breast milk",
@@ -299,9 +314,12 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
     "vaccine": ("vaccines.html", "Babies usually get their first vaccines (BCG and Hepatitis B) at birth. After that, follow the schedule in your baby's health book at your klinik kesihatan.",
                 "Bayi biasanya menerima vaksin pertama (BCG dan Hepatitis B) semasa lahir. Selepas itu, ikut jadual dalam buku kesihatan bayi di klinik kesihatan.",
                 "See your baby's vaccine dates", "Lihat tarikh vaksin bayi"),
-    "birthreg": ("pantang.html", "Register the birth with JPN - in Peninsular Malaysia within 60 days (many hospitals have a JPN counter). Bring both parents' MyKad and your marriage certificate.",
-                 "Daftar kelahiran di JPN - di Semenanjung dalam tempoh 60 hari (banyak hospital ada kaunter JPN). Bawa MyKad kedua-dua ibu bapa dan sijil nikah.",
-                 "See your after-birth timeline", "Lihat jadual selepas bersalin"),
+    "birthreg": ("after-birth.html", "Register the birth with JPN - within 60 days in Peninsular Malaysia, 14 days in Sabah and Sarawak. Bring both parents' MyKad, your marriage certificate and the hospital's birth confirmation form.",
+                 "Daftar kelahiran di JPN - dalam tempoh 60 hari di Semenanjung, 14 hari di Sabah dan Sarawak. Bawa MyKad kedua-dua ibu bapa, sijil nikah dan borang pengesahan kelahiran daripada hospital.",
+                 "Open the after-birth checklist", "Buka senarai semak selepas bersalin"),
+    "savings": ("after-birth.html#savings", "Bumiputera babies can have an ASB account from birth (RM10 to start), and ASM, SSPN and Tabung Haji also take babies. An EPF account can only be opened from age 14.",
+                "Bayi Bumiputera boleh ada akaun ASB dari lahir (RM10 untuk mula), dan ASM, SSPN serta Tabung Haji juga menerima bayi. Akaun KWSP hanya boleh dibuka dari umur 14 tahun.",
+                "See savings for your baby", "Lihat simpanan untuk bayi"),
     "feedback": ("feedback.html", "Thank you! Tell us what to fix or add - it takes a minute.",
                  "Terima kasih! Beritahu kami apa yang perlu dibaiki atau ditambah - hanya seminit.",
                  "Suggest an improvement", "Hantar cadangan"),
@@ -748,6 +766,64 @@ def p_newborn(lang):
                  "Apa perlu dibeli sebelum bayi lahir: tidur, menyusu, mandi, lampin, pakaian dan kerusi kereta - senarai semak percuma."), body)
 
 
+def p_afterbirth(lang):
+    x = tr(lang)
+    secs = []
+    for te, tm, ico, items in extra.AFTER_BIRTH:
+        lis = "".join(
+            f'<li><label class="check"><input type="checkbox" data-key="ab_{k}"> {esc(x(en, ms))}</label>'
+            f'{tip(x(te_, tm_), x) if te_ else ""}</li>' for k, en, ms, te_, tm_ in items)
+        secs.append(f'<section class="card"><h2><span aria-hidden="true">{ico}</span> {esc(x(te, tm))}</h2><ul class="checklist">{lis}</ul></section>')
+    cards = []
+    for k, ico, ne, nm, we, wm, se, sm, be, bm, he, hm, url in extra.SAVINGS:
+        epf = k == "epf"
+        cards.append(
+            f'<article class="save-card{" save-later" if epf else ""}" id="sv-{k}"><div class="sv-top"><span class="sv-ico" aria-hidden="true">{ico}</span>'
+            f'<div><h3>{esc(x(ne, nm))}</h3><span class="sv-who">{esc(x(we, wm))}</span></div></div>'
+            f'<dl><dt>{x("Start", "Mula")}</dt><dd>{esc(x(se, sm))}</dd>'
+            f'<dt>{x("Bring", "Bawa")}</dt><dd>{esc(x(be, bm))}</dd>'
+            f'<dt>{x("Where", "Di mana")}</dt><dd>{esc(x(he, hm))}</dd></dl>'
+            + (f'<p class="sv-date" id="sv-epf-date" hidden></p>' if epf else "")
+            + f'<a class="sv-link" href="{esc(url)}" target="_blank" rel="noopener">{x("Official site", "Laman rasmi")} ↗</a></article>')
+    body = f"""
+<div data-store="tm_docs" data-progress="{x("{n} of {t} done", "{n} daripada {t} selesai")}" data-done="{x("All done - well done!", "Semua selesai - syabas!")}"></div>
+{page_head(x, "📄", "t-docs", x("New mum", "Ibu baharu"), x("Documents &amp; savings after birth", "Dokumen &amp; simpanan selepas bersalin"),
+           x("Register the birth on time, sort out baby's papers, and see which savings accounts your baby can have.",
+             "Daftar kelahiran tepat pada masanya, uruskan dokumen bayi, dan lihat akaun simpanan yang boleh dibuka untuk bayi."),
+           extra=tip(x("Checked on the official JPN, ASNB, PTPTN, Tabung Haji and EPF websites in November 2026. Rules and fees can change - check with the office before you go.",
+                       "Disemak di laman rasmi JPN, ASNB, PTPTN, Tabung Haji dan KWSP pada November 2026. Peraturan dan bayaran boleh berubah - semak dengan pejabat berkenaan sebelum pergi."), x))}
+<section class="card" id="docs-tool">
+  <p class="field-label">{x("Where was baby born?", "Di mana bayi dilahirkan?")}</p>
+  <div class="pill-group" role="group" aria-label="{x("Where was baby born?", "Di mana bayi dilahirkan?")}">
+    <button type="button" class="pill-opt" data-r="pen" aria-pressed="true">{x("Peninsular", "Semenanjung")} <small>60 {x("days", "hari")}</small></button>
+    <button type="button" class="pill-opt" data-r="sbh" aria-pressed="false">Sabah <small>14 {x("days", "hari")}</small></button>
+    <button type="button" class="pill-opt" data-r="swk" aria-pressed="false">Sarawak <small>14 {x("days", "hari")}</small></button>
+  </div>
+  <div class="due-row"><label class="field grow">{x("Baby's birth date", "Tarikh lahir bayi")}<input type="date" id="docs-birth"></label></div>
+  <div id="docs-result" aria-live="polite"></div>
+  <p class="hint">{x("Registering within the time limit is free. Some hospitals have a JPN counter - ask before you go home.",
+                     "Pendaftaran dalam tempoh yang ditetapkan adalah percuma. Sesetengah hospital ada kaunter JPN - tanya sebelum pulang.")}</p>
+</section>
+<div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
+<div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
+<div class="check-grid">{"".join(secs)}</div>
+{ad("in_content", x)}
+<section id="savings">
+<h2 class="sv-head"><span aria-hidden="true">🐷</span> {x("Start saving for baby", "Mula menyimpan untuk bayi")}</h2>
+<p class="muted">{x("Once you have the birth certificate, you can open these for your baby. They're all optional - pick what suits your family.",
+                    "Selepas mendapat sijil kelahiran, anda boleh membuka akaun ini untuk bayi. Semuanya pilihan - pilih yang sesuai untuk keluarga anda.")}</p>
+<div class="save-grid">{"".join(cards)}</div>
+<p class="small muted">{x("General information only, not financial advice. Limits, fees and returns change, and past dividends don't promise future ones - check with ASNB, PTPTN, Tabung Haji or EPF before you open an account.",
+                          "Maklumat umum sahaja, bukan nasihat kewangan. Had, bayaran dan pulangan boleh berubah, dan dividen lalu tidak menjamin dividen akan datang - semak dengan ASNB, PTPTN, Tabung Haji atau KWSP sebelum membuka akaun.")}</p>
+</section>
+<p><a class="btn ghost" href="vaccines.html">{x("Baby's vaccine dates →", "Tarikh vaksin bayi →")}</a> <a class="btn ghost" href="leave.html">{x("Maternity leave →", "Cuti bersalin →")}</a></p>
+"""
+    write_page(lang, "after-birth.html", x("Documents after birth & savings for baby (Malaysia)", "Dokumen selepas bersalin & simpanan bayi (Malaysia)"),
+               x("What to do after your baby is born in Malaysia: register the birth with JPN (60 days, or 14 in Sabah and Sarawak), MyKid, STR, and opening ASB, SSPN or Tabung Haji for your baby.",
+                 "Perkara selepas bayi lahir di Malaysia: daftar kelahiran di JPN (60 hari, atau 14 hari di Sabah dan Sarawak), MyKid, STR, dan membuka ASB, SSPN atau Tabung Haji untuk bayi."),
+               body)
+
+
 def p_feedback(lang):
     x = tr(lang)
     url = config.FEEDBACK_FORM_URL
@@ -780,6 +856,7 @@ def p_home(lang):
         "fertility.html": ("When you're most likely to conceive", "Bila peluang hamil paling tinggi"),
         "names.html": ("Malay, Chinese & Indian names", "Nama Melayu, Cina & India"),
         "labour.html": ("Count kicks, time contractions", "Kira tendangan, masa kontraksi"),
+        "after-birth.html": ("Birth cert, MyKid, ASB & savings", "Sijil lahir, MyKid, ASB & simpanan"),
         "vaccines.html": ("Your baby's KKM vaccine dates", "Tarikh vaksin bayi (KKM)"),
         "breastmilk.html": ("How long it keeps (KKM)", "Berapa lama tahan (KKM)"),
         "newborn.html": ("What to buy before baby", "Apa perlu dibeli sebelum bayi"),
@@ -1427,6 +1504,7 @@ def main():
         p_vaccines(lang)
         p_breastmilk(lang)
         p_newborn(lang)
+        p_afterbirth(lang)
     root_files()
     print(f"built {len(WRITTEN)} pages into {OUT}" + (" (ad preview)" if AD_PREVIEW else ""))
 
