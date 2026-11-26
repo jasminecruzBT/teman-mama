@@ -261,7 +261,8 @@ BOT_KW = {
                  "=bug", "salah", "wrong"],
     "milkstore": ["simpan susu", "susu perah", "susu perahan", "=ebm", "freezer", "peti sejuk", "breast milk storage", "store breast milk",
                   "expressed milk", "tahan berapa lama", "how long breast milk"],
-    "names": ["nama bayi", "nama anak", "baby name", "nama lelaki", "nama perempuan", "maksud nama", "name meaning"],
+    "names": ["nama bayi", "nama anak", "baby name", "nama lelaki", "nama perempuan", "maksud nama", "name meaning",
+              "nama cina", "nama india", "chinese name", "indian name", "tamil name", "nama tamil"],
     "fertile": ["hari subur", "ovulasi", "ovulation", "subur", "nak hamil", "cuba hamil", "trying to conceive", "=ttc", "fertile"],
     "kicks": ["tendangan", "kick count", "kick counter", "kira tendangan", "kontraksi", "contraction", "sakit nak bersalin", "labour pain", "labor"],
     "essentials": ["barang bayi", "barang baby", "newborn essentials", "what to buy", "beli apa", "baby list", "persediaan bayi"],
@@ -307,8 +308,8 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
     "milkstore": ("breastmilk.html", "KKM says expressed milk keeps 4 hours at room temperature, 8 hours in an air-conditioned room, 3-5 days in the fridge and 6 months in a deep freezer.",
                   "KKM: susu perahan tahan 4 jam pada suhu bilik, 8 jam dalam bilik berhawa dingin, 3-5 hari dalam peti sejuk dan 6 bulan dalam peti sejuk beku.",
                   "Breast milk storage guide", "Panduan simpan susu ibu"),
-    "names": ("names.html", "Browse Malay and Islamic baby names with their meanings, and save your favourites.",
-              "Lihat nama bayi Melayu dan Islam beserta maksud, dan simpan pilihan kegemaran anda.", "Browse baby names", "Lihat nama bayi"),
+    "names": ("names.html", "Browse Malay, Chinese and Indian baby names with their meanings, and save your favourites.",
+              "Lihat nama bayi Melayu, Cina dan India beserta maksud, dan simpan pilihan kegemaran anda.", "Browse baby names", "Lihat nama bayi"),
     "fertile": ("fertility.html", "Ovulation is usually about 14 days before your next period. The calculator shows your likely fertile days.",
                 "Ovulasi biasanya lebih kurang 14 hari sebelum haid seterusnya. Kalkulator menunjukkan hari subur anda.", "Find your fertile days", "Cari hari subur anda"),
     "kicks": ("labour.html", "Count your baby's kicks or time your contractions. If movements slow down, or contractions come regularly and get stronger, call your hospital.",
@@ -613,13 +614,19 @@ def p_fertility(lang):
 
 def p_names(lang):
     x = tr(lang)
-    data = [[n, g, (mm if lang == "ms" else me)] for n, g, me, mm in extra.NAMES]
+    data = [[n, g, (mm if lang == "ms" else me), o] for n, g, me, mm, o in extra.NAMES]
     body = f"""
 {page_head(x, "✨", "t-names", x("Pregnant", "Sedang hamil"), x("Baby names", "Nama bayi"),
-           x("Malay and Islamic names with their meanings.", "Nama Melayu dan Islam beserta maksudnya."), extra=tip(x("Meanings are common interpretations - many names have more than one. Check with a trusted source or ustaz/ustazah before deciding.",
-                                                                                                                        "Maksud ialah tafsiran biasa - banyak nama mempunyai lebih daripada satu maksud. Semak dengan sumber dipercayai atau ustaz/ustazah sebelum memutuskan."), x))}
+           x("Malay, Chinese and Indian names with their meanings.", "Nama Melayu, Cina dan India beserta maksudnya."), extra=tip(x("Meanings are common interpretations - many names have more than one. For Chinese names the meaning depends on the characters you choose. Check with family, a trusted source or ustaz/ustazah before deciding.",
+                                                                                                                        "Maksud ialah tafsiran biasa - banyak nama mempunyai lebih daripada satu maksud. Untuk nama Cina, maksudnya bergantung pada aksara yang dipilih. Semak dengan keluarga, sumber dipercayai atau ustaz/ustazah sebelum memutuskan."), x))}
 <section class="card" id="names-tool">
   <div class="search-row"><input type="search" id="nm-q" placeholder="{x("Search a name or meaning, e.g. light", "Cari nama atau maksud, cth. cahaya")}" aria-label="{x("Search names", "Cari nama")}"></div>
+  <div class="chips nm-origin" role="group" aria-label="{x("Origin", "Asal")}">
+    <button type="button" class="chip-btn" data-o="all" aria-pressed="true">{x("All", "Semua")}</button>
+    <button type="button" class="chip-btn" data-o="malay" aria-pressed="false">🌙 {x("Malay & Islamic", "Melayu & Islam")}</button>
+    <button type="button" class="chip-btn" data-o="chinese" aria-pressed="false">🏮 {x("Chinese", "Cina")}</button>
+    <button type="button" class="chip-btn" data-o="indian" aria-pressed="false">🪔 {x("Indian", "India")}</button>
+  </div>
   <div class="seg nm-seg">
     <button type="button" data-f="all" aria-pressed="true">{x("All", "Semua")}</button>
     <button type="button" data-f="m" aria-pressed="false">{x("Boys", "Lelaki")}</button>
@@ -630,9 +637,9 @@ def p_names(lang):
 </section>
 {ad("bottom", x)}
 """
-    write_page(lang, "names.html", x("Malay & Islamic baby names with meanings", "Nama bayi Melayu & Islam beserta maksud"),
-               x("Browse Malay and Islamic baby names for boys and girls with their meanings, and save your favourites.",
-                 "Senarai nama bayi lelaki dan perempuan Melayu dan Islam beserta maksud - simpan nama kegemaran anda."), body, {"names": data})
+    write_page(lang, "names.html", x("Malay, Chinese & Indian baby names with meanings", "Nama bayi Melayu, Cina & India beserta maksud"),
+               x("Browse Malay, Islamic, Chinese and Indian baby names for boys and girls with their meanings, and save your favourites.",
+                 "Senarai nama bayi lelaki dan perempuan Melayu, Islam, Cina dan India beserta maksud - simpan nama kegemaran anda."), body, {"names": data})
 
 
 def p_labour(lang):
@@ -771,7 +778,7 @@ def p_home(lang):
     desc = {h: (de, dm) for h, i, te, tm, de, dm, c in tools}
     desc.update({
         "fertility.html": ("When you're most likely to conceive", "Bila peluang hamil paling tinggi"),
-        "names.html": ("Malay & Islamic names with meanings", "Nama Melayu & Islam beserta maksud"),
+        "names.html": ("Malay, Chinese & Indian names", "Nama Melayu, Cina & India"),
         "labour.html": ("Count kicks, time contractions", "Kira tendangan, masa kontraksi"),
         "vaccines.html": ("Your baby's KKM vaccine dates", "Tarikh vaksin bayi (KKM)"),
         "breastmilk.html": ("How long it keeps (KKM)", "Berapa lama tahan (KKM)"),

@@ -75,7 +75,7 @@ ESSENTIALS = [
 ]
 
 # Baby names: (name, gender m/f, meaning EN, meaning MS). Common interpretations of Arabic / Malay names.
-NAMES = [
+MALAY_NAMES = [
     ("Muhammad", "m", "praised", "yang terpuji"), ("Ahmad", "m", "most praiseworthy", "yang sangat terpuji"),
     ("Adam", "m", "the first man; of the earth", "manusia pertama; dari tanah"), ("Amir", "m", "leader, prince", "pemimpin, putera"),
     ("Aqil", "m", "wise, intelligent", "bijak, berakal"), ("Arif", "m", "knowledgeable", "berpengetahuan"),
@@ -106,3 +106,38 @@ NAMES = [
     ("Yasmin", "f", "jasmine flower", "bunga melur"), ("Zahra", "f", "radiant, blossoming", "berseri, mekar"),
     ("Nadia", "f", "tender; the caller", "lembut; yang menyeru"), ("Safiya", "f", "pure, sincere", "suci, ikhlas"),
 ]
+
+# Chinese given names (pinyin + characters). The meaning depends on the characters chosen.
+CHINESE_NAMES = [
+    ("Jun Hao 俊豪", "m", "handsome and heroic", "kacak dan berani"), ("Wei Jie 伟杰", "m", "great and outstanding", "hebat dan cemerlang"),
+    ("Zhi Hao 志豪", "m", "ambitious and heroic", "bercita-cita tinggi dan berani"), ("Jia Hao 家豪", "m", "hero of the family", "wira keluarga"),
+    ("Kai Wen 凯文", "m", "triumphant and cultured", "berjaya dan berbudaya"), ("Hao Ran 浩然", "m", "vast and upright", "luas dan lurus hati"),
+    ("Ming Hui 明辉", "m", "bright and brilliant", "terang dan bersinar"), ("Jun Jie 俊杰", "m", "talented and outstanding", "berbakat dan cemerlang"),
+    ("Yu Xuan 宇轩", "m", "lofty as the universe", "luhur seperti alam semesta"), ("Wen Bin 文彬", "m", "refined and cultivated", "halus budi dan terpelajar"),
+    ("Jia Le 嘉乐", "m", "good and joyful", "baik dan gembira"), ("Zhen Yu 振宇", "m", "uplifting the world", "membangkitkan dunia"),
+    ("Xin Yi 欣怡", "f", "joyful and happy", "gembira dan bahagia"), ("Hui Min 慧敏", "f", "wise and quick-witted", "bijak dan cerdas"),
+    ("Mei Ling 美玲", "f", "beautiful, like the sound of jade", "cantik, seperti bunyi jed"), ("Jia Xin 佳欣", "f", "good and joyful", "baik dan gembira"),
+    ("Yi Ting 怡婷", "f", "happy and graceful", "bahagia dan anggun"), ("Shu Ting 淑婷", "f", "virtuous and graceful", "berbudi dan anggun"),
+    ("Xiao Wen 晓雯", "f", "dawn clouds", "awan subuh"), ("Li Ying 丽颖", "f", "beautiful and bright", "cantik dan bijak"),
+    ("Yu Xin 雨欣", "f", "joy like rain", "kegembiraan seperti hujan"), ("Jing Yi 静怡", "f", "calm and joyful", "tenang dan gembira"),
+    ("An Qi 安琪", "f", "peaceful jade", "jed yang damai"), ("Pei Shan 佩珊", "f", "jade ornament and coral", "perhiasan jed dan karang"),
+]
+
+# Indian (mostly Tamil / Sanskrit) names common in Malaysia.
+INDIAN_NAMES = [
+    ("Arjun", "m", "bright, shining; hero of the Mahabharata", "terang, bersinar; wira Mahabharata"), ("Aravind", "m", "lotus", "bunga teratai"),
+    ("Karthik", "m", "a name of Lord Murugan", "nama Dewa Murugan"), ("Vikram", "m", "valour", "keberanian"),
+    ("Rajesh", "m", "king of kings", "raja segala raja"), ("Suresh", "m", "lord of the gods", "tuan para dewa"),
+    ("Ganesh", "m", "Lord Ganesha", "Dewa Ganesha"), ("Kumar", "m", "prince, son", "putera, anak lelaki"),
+    ("Mohan", "m", "charming; a name of Krishna", "menawan; nama Krishna"), ("Ravi", "m", "sun", "matahari"),
+    ("Sanjay", "m", "victorious", "menang"), ("Kavin", "m", "handsome, beautiful", "kacak, cantik"),
+    ("Priya", "f", "beloved", "kekasih, disayangi"), ("Kavya", "f", "poetry", "puisi"),
+    ("Divya", "f", "divine", "suci, ilahi"), ("Lakshmi", "f", "goddess of wealth", "dewi kekayaan"),
+    ("Anjali", "f", "an offering with joined hands", "persembahan dengan tangan dirapatkan"), ("Deepa", "f", "lamp, light", "pelita, cahaya"),
+    ("Kavitha", "f", "poem", "sajak"), ("Nisha", "f", "night", "malam"),
+    ("Sangeetha", "f", "music", "muzik"), ("Pooja", "f", "worship, prayer", "pemujaan, doa"),
+    ("Aishwarya", "f", "prosperity", "kemakmuran"), ("Vani", "f", "speech; Goddess Saraswati", "pertuturan; Dewi Saraswati"),
+]
+
+NAMES = ([n + ("malay",) for n in MALAY_NAMES] + [n + ("chinese",) for n in CHINESE_NAMES]
+         + [n + ("indian",) for n in INDIAN_NAMES])

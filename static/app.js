@@ -392,11 +392,15 @@
   // ---------- baby names: search, filter by boy/girl, favourites saved on this phone
   function names() {
     var box = $("#names-tool"); if (!box) return;
-    var q = $("#nm-q"), list = $("#nm-list"), fav = get("tm_names_fav", {}), filter = "all";
+    var q = $("#nm-q"), list = $("#nm-list"), fav = get("tm_names_fav", {}), filter = "all", origin = "all";
+    var oBtns = $$(".nm-origin .chip-btn", box);
+    oBtns.forEach(function (b) { b.addEventListener("click", function () {
+      origin = b.getAttribute("data-o"); oBtns.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); render(); }); });
     var segs = $$(".nm-seg button", box);
     function render() {
       var qq = (q.value || "").toLowerCase().trim(), rows = (TM.names || []).filter(function (n) {
         if (filter === "fav" && !fav[n[0]]) return false;
+        if (origin !== "all" && n[3] !== origin) return false;
         if (filter === "m" || filter === "f") { if (n[1] !== filter) return false; }
         return !qq || (n[0] + " " + n[2]).toLowerCase().indexOf(qq) >= 0;
       });

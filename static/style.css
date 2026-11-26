@@ -566,3 +566,8 @@ html.pinned .chat-panel { right: 24px; }
 @media (min-width: 760px) { .check-grid { grid-template-columns: 1fr 1fr; } }
 
 @media (max-width: 480px) { .stage-tab { flex: 1 1 0; min-width: 0; white-space: normal; line-height: 1.2; font-size: .8rem; padding: 8px 6px; } .stage-tabs { border-radius: 16px; } .stage-tab { border-radius: 12px; } }
+
+/* names: origin filter chips */
+.nm-origin { margin: 12px 0 4px; }
+.chip-btn { border: 0; font: inherit; font-size: .84rem; font-weight: 600; padding: 7px 12px; border-radius: 999px; background: var(--faint); color: var(--muted); cursor: pointer; }
+.chip-btn[aria-pressed="true"] { background: var(--brand-soft); color: var(--brand); box-shadow: inset 0 0 0 1.5px var(--brand); }
