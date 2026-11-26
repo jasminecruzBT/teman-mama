@@ -884,3 +884,50 @@ tr.states-row td { background: var(--faint); padding: 12px 14px; }
 .wg-now { margin: 14px 0 0; }
 .wg-table td, .wg-table th { padding: 8px 10px; }
 .hb-list { box-shadow: none; background: transparent; }
+
+/* ---------- early signs, aid, newborn care, illnesses, birth, forum */
+.t-signs .mi-ico, .t-signs .tool-ico, .t-signs .ph-ico { background: #fde8f3; }
+.t-birth .mi-ico, .t-birth .tool-ico, .t-birth .ph-ico { background: #fbeee0; }
+.t-aid .mi-ico, .t-aid .tool-ico, .t-aid .ph-ico { background: #e3f4e6; }
+.t-ncare .mi-ico, .t-ncare .tool-ico, .t-ncare .ph-ico { background: #e3f0fb; }
+.t-ill .mi-ico, .t-ill .tool-ico, .t-ill .ph-ico { background: #fff1d9; }
+.t-forum .mi-ico, .t-forum .tool-ico, .t-forum .ph-ico { background: #ede7fb; }
+.icon-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+@media (min-width: 640px) { .icon-list { grid-template-columns: repeat(2, 1fr); } }
+.icon-list li { display: flex; gap: 10px; align-items: flex-start; background: var(--surface); border-radius: 14px; padding: 12px 14px; box-shadow: var(--shadow); margin: 0; }
+.icon-list li > span { font-size: 1.25rem; line-height: 1.2; }
+.steps { padding-left: 1.4em; }
+.steps li { margin: 0 0 14px; }
+.cards2 { display: grid; gap: 14px; }
+@media (min-width: 700px) { .cards2 { grid-template-columns: repeat(2, 1fr); } .cards2 > .card { margin: 0; } }
+.big-num { font-size: 2rem; font-weight: 800; color: var(--brand); margin: 0 0 6px; font-variant-numeric: tabular-nums; }
+.str-stats { margin-bottom: 12px; }
+@media (min-width: 640px) { .str-stats { grid-template-columns: repeat(2, 1fr); } }
+.fm-notice ul { margin: 0; padding-left: 1.1em; }
+.fm-bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin: 0 0 12px; }
+.fm-nick-f { flex: 1 1 180px; margin: 0; }
+.fm-form .field { margin-bottom: 10px; }
+.fm-chips { margin: 0 0 10px; }
+.fm-tools { display: flex; gap: 10px; align-items: center; margin: 0 0 12px; }
+.fm-tools input[type=search] { flex: 1 1 auto; min-width: 0; }
+.fm-tools .sort-row { margin: 0; }
+.fm-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.fm-list li { margin: 0; }
+.fm-item { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); color: var(--ink); text-decoration: none; }
+.fm-item strong { font-size: 1.02rem; }
+.fm-topic { align-self: flex-start; font-size: .74rem; font-weight: 700; color: #6b4fc1; background: #efe9fd; border-radius: 999px; padding: 1px 8px; }
+.fm-meta { font-size: .82rem; color: var(--muted); margin: 0; }
+.fm-q h2 { margin: 6px 0; }
+.fm-answers { list-style: none; padding: 0; margin: 0 0 14px; }
+.fm-votes { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+.fm-votes button:not(.link-btn) { border: 0; border-radius: 999px; background: var(--faint); padding: 5px 12px; font: inherit; font-size: .88rem; color: var(--ink); cursor: pointer; }
+.fm-votes button[aria-pressed="true"] { background: var(--brand-soft); box-shadow: inset 0 0 0 1.5px var(--brand); }
+.fm-votes .fm-report { margin-left: auto; font-size: .8rem; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fm-topic { background: #35284a; color: #d6c2f5; } }
+:root[data-theme="dark"] .fm-topic { background: #35284a; color: #d6c2f5; }
+input:not([type]), textarea {
+  display: block; width: 100%; margin-top: 6px; font: inherit; font-weight: 400; color: var(--ink); background: var(--faint);
+  border: 1px solid transparent; border-radius: 12px; padding: 10px 12px; min-height: 46px; transition: border-color .12s ease, background .12s ease;
+}
+textarea { resize: vertical; min-height: 96px; }
+input:not([type]):focus, textarea:focus { outline: none; border-color: var(--brand); background: var(--surface); }

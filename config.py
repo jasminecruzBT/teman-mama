@@ -15,6 +15,12 @@ CONTACT_EMAIL = ""
 # answers go to the "Teman Mama feedback (Responses)" Google Sheet). Empty = no feedback page.
 FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSewxoy7o94ZNm-SHx7gfL28mLz7VyCFgVZvcX9OZTU3Kggq6A/viewform"
 
+# "Tanya ibu-ibu" forum: your Supabase project (Project Settings > API). The anon public key is meant
+# to be public - the database only allows reads and the checked write functions in supabase/forum.sql.
+# Leave both empty to hide the forum (no menu entry, no page).
+FORUM_SUPABASE_URL = ""
+FORUM_SUPABASE_KEY = ""
+
 # Google AdSense publisher id, e.g. "ca-pub-1234567890123456". Empty = no ads at all.
 ADSENSE_CLIENT = ""
 # Optional manual ad units (slot ids from your AdSense account). With none set,

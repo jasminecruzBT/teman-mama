@@ -19,6 +19,7 @@ from content import extra
 from content import weeks as wk
 from content import topics as tp
 from content import topics2 as t2
+from content import topics3 as t3
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "site")
@@ -43,6 +44,7 @@ NAV = [
     ("#before", "Before pregnancy", "Sebelum hamil", "🌱", ""),
     ("fertility.html", "Fertile days", "Hari subur", "🌸", "t-fert"),
     ("planning.html", "Planning a pregnancy", "Persediaan hamil", "📝", "t-plan"),
+    ("early-signs.html", "Early signs & pregnancy tests", "Tanda awal hamil & ujian kehamilan", "🧪", "t-signs"),
     ("#preg", "Pregnant", "Sedang hamil", "🤰", ""),
     ("weeks/index.html", "Week by week", "Minggu demi minggu", "📅", "t-weeks"),
     ("antenatal.html", "Antenatal check-ups", "Pemeriksaan antenatal", "🩺", "t-ante"),
@@ -50,6 +52,7 @@ NAV = [
     ("pregnancy-body.html", "Body changes & symptoms", "Perubahan badan & simptom", "🤰", "t-body"),
     ("names.html", "Baby names", "Nama bayi", "✨", "t-names"),
     ("labour.html", "Kicks & contractions", "Tendangan & kontraksi", "⏱️", "t-labour"),
+    ("birth.html", "Signs of labour & giving birth", "Tanda bersalin & proses bersalin", "👣", "t-birth"),
     ("hospital-bag.html", "Hospital bag", "Beg hospital", "👜", "t-bag"),
     ("delivery-cost.html", "Delivery cost", "Kos bersalin", "🏥", "t-deliv"),
     ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
@@ -59,7 +62,9 @@ NAV = [
     ("recovery.html", "Recovering after birth", "Pemulihan selepas bersalin", "🌷", "t-recover"),
     ("feelings.html", "How are you feeling?", "Kesihatan emosi ibu", "💛", "t-mind"),
     ("after-birth.html", "Documents & savings", "Dokumen & simpanan", "📄", "t-docs"),
+    ("aid.html", "Government aid & tax relief", "Bantuan kerajaan & pelepasan cukai", "💵", "t-aid"),
     ("aqiqah.html", "Aqiqah & cukur jambul", "Aqiqah & cukur jambul", "🐐", "t-aqiqah"),
+    ("newborn-care.html", "Caring for your newborn", "Penjagaan bayi baru lahir", "🛁", "t-ncare"),
     ("vaccines.html", "Vaccination dates", "Jadual imunisasi", "💉", "t-vax"),
     ("jaundice.html", "Jaundice & G6PD", "Kuning (jaundis) & G6PD", "🟡", "t-jaun"),
     ("breastmilk.html", "Breastfeeding guide", "Panduan penyusuan", "🤱", "t-milk"),
@@ -68,12 +73,17 @@ NAV = [
     ("#kids", "Mum & kids", "Ibu & anak", "🧒", ""),
     ("growth.html", "Baby's growth", "Tumbesaran bayi", "📈", "t-growth"),
     ("baby-health.html", "Baby health: when to see the klinik", "Kesihatan bayi: bila ke klinik", "🩺", "t-bhealth"),
+    ("illnesses.html", "Common childhood illnesses", "Penyakit biasa kanak-kanak", "🤒", "t-ill"),
     ("solids.html", "Baby's first foods", "Pengenalan makanan pejal", "🥣", "t-solids"),
     ("baby-log.html", "Baby's daily log", "Rekod harian bayi", "📝", "t-log"),
     ("safety.html", "Child safety", "Keselamatan kanak-kanak", "🛡️", "t-safety"),
     ("prices.html", "Prices: milk, diapers & essentials", "Harga barang keperluan", "🍼", "t-prices"),
     ("nursery.html", "Taska & tadika", "Taska & tadika", "🧸", "t-nursery"),
 ]
+
+# The forum only appears once its Supabase project is set in config.py
+if config.FORUM_SUPABASE_URL and config.FORUM_SUPABASE_KEY:
+    NAV.insert(1, ("forum.html", "Ask other mums", "Tanya ibu-ibu", "💬", "t-forum"))
 
 # Product groups on the prices page (icon, English, Malay) - also listed in the "Prices" drop-down.
 GROUPS = {
@@ -345,6 +355,39 @@ JS_STR["ms"].update({
     "wgOk": "Itu dalam julat biasa.", "wgBelow": "Itu sedikit rendah - beritahu klinik pada lawatan seterusnya.", "wgAbove": "Itu sedikit tinggi - beritahu klinik pada lawatan seterusnya.",
 })
 
+JS_STR["en"].update({
+    "esTest": "Earliest reliable test", "esTestNow": "You can test now", "esBook": "See a klinik before", "esBookSmall": "12 weeks of pregnancy",
+    "esDue": "Due date if you're pregnant", "esWeeks": "about {w} weeks {d} days today", "esSave": "Save as my due date", "esSaved": "Saved - your week now shows on the home page.",
+    "esBad": "Enter a date within the last 10 months.",
+    "strYear": "STR 2026", "strYearSmall": "a year", "strSara": "SARA credit", "strSaraSmall": "RM100 a month, cashless (RM200 if listed in eKasih)",
+    "strNo": "Households earning more than RM5,000 a month aren't eligible for STR 2026.",
+    "fmTopics": {"hamil": "Pregnancy", "bersalin": "Giving birth", "pantang": "Pantang", "bayi": "Baby", "menyusu": "Breastfeeding", "lain": "Other"},
+    "fmUp": "Helpful", "fmDown": "Not helpful", "fmReport": "Report", "fmReportAsk": "Report this post as unsafe or unkind?", "fmReported": "Reported - thank you",
+    "fmLoading": "Loading…", "fmNone": "No questions here yet - be the first to ask!", "fmLoadFail": "Couldn't load the forum. Check your connection and try again.",
+    "fmGone": "This question isn't available any more.", "fmBack": "All questions", "fmAnswers": "Answers ({n})", "fmNoAnswers": "No answers yet - share what worked for you.",
+    "fmYourAnswer": "Your answer", "fmRulesShort": "Be kind. No phone numbers, IC numbers or links.", "fmPostAnswer": "Post answer", "fmAnon": "Ibu",
+    "fmErr": "Sorry, that didn't post. Please check and try again.",
+    "fmErr_no_links": "Please remove links - they aren't allowed.", "fmErr_no_phone": "Please remove the phone number - keep personal details private.",
+    "fmErr_no_ic": "Please remove the IC number - keep personal details private.", "fmErr_slow_down": "You're posting very fast - please wait a little and try again.",
+    "fmErr_not_found": "This question isn't available any more.",
+})
+JS_STR["ms"].update({
+    "esTest": "Ujian paling tepat mulai", "esTestNow": "Anda boleh buat ujian sekarang", "esBook": "Jumpa klinik sebelum", "esBookSmall": "12 minggu kehamilan",
+    "esDue": "Tarikh jangkaan jika hamil", "esWeeks": "hari ini lebih kurang {w} minggu {d} hari", "esSave": "Simpan sebagai tarikh jangkaan saya", "esSaved": "Disimpan - minggu anda kini dipaparkan di halaman utama.",
+    "esBad": "Masukkan tarikh dalam tempoh 10 bulan yang lalu.",
+    "strYear": "STR 2026", "strYearSmall": "setahun", "strSara": "Kredit SARA", "strSaraSmall": "RM100 sebulan, tanpa tunai (RM200 jika tersenarai dalam eKasih)",
+    "strNo": "Isi rumah berpendapatan lebih RM5,000 sebulan tidak layak untuk STR 2026.",
+    "fmTopics": {"hamil": "Kehamilan", "bersalin": "Bersalin", "pantang": "Pantang", "bayi": "Bayi", "menyusu": "Penyusuan", "lain": "Lain-lain"},
+    "fmUp": "Membantu", "fmDown": "Tidak membantu", "fmReport": "Lapor", "fmReportAsk": "Laporkan hantaran ini sebagai tidak selamat atau tidak sopan?", "fmReported": "Dilaporkan - terima kasih",
+    "fmLoading": "Memuatkan…", "fmNone": "Belum ada soalan di sini - jadilah yang pertama bertanya!", "fmLoadFail": "Forum tidak dapat dimuatkan. Semak sambungan internet dan cuba lagi.",
+    "fmGone": "Soalan ini tidak lagi tersedia.", "fmBack": "Semua soalan", "fmAnswers": "Jawapan ({n})", "fmNoAnswers": "Belum ada jawapan - kongsi pengalaman anda.",
+    "fmYourAnswer": "Jawapan anda", "fmRulesShort": "Berbudi bahasa. Tiada nombor telefon, nombor IC atau pautan.", "fmPostAnswer": "Hantar jawapan", "fmAnon": "Ibu",
+    "fmErr": "Maaf, hantaran tidak berjaya. Sila semak dan cuba lagi.",
+    "fmErr_no_links": "Sila buang pautan - pautan tidak dibenarkan.", "fmErr_no_phone": "Sila buang nombor telefon - rahsiakan maklumat peribadi.",
+    "fmErr_no_ic": "Sila buang nombor IC - rahsiakan maklumat peribadi.", "fmErr_slow_down": "Anda menghantar terlalu cepat - sila tunggu sebentar dan cuba lagi.",
+    "fmErr_not_found": "Soalan ini tidak lagi tersedia.",
+})
+
 # ---------------------------------------------------------------- helper bot (no AI: keyword matching)
 # Keywords work in both languages. A keyword starting with "=" must match a whole word
 # (so "hi" doesn't match "which"); others match the start of a word or a phrase.
@@ -420,6 +463,17 @@ BOT_KW = {
                    "pale poo", "ruam lampin", "nappy rash", "diaper rash", "tumbuh gigi", "teething", "muntah hijau", "goncang bayi", "shaken baby"],
     "safety": ["car seat", "kerusi keselamatan", "kerusi kereta", "=crs", "tercekik", "choking", "keselamatan rumah", "baby proof", "babyproof",
                "tinggal dalam kereta", "left in car", "bateri butang", "button battery"],
+    "earlysigns": ["am i pregnant", "saya hamil ke", "hamil ke tak", "tanda awal hamil", "tanda hamil", "early signs", "signs of pregnancy",
+                   "pregnancy test", "ujian kehamilan", "upt", "=test kit", "bila boleh test", "when to test", "garis dua", "two lines", "ektopik", "ectopic",
+                   "luar rahim", "haid lewat", "missed period", "period late", "lambat datang haid"],
+    "aid": ["=str", "sumbangan tunai", "=sara", "bantuan kerajaan", "government aid", "bantuan ibu bersalin", "pelepasan cukai", "tax relief", "lhdn",
+            "=ekasih", "endowment", "=efs", "bantuan bayi", "duit bayi", "baby bonus", "cash aid", "bantuan tunai"],
+    "newborncare": ["tali pusat", "umbilical", "=cord", "pusat bayi", "mandi bayi", "bath baby", "baby bath", "bathing", "=bcg", "lepuh", "ruam bayi", "baby rash",
+                    "newborn rash", "biang peluh", "heat rash", "kerak kepala", "cradle cap", "gumoh", "spit up", "spit-up", "sendawa", "burp", "celak", "oral thrush", "kulat mulut"],
+    "illness": ["=hfmd", "tangan kaki mulut", "hand foot", "cirit", "diarrhoea", "diarrhea", "=ors", "muntah anak", "batuk", "=cough", "selesema", "=cold", "hingus",
+                "ubat batuk", "cough syrup", "denggi", "dengue", "nyamuk", "=aedes", "penyakit kanak", "childhood illness", "sakit perut anak"],
+    "birthsigns": ["tanda bersalin", "signs of labour", "signs of labor", "nak bersalin", "=show", "lendir", "bila nak pergi hospital", "when to go to hospital",
+                   "epidural", "entonox", "=gas", "pethidine", "ubat bius", "pain relief", "sakit bersalin", "proses bersalin", "stages of labour", "caesarean", "=czer", "pembedahan"],
     "hello": ["=hi", "=hello", "=hai", "=helo", "=hey", "salam", "assalamualaikum", "good morning", "selamat pagi"],
     "thanks": ["thank", "terima kasih", "=tq", "=tqvm", "=ty"],
 }
@@ -523,6 +577,21 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
     "safety": ("safety.html", "Since 2020, children under 12, under 36 kg and under 136 cm must use a car seat (JPJ). Never leave a child alone in a car. Our page also covers home safety and choking first aid.",
                "Sejak 2020, kanak-kanak bawah 12 tahun, kurang 36 kg dan kurang 136 cm wajib menggunakan kerusi keselamatan (JPJ). Jangan tinggalkan anak seorang diri dalam kereta. Halaman kami juga merangkumi keselamatan rumah dan pertolongan cemas tercekik.",
                "Child safety", "Keselamatan kanak-kanak"),
+    "earlysigns": ("early-signs.html", "Most pregnancy tests work from the first day of a missed period, at any time of day. Sudden severe tummy pain or fainting in early pregnancy: go to hospital or call 999.",
+                   "Kebanyakan ujian kehamilan boleh dibuat mulai hari pertama haid lewat, pada bila-bila masa. Sakit perut teruk yang mengejut atau pengsan pada awal kehamilan: pergi ke hospital atau hubungi 999.",
+                   "Early signs & tests", "Tanda awal & ujian"),
+    "aid": ("aid.html", "STR 2026 pays households earning RM5,000 or less up to RM2,200 a year, plus SARA credit. Parents can also claim tax relief (RM2,000 per child, breastfeeding equipment, taska fees, SSPN). Sarawak gives RM450 to new mums.",
+            "STR 2026 dibayar kepada isi rumah berpendapatan RM5,000 ke bawah, sehingga RM2,200 setahun, serta kredit SARA. Ibu bapa juga boleh menuntut pelepasan cukai (RM2,000 seorang anak, peralatan penyusuan, yuran taska, SSPN). Sarawak memberi RM450 kepada ibu yang bersalin.",
+            "Aid & tax relief", "Bantuan & pelepasan cukai"),
+    "newborncare": ("newborn-care.html", "The cord usually drops off in 1-2 weeks - keep it clean, dry and uncovered. Don't bath baby in the first 6 hours. The BCG blister is normal. Most newborn rashes go away by themselves.",
+                    "Tali pusat biasanya tanggal dalam 1-2 minggu - pastikan bersih, kering dan tidak ditutup. Jangan mandikan bayi dalam 6 jam pertama. Lepuh BCG adalah normal. Kebanyakan ruam bayi baru lahir hilang sendiri.",
+                    "Caring for your newborn", "Penjagaan bayi baru lahir"),
+    "illness": ("illnesses.html", "KKM: no cough or cold medicine for children under 2. For HFMD, diarrhoea or dengue, keep your child drinking. Dengue: paracetamol only, never ibuprofen or aspirin. Our page lists the signs that need a hospital.",
+                "KKM: tiada ubat batuk atau selesema untuk kanak-kanak bawah 2 tahun. Untuk HFMD, cirit-birit atau denggi, pastikan anak terus minum. Denggi: paracetamol sahaja, jangan ibuprofen atau aspirin. Halaman kami menyenaraikan tanda yang perlu ke hospital.",
+                "Childhood illnesses", "Penyakit kanak-kanak"),
+    "birthsigns": ("birth.html", "Call your hospital when contractions are regular and every 5 minutes, or straight away if your waters break, you bleed or baby moves less. First labours usually take 8-24 hours.",
+                   "Hubungi hospital apabila kontraksi tetap setiap 5 minit, atau segera jika air ketuban pecah, berdarah atau bayi kurang bergerak. Bersalin anak sulung biasanya mengambil masa 8-24 jam.",
+                   "Signs of labour", "Tanda bersalin"),
     "hello": ("", "Hi! Ask me about your pregnancy week, pantang, confinement costs, maternity leave, milk prices or taska.",
               "Hai! Tanya saya tentang minggu kehamilan, pantang, kos berpantang, cuti bersalin, harga susu atau taska.", "", ""),
     "thanks": ("", "You're welcome! Take care.", "Sama-sama! Jaga diri.", "", ""),
@@ -960,6 +1029,7 @@ def p_labour(lang):
 </section>
 </div>
 </div>
+<p class="tool-links"><a class="btn ghost" href="birth.html">👣 {x("Signs of labour & when to go to hospital", "Tanda bersalin & bila ke hospital")} →</a></p>
 {danger(x)}
 {ad("in_content", x)}
 """
@@ -1453,6 +1523,11 @@ def p_home(lang):
         "recovery.html": ("Bleeding, stitches & check-ups", "Darah nifas, jahitan & pemeriksaan"),
         "baby-health.html": ("Fever, crying, poo & rashes", "Demam, tangisan, najis & ruam"),
         "safety.html": ("Car seats, home & choking", "Kerusi kereta, rumah & tercekik"),
+        "early-signs.html": ("When to test & what to do next", "Bila buat ujian & langkah seterusnya"),
+        "birth.html": ("When to go, stages & pain relief", "Bila ke hospital, peringkat & ubat sakit"),
+        "aid.html": ("STR, SARA, tax relief & state aid", "STR, SARA, cukai & bantuan negeri"),
+        "newborn-care.html": ("Cord, bath, BCG & rashes", "Tali pusat, mandi, BCG & ruam"),
+        "illnesses.html": ("HFMD, diarrhoea, cough & dengue", "HFMD, cirit-birit, batuk & denggi"),
     })
     stages, cur_stage = [], None
     for h, en, ms, ico, cls in NAV:
@@ -2666,6 +2741,7 @@ def p_babyhealth(lang):
 <li>{x("A teething ring (cooled in the fridge, never the freezer), cuddles and play can help.", "Gelang gigitan (disejukkan dalam peti sejuk, bukan peti beku), pelukan dan bermain boleh membantu.")}</li>
 <li><strong>{x("Never tie anything around your baby's neck - including teething necklaces. It's a choking risk.", "Jangan ikat apa-apa di leher bayi - termasuk rantai tumbuh gigi. Ia boleh menyebabkan tercekik.")}</strong></li>
 <li>{x("Pain-relief gels for adults aren't suitable for babies - ask your pharmacist.", "Gel penahan sakit untuk orang dewasa tidak sesuai untuk bayi - tanya ahli farmasi.")}</li></ul></section>''')}
+<p class="tool-links"><a class="btn ghost" href="illnesses.html">🤒 {x("HFMD, diarrhoea, cough & dengue", "HFMD, cirit-birit, batuk & denggi")} →</a> <a class="btn ghost" href="newborn-care.html">🛁 {x("Newborn care", "Penjagaan bayi baru lahir")} →</a></p>
 {ad("in_content", x)}
 {src_line(x, [(x("KKM Perinatal Care Manual", "Manual Penjagaan Perinatal KKM"), t2.PCM), ("NHS: fever in children", "https://www.nhs.uk/conditions/fever-in-children/"),
               ("NHS: colic", "https://www.nhs.uk/conditions/colic/"), ("NHS: teething", "https://www.nhs.uk/baby/babys-development/teething/tips-for-helping-your-teething-baby/")])}
@@ -2721,8 +2797,432 @@ def p_safety(lang):
                body)
 
 
+def p_early(lang):
+    x = tr(lang)
+    signs = "".join(f'<li><span aria-hidden="true">{ico}</span> {esc(x(e, m))}</li>' for ico, e, m in t3.EARLY_SIGNS)
+    tabs = tabbar(x, "es", [
+        ("signs", "🤔", "Early signs", "Tanda awal", x("From about 4-6 weeks", "Sekitar 4-6 minggu"), "", "", False),
+        ("test", "🧪", "Doing a test", "Buat ujian", x("From your missed period", "Dari hari haid lewat"), "", "", False),
+        ("next", "🩺", "It's positive!", "Keputusan positif!", x("Klinik before 12 weeks", "Klinik sebelum 12 minggu"), "", "", False),
+    ], hash_ok=True, prompt=x("What do you want to know?", "Apa yang anda mahu tahu?"))
+    body = f"""
+{page_head(x, "🧪", "t-signs", x("Before pregnancy", "Sebelum hamil"), x("Early signs & pregnancy tests", "Tanda awal hamil & ujian kehamilan"),
+           x("Am I pregnant? The first signs, when to test, and what to do next.", "Saya hamil ke? Tanda-tanda awal, bila perlu buat ujian, dan langkah seterusnya."))}
+<section class="card" id="es-tool">
+  <h2>{x("When can I test?", "Bila boleh buat ujian?")}</h2>
+  <div class="q-fields gr-fields">
+    <label class="field">{x("First day of your last period", "Hari pertama haid terakhir")}<input type="date" id="es-lmp"></label>
+    <label class="field">{x("Usual cycle length (days)", "Kitaran haid biasa (hari)")}<input type="number" id="es-cyc" min="21" max="45" value="28" inputmode="numeric"></label>
+  </div>
+  <div id="es-result" aria-live="polite"></div>
+  <p class="hint">{x("Saved only on this phone. Not sure of your dates? Test at least 21 days after you last had sex without contraception.",
+                     "Disimpan dalam telefon ini sahaja. Tidak pasti tarikh? Buat ujian sekurang-kurangnya 21 hari selepas kali terakhir bersama tanpa perancang.")}</p>
+</section>
+<aside class="box danger"><h2>{x("Might be pregnant? Go to hospital now, or call 999, if you have:", "Mungkin hamil? Pergi ke hospital sekarang, atau hubungi 999, jika anda mengalami:")}</h2>
+<ul><li>{x("Sudden, sharp and severe pain in your tummy", "Sakit perut yang mengejut, tajam dan teruk")}</li>
+<li>{x("Feeling very dizzy or fainting", "Rasa sangat pening atau pengsan")}</li></ul>
+<p>{x("See a doctor the same day if you have pain low down on one side of your tummy, bleeding or watery brown discharge, or pain at the tip of your shoulder. These can be signs of an ectopic pregnancy (a pregnancy outside the womb), which usually shows between weeks 4 and 12.",
+      "Jumpa doktor pada hari yang sama jika anda sakit di sebelah bahagian bawah perut, keluar darah atau lelehan perang yang cair, atau sakit di hujung bahu. Ini mungkin tanda kehamilan luar rahim (ektopik), yang biasanya berlaku antara minggu ke-4 hingga ke-12.")}</p></aside>
+{tabs}
+{tabpanel("es", "signs", f'''<p class="dp-intro">{x("Signs usually start at around 4 to 6 weeks of pregnancy. Not everyone gets all of them - and some are also signs that your period is coming.", "Tanda-tanda biasanya bermula sekitar 4 hingga 6 minggu kehamilan. Tidak semua orang mengalami kesemuanya - dan sesetengahnya juga tanda haid akan datang.")}</p>
+<ul class="icon-list">{signs}</ul>''')}
+{tabpanel("es", "test", f'''<section class="card"><ul>
+<li><strong>{x("Most tests work from the first day of your missed period.", "Kebanyakan ujian boleh digunakan mulai hari pertama haid lewat.")}</strong> {x("Some very sensitive tests work a few days earlier.", "Sesetengah ujian yang sangat sensitif boleh digunakan beberapa hari lebih awal.")}</li>
+<li>{x("You can test at any time of the day - it doesn't have to be the first pee of the morning.", "Ujian boleh dibuat pada bila-bila masa - tidak semestinya air kencing pertama pada waktu pagi.")}</li>
+<li>{x("Follow the instructions on the box exactly - every brand is a little different. The result shows after a few minutes.", "Ikut arahan pada kotak dengan tepat - setiap jenama sedikit berbeza. Keputusan keluar selepas beberapa minit.")}</li>
+<li>{x("A positive result is almost certainly right. A negative result is less reliable, especially if you tested too early.", "Keputusan positif hampir pasti betul. Keputusan negatif kurang tepat, terutamanya jika ujian dibuat terlalu awal.")}</li>
+<li>{x("Negative but still no period? Wait a few days and test again. Still negative and no period: see a doctor.", "Negatif tetapi haid masih belum datang? Tunggu beberapa hari dan uji semula. Masih negatif dan tiada haid: jumpa doktor.")}</li>
+<li>{x("The contraceptive pill doesn't stop a test from working.", "Pil perancang tidak menjejaskan keputusan ujian.")}</li></ul>
+<p class="small muted">{x("Test kits are sold at pharmacies. A klinik kesihatan can also confirm your pregnancy.", "Kit ujian dijual di farmasi. Klinik kesihatan juga boleh mengesahkan kehamilan anda.")}</p></section>''')}
+{tabpanel("es", "next", f'''<section class="card"><h2>{x("Register at a klinik before 12 weeks", "Daftar di klinik sebelum 12 minggu")}</h2>
+<p>{x("KKM asks every mum to come for her first antenatal check (booking) before 12 weeks of pregnancy. At the klinik kesihatan they check your health and blood, and give you your pink book (Rekod Kesihatan Ibu) - bring it to every visit.",
+      "KKM menggalakkan setiap ibu datang untuk pemeriksaan antenatal pertama (pendaftaran) sebelum 12 minggu kehamilan. Di klinik kesihatan, kesihatan dan darah anda akan diperiksa, dan anda akan diberi buku pink (Rekod Kesihatan Ibu) - bawa setiap kali lawatan.")}</p>
+<p class="tool-links"><a class="btn" href="antenatal.html">🩺 {x("Your check-up dates", "Tarikh pemeriksaan anda")} →</a> <a class="btn ghost" href="index.html">📅 {x("Which week am I?", "Minggu ke berapa saya?")} →</a></p></section>
+<section class="card"><h2>{x("In the first weeks", "Pada minggu-minggu awal")}</h2>
+<p>{x("Morning sickness, tiredness and peeing more are normal. Our guides cover what to eat, what's normal and the warning signs.", "Alahan, letih dan kerap kencing adalah normal. Panduan kami merangkumi makanan, apa yang normal dan tanda bahaya.")}</p>
+<p class="tool-links"><a class="btn ghost" href="pregnancy-body.html">🤰 {x("Is this normal?", "Normalkah ini?")} →</a> <a class="btn ghost" href="healthy-pregnancy.html">🥗 {x("Food & healthy pregnancy", "Makanan & penjagaan kesihatan")} →</a></p></section>''')}
+{ad("in_content", x)}
+{src_line(x, [("NHS: signs of pregnancy", "https://www.nhs.uk/pregnancy/trying-for-a-baby/signs-and-symptoms-of-pregnancy/"),
+              ("NHS: doing a pregnancy test", "https://www.nhs.uk/pregnancy/trying-for-a-baby/doing-a-pregnancy-test/"),
+              ("NHS: ectopic pregnancy", "https://www.nhs.uk/conditions/ectopic-pregnancy/symptoms/"),
+              (x("KKM Perinatal Care Manual", "Manual Penjagaan Perinatal KKM"), t3.PCM)])}
+"""
+    write_page(lang, "early-signs.html", x("Early signs of pregnancy & when to do a pregnancy test", "Tanda awal hamil & bila perlu buat ujian kehamilan"),
+               x("The first signs of pregnancy, when a pregnancy test works, ectopic pregnancy warning signs, and registering at a klinik kesihatan before 12 weeks.",
+                 "Tanda-tanda awal kehamilan, bila ujian kehamilan boleh dibuat, tanda bahaya kehamilan luar rahim, dan mendaftar di klinik kesihatan sebelum 12 minggu."),
+               body)
+
+
+def p_aid(lang):
+    x = tr(lang)
+    tax = "".join(f'<li><span>{esc(x(e, m))}</span><strong>{a}</strong></li>' for a, e, m in t3.TAX_RELIEFS)
+    str_rows = "".join(
+        f'<tr><td>{lab}</td>' + "".join(f'<td class="num">{_rm(v)}</td>' for v in t3.STR_2026[k]) + "</tr>"
+        for k, lab in (("1", x("RM2,500 or less", "RM2,500 ke bawah")), ("2", "RM2,501 – RM5,000")))
+    tabs = tabbar(x, "ad", [
+        ("str", "💵", "STR & SARA", "STR & SARA", x("Up to RM2,200 a year", "Sehingga RM2,200 setahun"), "", "", False),
+        ("tax", "🧾", "Tax relief", "Pelepasan cukai", x("RM2,000 per child", "RM2,000 seorang anak"), "", "", False),
+        ("state", "📍", "State aid", "Bantuan negeri", x("Sarawak: RM450 + RM1,000", "Sarawak: RM450 + RM1,000"), "", "", False),
+    ], hash_ok=True, prompt=x("What do you want to check?", "Apa yang anda mahu semak?"))
+    body = f"""
+{page_head(x, "💵", "t-aid", x("New mum", "Ibu baharu"), x("Government aid & tax relief", "Bantuan kerajaan & pelepasan cukai"),
+           x("Help you may be able to get as a family - checked on official sites.", "Bantuan yang mungkin anda layak sebagai keluarga - disemak di laman rasmi."))}
+{tabs}
+{tabpanel("ad", "str", f'''<section class="card" id="str-tool">
+  <h2>{x("Sumbangan Tunai Rahmah (STR) 2026", "Sumbangan Tunai Rahmah (STR) 2026")}</h2>
+  <div class="q-fields gr-fields">
+    <label class="field">{x("Household income a month", "Pendapatan isi rumah sebulan")}<select id="str-inc">
+      <option value="1">{x("RM2,500 or less", "RM2,500 ke bawah")}</option><option value="2">RM2,501 – RM5,000</option><option value="3">{x("More than RM5,000", "Lebih RM5,000")}</option></select></label>
+    <label class="field">{x("Number of children", "Bilangan anak")}<select id="str-kids">
+      <option value="0">{x("None yet", "Belum ada")}</option><option value="1" selected>1 – 2</option><option value="2">3 – 4</option><option value="3">{x("5 or more", "5 atau lebih")}</option></select></label>
+  </div>
+  <div id="str-result" aria-live="polite"></div>
+  <p class="hint">{x("For married couples and single parents with a household income of RM5,000 or less. Applications are open all year; the amount can depend on when in the year your application is approved.", "Untuk pasangan berkahwin dan ibu atau bapa tunggal dengan pendapatan isi rumah RM5,000 ke bawah. Permohonan dibuka sepanjang tahun; jumlah bayaran bergantung pada fasa permohonan anda diluluskan.")}</p>
+  <a class="btn" href="{t3.STR_PORTAL}" target="_blank" rel="noopener">{x("Apply or check status", "Mohon atau semak status")} ↗</a>
+</section>
+<div class="table-wrap"><table><thead><tr><th>{x("Household income", "Pendapatan isi rumah")}</th><th class="num">{x("No children", "Tiada anak")}</th><th class="num">1–2</th><th class="num">3–4</th><th class="num">5+</th></tr></thead><tbody>{str_rows}</tbody></table></div>
+<section class="card"><h2>🛒 SARA</h2><p>{x("Every STR 2026 household also gets Sumbangan Asas Rahmah (SARA) credit for cashless purchases: RM100 a month (RM1,200 a year), or RM200 a month (RM2,400 a year) for households listed as poor or hardcore poor in eKasih.",
+      "Setiap isi rumah penerima STR 2026 juga menerima kredit Sumbangan Asas Rahmah (SARA) untuk pembelian tanpa tunai: RM100 sebulan (RM1,200 setahun), atau RM200 sebulan (RM2,400 setahun) bagi isi rumah berstatus miskin atau miskin tegar dalam eKasih.")}</p></section>''')}
+{tabpanel("ad", "tax", f'''<p class="dp-intro">{x("Income tax reliefs for year of assessment 2025 (income earned in 2025, declared in 2026) that matter to parents. Each amount is the maximum you can claim.", "Pelepasan cukai pendapatan bagi tahun taksiran 2025 (pendapatan tahun 2025, diisytihar pada 2026) yang berkaitan dengan ibu bapa. Setiap amaun ialah had maksimum yang boleh dituntut.")}</p>
+<ul class="price-list">{tax}</ul>
+<aside class="box"><h2>{x("Proposed in Budget 2027", "Dicadangkan dalam Belanjawan 2027")}</h2>
+<p>{x("From year of assessment 2027, the government proposes adding postnatal care (by a confinement centre or a qualified carer) of up to RM3,000 to the RM10,000 medical relief, and letting either parent claim the RM1,000 breastfeeding equipment relief. It is a proposal until the law is passed - keep your receipts.",
+      "Mulai tahun taksiran 2027, kerajaan mencadangkan perkhidmatan penjagaan selepas bersalin (oleh pusat penjagaan atau individu yang layak) sehingga RM3,000 dimasukkan ke dalam pelepasan perubatan RM10,000, dan pelepasan peralatan penyusuan RM1,000 boleh dituntut sama ada oleh diri sendiri atau pasangan. Ia masih cadangan sehingga undang-undang diluluskan - simpan resit anda.")}</p></aside>
+<p class="tool-links"><a class="btn ghost" href="{t3.HASIL_RELIEF}" target="_blank" rel="noopener">HASiL ↗</a> <a class="btn ghost" href="after-birth.html#savings">🐷 {x("SSPN & savings for baby", "SSPN & simpanan bayi")} →</a> <a class="btn ghost" href="nursery.html#help">🧸 {x("Help with taska fees", "Bantuan yuran taska")} →</a></p>''')}
+{tabpanel("ad", "state", f'''<div class="cards2">
+<section class="card"><h2>🌺 {x("Sarawak: Bantuan Ibu Bersalin", "Sarawak: Bantuan Ibu Bersalin")}</h2>
+<p class="big-num">RM450</p>
+<ul><li>{x("Cash for every mum who gives birth to a Sarawak child - for healthy food and self-care during confinement.", "Tunai untuk setiap ibu yang melahirkan anak Sarawak - untuk pemakanan sihat dan penjagaan diri semasa berpantang.")}</li>
+<li>{x("You (or your husband) must have Sarawak 'K' status. The birth can be in or outside Sarawak, at 22 weeks of pregnancy or later.", "Anda (atau suami) mesti berstatus 'K' (Sarawak). Kelahiran boleh di dalam atau di luar Sarawak, pada usia kandungan 22 minggu ke atas.")}</li>
+<li><strong>{x("Apply within 3 months after giving birth", "Mohon dalam tempoh 3 bulan selepas bersalin")}</strong> {x("through iSarawakCare. You need an active SarawakPass and SPay Global account.", "melalui iSarawakCare. Anda perlu akaun SarawakPass dan SPay Global yang aktif.")}</li></ul>
+<a class="btn ghost" href="{t3.SWK_BIB}" target="_blank" rel="noopener">KPWK ↗</a></section>
+<section class="card"><h2>🎓 {x("Sarawak: Endowment Fund (EFS)", "Sarawak: Endowment Fund (EFS)")}</h2>
+<p class="big-num">RM1,000</p>
+<ul><li>{x("Savings held in trust for every Sarawak child born from 2019 - for further studies, a career or a small business later.", "Simpanan amanah untuk setiap anak Sarawak yang lahir mulai 2019 - untuk melanjutkan pelajaran, memulakan kerjaya atau modal perniagaan kecil kelak.")}</li>
+<li>{x("One or both parents must have Sarawak 'K' status.", "Salah seorang atau kedua-dua ibu bapa mesti berstatus 'K' (Sarawak).")}</li>
+<li><strong>{x("Apply within 1 year of the birth", "Mohon dalam tempoh 1 tahun selepas kelahiran")}</strong> {x("on the Sarawak Gov Portal - you need your baby's MyKid number.", "di Sarawak Gov Portal - anda perlu nombor MyKid bayi.")}</li></ul>
+<a class="btn ghost" href="{t3.SWK_EFS}" target="_blank" rel="noopener">KPWK ↗</a></section></div>
+<aside class="box"><p>{x("Other states: we couldn't confirm a current newborn payment on an official state website. Ask at your state government office or your ADUN's service centre - and tell us if you find one.",
+                       "Negeri lain: kami tidak dapat mengesahkan bantuan bayi baru lahir yang terkini di laman web rasmi kerajaan negeri. Tanya di pejabat kerajaan negeri atau pusat khidmat ADUN anda - dan beritahu kami jika anda menemuinya.")}</p></aside>''')}
+<p class="tool-links"><a class="btn ghost" href="leave.html">🗓️ {x("Maternity leave (98 days)", "Cuti bersalin (98 hari)")} →</a> <a class="btn ghost" href="after-birth.html">📄 {x("Birth registration & documents", "Daftar kelahiran & dokumen")} →</a></p>
+{ad("in_content", x)}
+<p class="small muted src-line">{x("Sources", "Sumber")}: <a href="{t3.STR_FAQ}" target="_blank" rel="noopener">LHDN STR 2026 FAQ</a> · <a href="{t3.HASIL_RELIEF}" target="_blank" rel="noopener">HASiL</a> · <a href="{t3.BUDGET27_TAX}" target="_blank" rel="noopener">{x("Budget 2027 tax measures", "Langkah cukai Belanjawan 2027")}</a> · <a href="{t3.SWK_BIB}" target="_blank" rel="noopener">KPWK Sarawak</a>.
+{x("Checked 26 Nov 2026. Rules change - always check the official page before you apply.", "Disemak 26 Nov 2026. Peraturan boleh berubah - sentiasa semak laman rasmi sebelum memohon.")}</p>
+"""
+    write_page(lang, "aid.html", x("STR 2026, tax relief for parents & state aid for mums", "STR 2026, pelepasan cukai ibu bapa & bantuan negeri untuk ibu"),
+               x("How much STR 2026 and SARA your family can get, income tax reliefs for parents (child, breastfeeding equipment, taska fees, SSPN) and Sarawak's RM450 maternity aid and RM1,000 newborn fund.",
+                 "Berapa STR 2026 dan SARA yang keluarga anda boleh terima, pelepasan cukai untuk ibu bapa (anak, peralatan penyusuan, yuran taska, SSPN) serta Bantuan Ibu Bersalin RM450 dan dana bayi RM1,000 Sarawak."),
+               body, {"str": t3.STR_2026})
+
+
+def p_newborn_care(lang):
+    x = tr(lang)
+    hosp = _lis(x, [
+        ("Vomits green fluid, or has a swollen tummy", "Muntah cecair hijau, atau perut kembung"),
+        ("Isn't feeding well", "Tidak mahu menyusu dengan baik"),
+        ("Has a fever (38°C or more)", "Demam (38°C atau lebih)"),
+        ("Is floppy, very sleepy or breathing fast", "Lembik, sangat mengantuk atau bernafas laju"),
+        ("Looks dehydrated or has fewer wet nappies", "Kelihatan kekurangan air atau lampin basah berkurangan"),
+        ("Isn't putting on weight", "Berat badan tidak naik"),
+        ("The cord keeps bleeding, more than a few spots", "Tali pusat terus berdarah, lebih daripada beberapa titik"),
+    ])
+    good = _lis(x, [
+        ("Breastfeeding only (no water or other food) and feeding often", "Menyusu badan sahaja (tanpa air atau makanan lain) dan menyusu dengan kerap"),
+        ("Baby sleeping in the same room as mum", "Bayi tidur sebilik dengan ibu"),
+        ("Coconut oil to loosen cradle cap", "Minyak kelapa untuk menanggalkan kerak kepala"),
+    ])
+    harm = _lis(x, [
+        ("Putting ash or 'celak mata' on the cord stump", "Meletakkan abu atau celak mata pada tunggul tali pusat"),
+        ("Bathing a jaundiced (kuning) baby in herbs - it can hide the jaundice and can set off a dangerous reaction in babies with G6PD deficiency", "Memandikan bayi kuning dengan air herba - ia boleh menyembunyikan tanda kuning dan mencetuskan tindak balas berbahaya pada bayi G6PD"),
+        ("Goat's milk for a jaundiced baby", "Susu kambing untuk bayi kuning"),
+        ("Giving food too early - mashed banana, rice porridge, glucose water", "Memberi makanan terlalu awal - pisang lenyek, bubur nasi, air glukosa"),
+        ("Throwing away the first yellow milk (colostrum)", "Membuang susu pertama yang kekuningan (kolostrum)"),
+        ("A knitted cap when your baby has cradle cap - it makes it worse", "Topi kait ketika bayi ada kerak kepala - ia memburukkan keadaan"),
+        ("Putting irritating things on baby's skin, or a heated object on the tummy or scrotum after a bath", "Meletakkan bahan yang merengsa pada kulit bayi, atau objek panas pada perut atau skrotum selepas mandi"),
+        ("Washing baby's eyes with breast milk", "Mencuci mata bayi dengan susu ibu"),
+        ("Mum cutting down on drinks, or on vegetables, fruit, chicken, eggs and seafood during pantang", "Ibu mengurangkan minum, atau mengelak sayur, buah, ayam, telur dan makanan laut semasa berpantang"),
+    ])
+    unsure = _lis(x, [
+        ("Gripe water for wind", "Air gripe untuk kembung"),
+        ("Herbs and jamu for mum after the birth - ask your doctor first, especially if you're breastfeeding", "Herba dan jamu untuk ibu selepas bersalin - tanya doktor dahulu, terutamanya jika menyusu badan"),
+    ])
+    tabs = tabbar(x, "nc", [
+        ("cord", "🪢", "Cord care", "Tali pusat", x("Falls off in 1-2 weeks", "Tanggal dalam 1-2 minggu"), "", "", False),
+        ("bath", "🛁", "Bathing", "Mandi", x("Not in the first 6 hours", "Bukan dalam 6 jam pertama"), "", "", False),
+        ("bcg", "💉", "BCG jab", "Suntikan BCG", x("Blister is normal", "Lepuh adalah normal"), "", "", False),
+        ("skin", "🌸", "Skin & rashes", "Kulit & ruam", x("Most are harmless", "Kebanyakan normal"), "", "", False),
+        ("spit", "🍼", "Spit-up & burping", "Gumoh & sendawa", x("Normal if thriving", "Normal jika membesar baik"), "", "", False),
+        ("trad", "🏡", "Traditions", "Amalan tradisi", x("What KKM says", "Apa kata KKM"), "", "", False),
+    ], hash_ok=True, prompt=x("What do you need help with?", "Apa yang anda perlukan?"))
+    body = f"""
+{page_head(x, "🛁", "t-ncare", x("New mum", "Ibu baharu"), x("Caring for your newborn", "Penjagaan bayi baru lahir"),
+           x("The cord, bath time, the BCG jab, rashes and spit-up - what's normal and what isn't.", "Tali pusat, mandi, suntikan BCG, ruam dan gumoh - apa yang normal dan apa yang tidak."))}
+<aside class="box danger"><h2>{x("Take your baby to hospital if they:", "Bawa bayi ke hospital jika bayi:")}</h2><ul>{hosp}</ul>
+<p><a href="baby-health.html">{x("More danger signs", "Tanda bahaya lain")} →</a> · {x("Emergency: call 999.", "Kecemasan: hubungi 999.")}</p></aside>
+{tabs}
+{tabpanel("nc", "cord", f'''<section class="card"><ul>
+<li>{x("The cord stump usually drops off in 1 to 2 weeks. Until then, keep it clean and dry.", "Tunggul tali pusat biasanya tanggal dalam 1 hingga 2 minggu. Sehingga itu, pastikan ia bersih dan kering.")}</li>
+<li>{x("Leave it open to the air - no dressing, bandage or binding over it. It dries and shrivels on its own.", "Biarkan terdedah kepada udara - jangan tutup dengan kain balut atau ikat. Ia akan kering dan mengecut dengan sendirinya.")}</li>
+<li>{x("Gently clean where the cord meets the tummy at least once a day, or whenever it's damp.", "Bersihkan perlahan-lahan pangkal tali pusat (di tempat ia bertemu perut) sekurang-kurangnya sekali sehari, atau setiap kali ia lembap.")}</li>
+<li>{x("Keep wee and poo away from it. If it gets dirty, wash it with clean water and dry it with clean cotton or gauze.", "Jauhkan dari air kencing dan najis. Jika kotor, basuh dengan air bersih dan keringkan dengan kapas atau kain kasa yang bersih.")}</li>
+<li>{x("Damp or smelly? Clean it with the alcohol swabs the hospital gave you when you went home.", "Lembap atau berbau? Bersihkan dengan kapas alkohol yang diberi oleh hospital semasa anda pulang.")}</li>
+<li>{x("A spot of blood on the nappy when it falls off is normal.", "Setitik darah pada lampin ketika ia tanggal adalah normal.")}</li>
+<li><strong>{x("See a doctor if you see pus or redness, your baby cries when you touch it, or bleeding is more than spots or lasts more than a few days.", "Jumpa doktor jika ada nanah atau kemerahan, bayi menangis apabila disentuh, atau pendarahan lebih daripada beberapa titik atau berlarutan beberapa hari.")}</strong></li>
+<li><strong>{x("Never put ash or 'celak mata' on the stump.", "Jangan letak abu atau celak mata pada tunggul tali pusat.")}</strong></li></ul></section>''')}
+{tabpanel("nc", "bath", f'''<section class="card"><ul>
+<li>{x("KKM: don't bath your baby in the first 6 hours after birth - keep them warm with skin-to-skin contact.", "KKM: jangan mandikan bayi dalam 6 jam pertama selepas lahir - pastikan bayi kekal hangat melalui sentuhan kulit ke kulit.")}</li>
+<li>{x("You don't need to bath your baby every day. On other days, wash the face, neck, hands and bottom (top and tail).", "Bayi tidak perlu dimandikan setiap hari. Pada hari lain, cukup lap muka, leher, tangan dan punggung.")}</li>
+<li>{x("Make the room warm and get everything ready first: warm water, 2 towels, cotton wool, a clean nappy and clothes.", "Pastikan bilik hangat dan sediakan semua barang dahulu: air suam, 2 tuala, kapas, lampin dan pakaian bersih.")}</li>
+<li>{x("Run the cold water first, then add hot. Check it with your wrist or elbow and mix well so there are no hot patches.", "Masukkan air sejuk dahulu, kemudian air panas. Uji dengan pergelangan tangan atau siku dan kacau sebati supaya tiada bahagian yang panas.")}</li>
+<li>{x("Eyes: wipe from the nose outwards with cotton wool dipped in warm water - a fresh piece for each eye. Never put cotton buds inside the ears.", "Mata: lap dari arah hidung ke luar dengan kapas yang dicelup air suam - guna kapas baharu untuk setiap mata. Jangan masukkan putik kapas ke dalam telinga.")}</li>
+<li>{x("Not straight after a feed, or when your baby is hungry or tired.", "Elakkan sejurus selepas menyusu, atau ketika bayi lapar atau letih.")}</li>
+<li><strong>{x("Never leave your baby alone in the bath, even for a second.", "Jangan tinggalkan bayi seorang diri semasa mandi, walaupun sesaat.")}</strong></li>
+<li>{x("Jaundiced (kuning) baby: don't bath them in herbal water - see our jaundice page.", "Bayi kuning: jangan mandikan dengan air herba - lihat halaman kuning kami.")} <a href="jaundice.html">→</a></li></ul></section>''')}
+{tabpanel("nc", "bcg", f'''<section class="card"><ul>
+<li>{x("Every newborn gets the BCG jab (against tuberculosis, TB) soon after birth - usually on day 2 or just before going home. The first hepatitis B jab is also given at birth.", "Setiap bayi baru lahir diberi suntikan BCG (untuk mencegah tibi, TB) sejurus selepas lahir - biasanya pada hari ke-2 atau sebelum pulang. Suntikan pertama hepatitis B juga diberi semasa lahir.")}</li>
+<li>{x("A small raised bump appears straight away. After about 2 weeks it turns into a blister or small sore.", "Bonjolan kecil timbul serta-merta. Selepas lebih kurang 2 minggu, ia menjadi lepuh atau luka kecil.")}</li>
+<li>{x("It then scabs over and can take a few weeks or months to heal, leaving a small flat scar. This is normal.", "Kemudian ia berkeruping dan mengambil masa beberapa minggu atau bulan untuk sembuh, meninggalkan parut kecil yang rata. Ini normal.")}</li>
+<li>{x("Leave it uncovered. If it oozes, you can use a dry dressing until a scab forms - but not a plaster.", "Biarkan terbuka. Jika ia berair, boleh tutup dengan kain kasa kering sehingga berkeruping - tetapi jangan guna plaster.")}</li>
+<li>{x("Worried it looks infected? See your klinik.", "Risau ia dijangkiti? Jumpa klinik.")}</li></ul>
+<p class="tool-links"><a class="btn ghost" href="vaccines.html">💉 {x("Your baby's vaccine dates", "Tarikh vaksin bayi")} →</a></p></section>''')}
+{tabpanel("nc", "skin", f'''<div class="acc-list">
+<details class="acc"><summary>🔴 {x("Red blotches with tiny yellow-white spots", "Tompok merah dengan bintik kecil putih-kuning")}</summary><p>{x("Erythema toxicum - the most common newborn rash (40-70% of babies). Usually appears on day 2 or 3 and goes away by itself in a few days. No treatment needed.", "Eritema toksikum - ruam bayi baru lahir yang paling biasa (40-70% bayi). Biasanya muncul pada hari ke-2 atau ke-3 dan hilang sendiri dalam beberapa hari. Tidak perlu rawatan.")}</p></details>
+<details class="acc"><summary>⚪ {x("Tiny white spots on the nose and chin", "Bintik putih halus pada hidung dan dagu")}</summary><p>{x("Milia - blocked oil glands. They clear up in a few weeks without treatment. Don't squeeze them.", "Milia - kelenjar minyak tersumbat. Ia hilang sendiri dalam beberapa minggu tanpa rawatan. Jangan picit.")}</p></details>
+<details class="acc"><summary>💦 {x("Heat rash (biang peluh)", "Biang peluh (ruam panas)")}</summary><p>{x("Tiny clear or red spots on the head, neck, upper chest and skin folds, from blocked sweat glands. It goes by itself - keep your baby cool and don't dress them too warmly or tightly.", "Bintik halus jernih atau merah pada kepala, leher, dada dan lipatan kulit akibat kelenjar peluh tersumbat. Ia hilang sendiri - pastikan bayi sejuk dan jangan pakaikan baju terlalu tebal atau ketat.")}</p></details>
+<details class="acc"><summary>🧴 {x("Greasy yellow scales on the scalp (cradle cap)", "Sisik kuning berminyak di kulit kepala (kerak kepala)")}</summary><p>{x("Mild cradle cap: rub in a little olive or coconut oil to soften it, then wash with a mild baby shampoo. Don't use a knitted cap. If it spreads over the body, see a doctor.", "Kerak kepala ringan: sapu sedikit minyak zaitun atau minyak kelapa untuk melembutkannya, kemudian cuci dengan syampu bayi yang lembut. Jangan pakaikan topi kait. Jika merebak ke badan, jumpa doktor.")}</p></details>
+<details class="acc sym-urgent"><summary>🟡 {x("Pus spots with a red ring", "Bintik bernanah dengan lingkaran merah")}</summary><p>{x("Septic spots - a skin infection, often in the neck, armpits or lower back. See your klinik; if there are many spots or your baby has a fever, go the same day.", "Bintik septik - jangkitan kulit, selalunya di leher, ketiak atau belakang bawah. Jumpa klinik; jika banyak bintik atau bayi demam, pergi pada hari yang sama.")}</p></details>
+<details class="acc sym-urgent"><summary>👅 {x("White patches in the mouth that don't wipe off", "Tompok putih dalam mulut yang tidak hilang apabila dilap")}</summary><p>{x("Oral thrush - a yeast infection (milk wipes off, thrush doesn't). Your klinik can give antifungal drops. Mum's nipples may need treatment too.", "Kulat mulut (oral thrush) - jangkitan yis (sisa susu boleh dilap, kulat tidak). Klinik boleh memberi ubat titis antikulat. Puting ibu mungkin perlu dirawat juga.")}</p></details>
+</div>
+<p class="tool-links"><a class="btn ghost" href="baby-health.html#rash">🧷 {x("Nappy rash", "Ruam lampin")} →</a> <a class="btn ghost" href="jaundice.html">🟡 {x("Jaundice (kuning)", "Kuning (jaundis)")} →</a></p>''')}
+{tabpanel("nc", "spit", f'''<section class="card"><p>{x("Bringing up small amounts of milk during or just after a feed is very common. If your baby is otherwise happy, well and growing, it's normal - it starts in the first weeks and usually stops by 1 year.", "Gumoh (memuntahkan sedikit susu semasa atau sejurus selepas menyusu) sangat biasa. Jika bayi ceria, sihat dan membesar dengan baik, ia normal - bermula pada minggu-minggu awal dan biasanya berhenti menjelang umur 1 tahun.")}</p>
+<h2>{x("What helps", "Apa yang membantu")}</h2><ul>
+<li>{x("Don't overfeed - especially with a bottle.", "Jangan beri susu berlebihan - terutamanya dengan botol.")}</li>
+<li>{x("Burp your baby after feeds.", "Sendawakan bayi selepas menyusu.")}</li>
+<li>{x("Hold your baby upright for 30 to 60 minutes after a feed.", "Pegang bayi dalam keadaan tegak selama 30 hingga 60 minit selepas menyusu.")}</li>
+<li>{x("Avoid pressure on the tummy - check the nappy isn't tight when your baby sits up.", "Elakkan tekanan pada perut - pastikan lampin tidak ketat ketika bayi duduk.")}</li></ul>
+<p class="small muted">{x("Not getting better, or any of the hospital signs above? See a doctor.", "Tidak bertambah baik, atau ada tanda yang perlu ke hospital di atas? Jumpa doktor.")}</p></section>''')}
+{tabpanel("nc", "trad", f'''<p class="dp-intro">{x("Many family traditions are fine. KKM's newborn care manual sorts some common ones like this:", "Banyak amalan tradisi keluarga tidak bermasalah. Manual penjagaan bayi KKM menyenaraikan beberapa amalan biasa seperti berikut:")}</p>
+<section class="card"><h2>✅ {x("Good", "Baik")}</h2><ul>{good}</ul></section>
+<section class="card"><h2>⛔ {x("Harmful - avoid", "Memudaratkan - elakkan")}</h2><ul>{harm}</ul></section>
+<section class="card"><h2>❓ {x("Benefit not proven", "Manfaat belum terbukti")}</h2><ul>{unsure}</ul></section>
+<p class="tool-links"><a class="btn ghost" href="pantang.html">🍲 {x("Pantang planner", "Perancang pantang")} →</a></p>''')}
+{ad("in_content", x)}
+{src_line(x, [(x("KKM Perinatal Care Manual", "Manual Penjagaan Perinatal KKM"), t3.PCM),
+              ("NHS: washing your baby", "https://www.nhs.uk/baby/caring-for-a-newborn/washing-and-bathing-your-baby/"),
+              ("NHS: BCG vaccine", "https://www.nhs.uk/vaccinations/bcg-vaccine-for-tuberculosis-tb/")])}
+"""
+    write_page(lang, "newborn-care.html", x("Newborn care: cord, bathing, BCG, rashes & spit-up", "Penjagaan bayi baru lahir: tali pusat, mandi, BCG, ruam & gumoh"),
+               x("How to look after your newborn's cord stump, when and how to bath your baby, what the BCG blister should look like, common newborn rashes, spit-up - and the KKM list of harmful traditional practices.",
+                 "Cara menjaga tali pusat, bila dan cara memandikan bayi, rupa lepuh BCG yang normal, ruam biasa bayi baru lahir, gumoh - dan senarai amalan tradisi yang memudaratkan menurut KKM."),
+               body)
+
+
+def p_illnesses(lang):
+    x = tr(lang)
+    urgent = _lis(x, [
+        ("Is very sleepy, floppy or hard to wake, or has a fit", "Sangat mengantuk, lembik atau susah dikejutkan, atau sawan"),
+        ("Is struggling to breathe or breathing very fast", "Susah bernafas atau bernafas sangat laju"),
+        ("Has blue, grey or very pale lips or tongue", "Bibir atau lidah biru, kelabu atau sangat pucat"),
+        ("Vomits blood, or green vomit", "Muntah darah, atau muntah hijau"),
+        ("Bleeds from the nose or gums, or has black poo", "Berdarah dari hidung atau gusi, atau najis hitam"),
+        ("Shows signs of dehydration: dry nappies or very little dark pee, dry lips and tongue, sunken eyes, no tears", "Tanda kekurangan air: lampin kering atau air kencing sedikit dan pekat, bibir dan lidah kering, mata cengkung, menangis tanpa air mata"),
+    ])
+    tabs = tabbar(x, "il", [
+        ("hfmd", "✋", "HFMD", "HFMD", x("Hand, foot & mouth", "Tangan, kaki & mulut"), "", "", False),
+        ("tummy", "🤢", "Diarrhoea & vomiting", "Cirit-birit & muntah", x("Fluids first", "Utamakan air"), "", "", False),
+        ("cough", "🤧", "Cough & cold", "Batuk & selesema", x("No cough syrup under 2", "Tiada ubat batuk bawah 2 tahun"), "", "", False),
+        ("dengue", "🦟", "Dengue", "Denggi", x("Paracetamol only", "Paracetamol sahaja"), "", "", False),
+    ], hash_ok=True, prompt=x("Which illness?", "Penyakit apa?"))
+    body = f"""
+{page_head(x, "🤒", "t-ill", x("Mum & kids", "Ibu & anak"), x("Common childhood illnesses", "Penyakit biasa kanak-kanak"),
+           x("HFMD, tummy bugs, coughs and dengue - home care and when to go to hospital.", "HFMD, cirit-birit, batuk dan denggi - penjagaan di rumah dan bila perlu ke hospital."))}
+<aside class="box danger"><h2>{x("Go to hospital now, or call 999, if your child:", "Pergi ke hospital sekarang, atau hubungi 999, jika anak anda:")}</h2><ul>{urgent}</ul>
+<p>{x("Baby under 3 months with a temperature of 38°C or more: go now too.", "Bayi bawah 3 bulan dengan suhu 38°C atau lebih: pergi sekarang juga.")} <a href="baby-health.html#fever">{x("Fever guide", "Panduan demam")} →</a></p></aside>
+{tabs}
+{tabpanel("il", "hfmd", f'''<section class="card"><h2>{x("Signs", "Tanda-tanda")}</h2><ul>
+<li>{x("Usually starts with a fever, feeling unwell and not wanting to eat. Mouth ulcers follow a day or two later.", "Biasanya bermula dengan demam, rasa tidak sihat dan kurang selera makan. Ulser mulut muncul sehari dua kemudian.")}</li>
+<li>{x("Red spots on the palms, soles or between the fingers that may turn into blisters - sometimes on the knees, elbows and bottom too. The rash usually doesn't itch.", "Ruam merah pada tapak tangan, tapak kaki atau celah jari yang mungkin menjadi lepuh - kadang-kadang juga pada lutut, siku dan punggung. Ruam ini biasanya tidak gatal.")}</li>
+<li>{x("9 in 10 cases are children aged 5 and under. It usually heals by itself in 7 to 10 days.", "9 daripada 10 kes melibatkan kanak-kanak berumur 5 tahun ke bawah. Ia biasanya sembuh sendiri dalam 7 hingga 10 hari.")}</li></ul></section>
+<section class="card"><h2>{x("Care at home", "Penjagaan di rumah")}</h2><ul>
+<li>{x("There's no medicine that kills the virus and no vaccine. Treatment is for the fever and the sore mouth - as your doctor advises.", "Tiada ubat yang membunuh virus ini dan tiada vaksin. Rawatan adalah untuk demam dan sakit mulut - seperti yang dinasihatkan doktor.")}</li>
+<li><strong>{x("Keep them drinking - a sore mouth makes children refuse drinks and they dry out quickly.", "Pastikan anak terus minum - mulut yang sakit membuatkan anak enggan minum dan cepat kekurangan air.")}</strong> {x("Offer favourite foods and drinks, and plenty of rest.", "Beri makanan dan minuman kegemaran, serta rehat yang cukup.")}</li>
+<li>{x("Keep your child home from taska, tadika or school, and tell them. Children spread it for about a week after symptoms start.", "Jangan hantar anak ke taska, tadika atau sekolah, dan maklumkan kepada mereka. Anak boleh menjangkiti orang lain selama lebih kurang seminggu selepas bergejala.")}</li>
+<li>{x("It spreads through coughs and sneezes, blister fluid, poo, shared cups, spoons and towels, and surfaces like door handles. Wash hands with soap after nappy changes and after touching blisters, and clean toys and floors.", "Ia merebak melalui batuk dan bersin, cecair lepuh, najis, berkongsi cawan, sudu dan tuala, serta permukaan seperti pemegang pintu. Cuci tangan dengan sabun selepas menukar lampin dan menyentuh lepuh, dan bersihkan mainan serta lantai.")}</li></ul></section>
+<aside class="box danger"><h2>{x("Take your child to hospital straight away if:", "Bawa anak ke hospital segera jika:")}</h2><ul>
+<li>{x("Fever above 38.5°C, or fever for more than 48 hours", "Demam melebihi 38.5°C, atau demam lebih 48 jam")}</li>
+<li>{x("Sudden jerks or startles when sleeping or waking - new, or more often", "Terkejut-terkejut semasa tidur atau bangun - baru berlaku, atau semakin kerap")}</li>
+<li>{x("Less active than usual, or looks weak and lethargic", "Kurang aktif daripada biasa, atau kelihatan lemah dan lesu")}</li>
+<li>{x("Vomits more than 2 times in 12 hours", "Muntah lebih 2 kali dalam 12 jam")}</li>
+<li>{x("Eating or drinking little, dry or light nappies, dark yellow pee, dry lips or a dry, whitish tongue", "Kurang makan atau minum, lampin kering atau ringan, air kencing kuning pekat, bibir kering atau lidah kering dan keputihan")}</li></ul>
+<p>{x("Rarely, one type of the virus (EV71) can inflame the brain or heart - that's why these signs matter.", "Dalam kes yang jarang, sejenis virus (EV71) boleh menyebabkan radang otak atau jantung - sebab itu tanda-tanda ini penting.")}</p></aside>''')}
+{tabpanel("il", "tummy", f'''<section class="card"><h2>{x("Care at home", "Penjagaan di rumah")}</h2><ul>
+<li><strong>{x("The most important thing is fluids, so your child doesn't get dehydrated.", "Perkara paling penting ialah air, supaya anak tidak kekurangan air (dehidrasi).")}</strong></li>
+<li>{x("Keep breastfeeding or bottle feeding. If your baby is being sick, give smaller feeds more often.", "Teruskan menyusu badan atau botol. Jika bayi muntah, beri susu sedikit tetapi lebih kerap.")}</li>
+<li>{x("Don't make formula weaker - use the usual strength. Babies on formula or solids can have small sips of water between feeds.", "Jangan cairkan susu formula - bancuh seperti biasa. Bayi yang minum susu formula atau makan makanan pejal boleh diberi air sedikit-sedikit antara susuan.")}</li>
+<li>{x("Oral rehydration salts (ORS) from a pharmacy or klinik replace lost water and salts - mix exactly as the packet says.", "Garam rehidrasi oral (ORS) dari farmasi atau klinik menggantikan air dan garam yang hilang - bancuh tepat seperti arahan pada paket.")}</li>
+<li>{x("Avoid fruit juice and fizzy drinks - they can make diarrhoea worse. Don't give children medicine to stop diarrhoea.", "Elakkan jus buah dan minuman berkarbonat - ia boleh memburukkan cirit-birit. Jangan beri kanak-kanak ubat untuk menghentikan cirit-birit.")}</li>
+<li>{x("Diarrhoea usually stops within 5 to 7 days, vomiting within 1 or 2 days.", "Cirit-birit biasanya berhenti dalam 5 hingga 7 hari, muntah dalam 1 atau 2 hari.")}</li>
+<li>{x("Keep your child home from taska until 2 days after the last bout, and wash hands with soap often.", "Jangan hantar anak ke taska sehingga 2 hari selepas kali terakhir cirit-birit atau muntah, dan kerap cuci tangan dengan sabun.")}</li></ul></section>
+<aside class="box"><h2>{x("See a doctor today if:", "Jumpa doktor hari ini jika:")}</h2><ul>
+<li>{x("Your baby is under 1 year and you're worried", "Bayi bawah 1 tahun dan anda risau")}</li>
+<li>{x("Your child stops breastfeeding or bottle feeding", "Anak berhenti menyusu badan atau botol")}</li>
+<li>{x("Fewer wet nappies or other signs of dehydration", "Lampin basah berkurangan atau tanda-tanda kekurangan air yang lain")}</li>
+<li>{x("There's blood in the poo", "Ada darah dalam najis")}</li>
+<li>{x("Diarrhoea hasn't stopped after 7 days", "Cirit-birit tidak berhenti selepas 7 hari")}</li></ul></aside>''')}
+{tabpanel("il", "cough", f'''<aside class="box danger"><h2>{x("No cough or cold medicine for children under 2", "Tiada ubat batuk atau selesema untuk kanak-kanak bawah 2 tahun")}</h2>
+<p>{x("Cough and cold syrups (antihistamines such as chlorpheniramine, cough suppressants, decongestants such as pseudoephedrine) can cause serious side effects in under-2s, including slowed breathing and death. KKM requires a warning on the label.", "Sirap batuk dan selesema (antihistamin seperti chlorpheniramine, penahan batuk, dekongestan seperti pseudoephedrine) boleh menyebabkan kesan sampingan serius pada kanak-kanak bawah 2 tahun, termasuk pernafasan perlahan dan kematian. KKM mewajibkan amaran pada label.")}</p></aside>
+<section class="card"><h2>{x("What helps", "Apa yang membantu")}</h2><ul>
+<li>{x("Saline nose drops or spray (sodium chloride 0.9%) for a blocked nose", "Titisan atau semburan hidung salin (sodium chloride 0.9%) untuk hidung tersumbat")}</li>
+<li>{x("A bulb syringe to gently suck mucus out of the nose", "Picagari bulb untuk menyedut hingus keluar dari hidung dengan lembut")}</li>
+<li>{x("A cool-mist humidifier", "Alat pelembap udara (mist humidifier)")}</li>
+<li>{x("Plenty of fluids - keep breastfeeding", "Banyakkan minum - teruskan menyusu badan")}</li></ul>
+<p>{x("Most coughs and colds are mild and get better on their own.", "Kebanyakan batuk dan selesema adalah ringan dan sembuh sendiri.")}</p></section>
+<aside class="box"><h2>{x("See a doctor if:", "Jumpa doktor jika:")}</h2><ul>
+<li>{x("Breathing is hard or noisy, or the skin between the ribs sucks in - go now", "Susah bernafas atau berbunyi, atau kulit di celah tulang rusuk tertarik ke dalam - pergi sekarang")}</li>
+<li>{x("Baby under 3 months with a fever", "Bayi bawah 3 bulan yang demam")}</li>
+<li>{x("A cough that lasts more than 3 weeks", "Batuk berlarutan lebih 3 minggu")}</li></ul></aside>''')}
+{tabpanel("il", "dengue", f'''<section class="card"><h2>{x("Signs", "Tanda-tanda")}</h2>
+<p>{x("High fever, bad headache, pain behind the eyes, muscle and joint pain, feeling sick or vomiting, swollen glands and a rash.", "Demam tinggi, sakit kepala teruk, sakit di belakang mata, sakit otot dan sendi, loya atau muntah, kelenjar bengkak dan ruam.")}</p>
+<p><strong>{x("The dangerous stage often comes as the fever goes away - keep watching for the warning signs.", "Peringkat bahaya selalunya berlaku ketika demam mula kebah - terus perhatikan tanda amaran.")}</strong></p></section>
+<section class="card"><h2>{x("Care at home", "Penjagaan di rumah")}</h2><ul>
+<li>{x("Rest, and check the temperature often.", "Rehat secukupnya, dan kerap periksa suhu badan.")}</li>
+<li>{x("Drink plenty: water, barley water, coconut water or ORS.", "Banyakkan minum: air kosong, air barli, air kelapa atau ORS.")}</li>
+<li>{x("For fever, use paracetamol only, as your doctor advises.", "Untuk demam, guna paracetamol sahaja, seperti yang dinasihatkan doktor.")}</li>
+<li><strong>{x("Never give ibuprofen, aspirin or other anti-inflammatory painkillers - they raise the risk of bleeding.", "Jangan beri ibuprofen, aspirin atau ubat tahan sakit anti-radang yang lain - ia meningkatkan risiko pendarahan.")}</strong></li></ul></section>
+<aside class="box danger"><h2>{x("Go to a klinik or hospital straight away if there is:", "Pergi ke klinik atau hospital segera jika:")}</h2><ul>
+<li>{x("Vomiting that won't stop, or tummy pain", "Muntah berterusan, atau sakit perut")}</li>
+<li>{x("Extreme tiredness or restlessness", "Terlalu letih atau gelisah")}</li>
+<li>{x("Bleeding from the nose or gums, or blood in vomit or poo", "Berdarah dari hidung atau gusi, atau darah dalam muntah atau najis")}</li>
+<li>{x("Fast or difficult breathing, or pale, cold skin", "Bernafas laju atau susah, atau kulit pucat dan sejuk")}</li></ul></aside>
+<section class="card"><h2>{x("Prevent it", "Cegah denggi")}</h2><p>{x("Spend 10 minutes a week finding and emptying standing water where Aedes mosquitoes breed - pots, containers, gutters, old tyres. Use mosquito repellent suitable for your child's age.",
+      "Luangkan 10 minit seminggu untuk mencari dan membuang air bertakung tempat nyamuk Aedes membiak - pasu, bekas, longkang bumbung, tayar lama. Guna penghalau nyamuk yang sesuai dengan umur anak.")}</p></section>''')}
+{ad("in_content", x)}
+{src_line(x, [(x("JKN Sarawak: HFMD", "JKN Sarawak: HFMD"), t3.HFMD_FAQ), (x("JKN Perlis: cough medicine", "JKN Perlis: ubat batuk"), t3.COUGH_KKM),
+              (x("KKM: dengue care at home", "KKM: penjagaan denggi di rumah"), t3.DENGUE_KKM), ("WHO: dengue", t3.DENGUE_WHO),
+              ("NHS: diarrhoea and vomiting", "https://www.nhs.uk/conditions/diarrhoea-and-vomiting/"), ("NHS: cough", "https://www.nhs.uk/symptoms/cough/")])}
+"""
+    write_page(lang, "illnesses.html", x("HFMD, diarrhoea, cough & dengue in children: care & danger signs", "HFMD, cirit-birit, batuk & denggi kanak-kanak: penjagaan & tanda bahaya"),
+               x("Hand, foot and mouth disease (HFMD), diarrhoea and vomiting, coughs and colds, and dengue in children - home care from KKM and when to go to hospital.",
+                 "Penyakit tangan, kaki dan mulut (HFMD), cirit-birit dan muntah, batuk dan selesema, serta denggi kanak-kanak - penjagaan di rumah menurut KKM dan bila perlu ke hospital."),
+               body)
+
+
+def p_birth(lang):
+    x = tr(lang)
+    tabs = tabbar(x, "bi", [
+        ("signs", "🔔", "Signs of labour", "Tanda bersalin", x("Show, waters, contractions", "Lendir, air ketuban, kontraksi"), "", "", False),
+        ("stages", "🪜", "The 3 stages", "3 peringkat", x("8-24 hours first time", "8-24 jam anak sulung"), "", "", False),
+        ("pain", "💆", "Pain relief", "Melegakan sakit", x("Epidural, gas & more", "Epidural, gas & lain-lain"), "", "", False),
+        ("cs", "✂️", "Caesarean", "Caesarean", x("Planned or emergency", "Dirancang atau kecemasan"), "", "", False),
+    ], hash_ok=True, prompt=x("What do you want to know?", "Apa yang anda mahu tahu?"))
+    body = f"""
+{page_head(x, "👣", "t-birth", x("Pregnant", "Sedang hamil"), x("Signs of labour & giving birth", "Tanda bersalin & proses bersalin"),
+           x("How to tell labour has started, when to go to hospital, and what happens next.", "Cara mengenal pasti tanda bersalin, bila perlu ke hospital, dan apa yang berlaku seterusnya."))}
+<aside class="box danger"><h2>{x("Call your labour ward or go to hospital now if:", "Hubungi wad bersalin atau pergi ke hospital sekarang jika:")}</h2><ul>
+<li>{x("Your waters break - especially if they're smelly, or green, brown or coloured", "Air ketuban pecah - terutamanya jika berbau, atau berwarna hijau, perang atau keruh")}</li>
+<li>{x("You're bleeding (more than a little pink mucus)", "Anda berdarah (lebih daripada sedikit lendir merah jambu)")}</li>
+<li>{x("Your baby is moving less than usual", "Bayi kurang bergerak daripada biasa")}</li>
+<li>{x("You're less than 37 weeks and think labour has started", "Kandungan kurang 37 minggu dan anda rasa sudah mula bersalin")}</li>
+<li>{x("A contraction lasts longer than 2 minutes, or you have 6 or more in 10 minutes", "Satu kontraksi berlarutan lebih 2 minit, atau 6 kali atau lebih dalam 10 minit")}</li></ul>
+<p><strong>{x("Baby coming now and a strong urge to push: call 999.", "Bayi akan keluar dan rasa sangat hendak meneran: hubungi 999.")}</strong></p></aside>
+{tabs}
+{tabpanel("bi", "signs", f'''<section class="card"><ul>
+<li><strong>{x("Contractions", "Kontraksi")}</strong> - {x("your womb tightens, then relaxes. They can feel like strong period pains, and get longer, stronger and closer together. Practice contractions (Braxton Hicks) are usually painless, short and irregular, and don't build up.", "rahim mengeras, kemudian mengendur. Rasanya seperti senggugut yang kuat, dan semakin lama, semakin kuat dan semakin kerap. Kontraksi latihan (Braxton Hicks) biasanya tidak sakit, singkat dan tidak tetap, serta tidak semakin kuat.")}</li>
+<li><strong>{x("A 'show'", "Tanda lendir (show)")}</strong> - {x("a sticky, jelly-like pink mucus plug comes away. Labour may follow quickly or in a few days. Not everyone has one.", "lendir pekat seperti jeli berwarna merah jambu keluar. Proses bersalin mungkin menyusul dengan cepat atau dalam beberapa hari. Tidak semua ibu mengalaminya.")}</li>
+<li><strong>{x("Waters breaking", "Air ketuban pecah")}</strong> - {x("a slow trickle or a sudden gush you can't control. The waters are clear and pale. Use a pad (not a tampon) so the staff can check the colour, and call your hospital.", "meleleh perlahan atau terpancut tanpa dapat dikawal. Air ketuban jernih dan pucat. Pakai tuala wanita (bukan tampon) supaya petugas boleh memeriksa warnanya, dan hubungi hospital.")}</li>
+<li><strong>{x("Backache, and an urge to go to the toilet", "Sakit belakang, dan rasa hendak ke tandas")}</strong> - {x("caused by your baby's head pressing down.", "akibat tekanan kepala bayi.")}</li></ul></section>
+<section class="card"><h2>{x("When to go to hospital", "Bila perlu ke hospital")}</h2>
+<p>{x("Call your hospital when contractions are regular and come every 5 minutes or more often - or any time you're unsure or worried. Early labour can take hours or even days, and you may be advised to stay at home until contractions are frequent.", "Hubungi hospital apabila kontraksi tetap dan datang setiap 5 minit atau lebih kerap - atau bila-bila masa anda tidak pasti atau risau. Peringkat awal bersalin boleh mengambil masa berjam-jam atau berhari-hari, dan anda mungkin dinasihatkan tunggu di rumah sehingga kontraksi lebih kerap.")}</p>
+<p>{x("Bring your pink book (Rekod Kesihatan Ibu) and your hospital bag.", "Bawa buku pink (Rekod Kesihatan Ibu) dan beg hospital anda.")}</p>
+<p class="tool-links"><a class="btn" href="labour.html">⏱️ {x("Contraction timer", "Pemasa kontraksi")} →</a> <a class="btn ghost" href="hospital-bag.html">👜 {x("Hospital bag", "Beg hospital")} →</a></p></section>''')}
+{tabpanel("bi", "stages", f'''<ol class="steps">
+<li><strong>{x("Stage 1: the cervix opens", "Peringkat 1: pintu rahim terbuka")}</strong><br>{x("From the start of labour until the cervix is fully open (10 cm). Usually 8 to 24 hours for a first baby, 3 to 12 hours after that. The early (latent) phase is up to 4 cm; active labour is from 4 cm. Moving around or changing position can help.", "Dari permulaan bersalin sehingga pintu rahim terbuka penuh (10 cm). Biasanya 8 hingga 24 jam untuk anak sulung, 3 hingga 12 jam untuk anak seterusnya. Fasa awal (laten) sehingga 4 cm; fasa aktif bermula dari 4 cm. Bergerak atau menukar posisi boleh membantu.")}</li>
+<li><strong>{x("Stage 2: your baby is born", "Peringkat 2: bayi dilahirkan")}</strong><br>{x("From fully open until your baby is born - usually within 1 hour. Push when you feel the urge.", "Dari pintu rahim terbuka penuh sehingga bayi lahir - biasanya dalam masa 1 jam. Teran apabila anda rasa hendak meneran.")}</li>
+<li><strong>{x("Stage 3: the placenta comes out", "Peringkat 3: uri dikeluarkan")}</strong><br>{x("Usually 15 to 30 minutes. Staff give you an injection straight after the birth to help the placenta come out and reduce bleeding.", "Biasanya 15 hingga 30 minit. Petugas akan memberi suntikan sejurus selepas bayi lahir untuk membantu uri keluar dan mengurangkan pendarahan.")}</li></ol>''')}
+{tabpanel("bi", "pain", f'''<p class="dp-intro">{x("Not every hospital offers every method - ask at your antenatal visits what yours has.", "Tidak semua hospital menawarkan semua kaedah - tanya semasa lawatan antenatal apa yang ada di hospital pilihan anda.")}</p>
+<ul class="price-list">
+<li><span><strong>{x("Epidural", "Epidural")}</strong> - {x("medicine through a thin tube in your lower back. Only given by an anaesthetist, so only in hospitals with one. Takes about 30-40 minutes to set up and work.", "ubat melalui tiub halus di bahagian bawah belakang. Hanya diberi oleh doktor bius, jadi hanya di hospital yang mempunyai doktor bius. Mengambil masa lebih kurang 30-40 minit untuk disediakan dan berkesan.")}</span><strong>{x("Most effective", "Paling berkesan")}</strong></li>
+<li><span><strong>{x("Patient-controlled painkiller (PCA)", "Ubat tahan sakit kawalan sendiri (PCA)")}</strong> - {x("you press a button for a dose through a drip.", "anda tekan butang untuk mendapatkan dos melalui titisan.")}</span><strong>{x("Effective", "Berkesan")}</strong></li>
+<li><span><strong>{x("Gas and air (Entonox)", "Gas (Entonox)")}</strong> - {x("half oxygen, half nitrous oxide, breathed in through a mouthpiece.", "separuh oksigen, separuh nitrus oksida, disedut melalui alat di mulut.")}</span><strong>{x("Fairly effective", "Agak berkesan")}</strong></li>
+<li><span><strong>{x("Pethidine injection", "Suntikan pethidine")}</strong> - {x("not given once the cervix is more than 6 cm open.", "tidak diberi apabila pintu rahim terbuka lebih 6 cm.")}</span><strong>{x("Fairly effective", "Agak berkesan")}</strong></li>
+<li><span><strong>{x("TENS, acupuncture, aromatherapy, massage", "TENS, akupunktur, aromaterapi, urutan")}</strong></span><strong>{x("Little evidence", "Kurang bukti")}</strong></li></ul>
+<section class="card"><h2>{x("Without medicine", "Tanpa ubat")}</h2><p>{x("Having someone with you, breathing exercises, a warm bath or shower, music and massage.", "Ditemani seseorang, senaman pernafasan, mandi air suam, muzik dan urutan.")}</p></section>
+<section class="card"><h2>{x("Epidural side effects", "Kesan sampingan epidural")}</h2><ul>
+<li>{x("Common: itching, numb legs, feeling sick or vomiting.", "Kerap: gatal, kaki kebas, loya atau muntah.")}</li>
+<li>{x("Rare: a big drop in blood pressure, or the epidural not working well.", "Jarang: tekanan darah turun dengan ketara, atau epidural kurang berkesan.")}</li>
+<li>{x("Very rare: fever, severe headache, nerve damage, infection or a blood clot in the back.", "Sangat jarang: demam, sakit kepala teruk, kecederaan saraf, jangkitan atau darah beku di bahagian belakang.")}</li></ul></section>''')}
+{tabpanel("bi", "cs", f'''<section class="card"><p>{x("A caesarean can be planned - usually from 39 weeks - or done as an emergency if a vaginal birth is too risky. Common reasons:", "Pembedahan caesarean boleh dirancang - biasanya mulai 39 minggu - atau dibuat secara kecemasan jika bersalin biasa terlalu berisiko. Antara sebab biasa:")}</p><ul>
+<li>{x("Your baby is bottom or feet first (breech)", "Bayi songsang (punggung atau kaki di bawah)")}</li>
+<li>{x("A low-lying placenta (placenta praevia)", "Uri di bawah (placenta praevia)")}</li>
+<li>{x("High blood pressure in pregnancy (pre-eclampsia)", "Darah tinggi semasa hamil (pre-eklampsia)")}</li>
+<li>{x("Certain infections", "Jangkitan tertentu")}</li>
+<li>{x("Your baby isn't getting enough oxygen", "Bayi tidak mendapat oksigen yang cukup")}</li>
+<li>{x("Labour isn't progressing, or there's heavy bleeding", "Proses bersalin tidak maju, atau pendarahan banyak")}</li></ul>
+<p>{x("If you're anxious about giving birth, talk to your doctor - they'll explain the benefits and risks of each option.", "Jika anda bimbang tentang bersalin, berbincang dengan doktor - mereka akan menerangkan kebaikan dan risiko setiap pilihan.")}</p>
+<p class="tool-links"><a class="btn ghost" href="recovery.html#body">🌷 {x("Wound care after a caesarean", "Penjagaan luka caesarean")} →</a> <a class="btn ghost" href="delivery-cost.html">🏥 {x("Delivery cost", "Kos bersalin")} →</a></p></section>''')}
+{ad("in_content", x)}
+{src_line(x, [(x("KKM Perinatal Care Manual", "Manual Penjagaan Perinatal KKM"), t3.PCM), (x("HoSHAS Temerloh: pain relief in labour", "HoSHAS Temerloh: melegakan sakit bersalin"), t3.PAHANG_EPIDURAL),
+              ("NHS: signs of labour", "https://www.nhs.uk/pregnancy/labour-and-birth/signs-of-labour/signs-that-labour-has-begun/"),
+              ("NHS: caesarean", "https://www.nhs.uk/tests-and-treatments/caesarean-section/")])}
+"""
+    write_page(lang, "birth.html", x("Signs of labour, stages of birth & pain relief options", "Tanda bersalin, peringkat bersalin & pilihan melegakan sakit"),
+               x("How to tell labour has started (show, waters, contractions), when to go to hospital, the 3 stages of labour, epidural and other pain relief in Malaysian hospitals, and why a caesarean may be needed.",
+                 "Cara mengenal tanda bersalin (lendir, air ketuban, kontraksi), bila perlu ke hospital, 3 peringkat bersalin, epidural dan kaedah melegakan sakit lain di hospital Malaysia, serta sebab pembedahan caesarean."),
+               body)
+
+
+def p_forum(lang):
+    x = tr(lang)
+    topics = [("hamil", "🤰"), ("bersalin", "🏥"), ("pantang", "🍲"), ("bayi", "👶"), ("menyusu", "🤱"), ("lain", "💬")]
+    names = JS_STR[lang]["fmTopics"]
+    chips = (f'<button type="button" class="chip-btn" data-topic="" aria-pressed="true">{x("All", "Semua")}</button>'
+             + "".join(f'<button type="button" class="chip-btn" data-topic="{k}" aria-pressed="false"><span aria-hidden="true">{i}</span> {esc(names[k])}</button>' for k, i in topics))
+    opts = "".join(f'<option value="{k}">{esc(names[k])}</option>' for k, i in topics)
+    body = f"""
+{page_head(x, "💬", "t-forum", x("Community", "Komuniti"), x("Ask other mums", "Tanya ibu-ibu"),
+           x("Ask a question, share what worked for you, and vote for the most helpful answers.", "Tanya soalan, kongsi pengalaman anda, dan undi jawapan yang paling membantu."))}
+<aside class="box fm-notice"><ul>
+<li>{x("Answers come from other mums, not doctors. For health worries, see your klinik.", "Jawapan daripada ibu-ibu lain, bukan doktor. Untuk masalah kesihatan, jumpa klinik.")} <strong>{x("Emergency: 999.", "Kecemasan: 999.")}</strong></li>
+<li>{x("Everything you post is public. Don't share phone numbers, IC numbers, addresses or links.", "Semua yang anda hantar boleh dilihat umum. Jangan kongsi nombor telefon, nombor IC, alamat atau pautan.")}</li>
+<li>{x("Be kind. Posts reported by several people are hidden automatically.", "Berbudi bahasa. Hantaran yang dilaporkan oleh beberapa orang akan disembunyikan secara automatik.")}</li></ul></aside>
+<div id="fm-soon" class="box" hidden><p>{x("The forum is opening soon - please check back.", "Forum akan dibuka tidak lama lagi - sila datang semula.")}</p></div>
+<div id="forum" hidden>
+  <div id="fm-listwrap">
+    <div class="fm-bar">
+      <button type="button" class="btn" id="fm-ask-open">✍️ {x("Ask a question", "Tanya soalan")}</button>
+      <label class="field fm-nick-f">{x("Your nickname", "Nama samaran")}<input id="fm-nick" maxlength="30" autocomplete="nickname" placeholder="{x("e.g. Mama Aina", "cth. Mama Aina")}"></label>
+    </div>
+    <form id="fm-ask" class="card fm-form" hidden>
+      <label class="field">{x("Topic", "Topik")}<select name="topic">{opts}</select></label>
+      <label class="field">{x("Your question", "Soalan anda")}<input name="title" minlength="8" maxlength="140" required placeholder="{x("e.g. When did your baby start sleeping longer at night?", "cth. Bila bayi anda mula tidur lebih lama pada waktu malam?")}"></label>
+      <label class="field">{x("More details (optional)", "Butiran lanjut (pilihan)")}<textarea name="body" rows="4" maxlength="2000"></textarea></label>
+      <p class="hint">{x("No phone numbers, IC numbers or links. Your post shows straight away.", "Tiada nombor telefon, nombor IC atau pautan. Hantaran anda dipaparkan serta-merta.")}</p>
+      <button type="submit" class="btn">{x("Post question", "Hantar soalan")}</button>
+      <p id="fm-ask-msg" aria-live="polite"></p>
+    </form>
+    <div class="nm-origin fm-chips" role="group" aria-label="{x("Topic", "Topik")}">{chips}</div>
+    <div class="fm-tools">
+      <input type="search" id="fm-q" placeholder="{x("Search questions", "Cari soalan")}" aria-label="{x("Search questions", "Cari soalan")}">
+      <label class="sort-row"><span>⇅</span><select id="fm-sort" aria-label="{x("Sort by", "Susun ikut")}">
+        <option value="new">{x("Newest", "Terbaru")}</option><option value="top">{x("Most helpful", "Paling membantu")}</option><option value="open">{x("No answers yet", "Belum berjawab")}</option></select></label>
+    </div>
+    <ul class="fm-list" id="fm-list"></ul>
+  </div>
+  <div id="fm-detail" hidden></div>
+</div>
+"""
+    write_page(lang, "forum.html", x("Ask other mums - pregnancy, pantang & baby questions", "Tanya ibu-ibu - soalan kehamilan, pantang & bayi"),
+               x("A free question-and-answer board for Malaysian mums: pregnancy, birth, pantang, breastfeeding and baby care. Vote for the most helpful answers.",
+                 "Ruang soal jawab percuma untuk ibu-ibu di Malaysia: kehamilan, bersalin, pantang, penyusuan dan penjagaan bayi. Undi jawapan yang paling membantu."),
+               body, {"forum": {"url": config.FORUM_SUPABASE_URL, "key": config.FORUM_SUPABASE_KEY}})
+
+
 def p_privacy(lang):
     x = tr(lang)
+    forum_privacy = (f'''<h2>{x("Ask other mums (forum)", "Tanya ibu-ibu (forum)")}</h2>
+<p>{x("Questions and answers you post on the forum are public and stored by our database provider, Supabase. We keep the nickname you choose and a random code made by your browser (so votes and posting limits work) - never your name, email or location. To have a post removed, use Report or contact us.",
+       "Soalan dan jawapan yang anda hantar di forum boleh dilihat umum dan disimpan oleh penyedia pangkalan data kami, Supabase. Kami menyimpan nama samaran pilihan anda dan kod rawak yang dijana oleh pelayar anda (supaya undian dan had hantaran berfungsi) - bukan nama, e-mel atau lokasi anda. Untuk membuang hantaran, guna butang Lapor atau hubungi kami.")}</p>'''
+                     if config.FORUM_SUPABASE_URL and config.FORUM_SUPABASE_KEY else "")
     email = (f'<a href="mailto:{esc(config.CONTACT_EMAIL)}">{esc(config.CONTACT_EMAIL)}</a>'
              if config.CONTACT_EMAIL else x("the email on our About page", "e-mel di halaman Tentang kami"))
     body = f"""
@@ -2742,6 +3242,7 @@ def p_privacy(lang):
 <h2>{x("Feedback form", "Borang cadangan")}</h2>
 <p>{x("Ideas you send through our feedback form are collected by Google Forms. Only leave your email if you want a reply, and please don't share medical details there.",
        "Cadangan yang dihantar melalui borang kami dikumpul oleh Google Forms. Tinggalkan e-mel hanya jika mahu balasan, dan jangan kongsi butiran perubatan di sana.")}</p>
+{forum_privacy}
 <h2>{x("Other sites", "Laman lain")}</h2>
 <p>{x("Product pictures on the prices page load from Shopee's image servers. Links to Google Maps, Shopee and government sites follow those sites' own privacy policies.",
        "Gambar produk di halaman harga dimuatkan dari pelayan gambar Shopee. Pautan ke Google Maps, Shopee dan laman kerajaan tertakluk kepada dasar privasi laman tersebut.")}</p>
@@ -2873,6 +3374,13 @@ def main():
         p_safety(lang)
         p_delivery(lang)
         p_planning(lang)
+        p_early(lang)
+        p_aid(lang)
+        p_newborn_care(lang)
+        p_illnesses(lang)
+        p_birth(lang)
+        if config.FORUM_SUPABASE_URL and config.FORUM_SUPABASE_KEY:
+            p_forum(lang)
     root_files()
     print(f"built {len(WRITTEN)} pages into {OUT}" + (" (ad preview)" if AD_PREVIEW else ""))
 
