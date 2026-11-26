@@ -1,37 +1,225 @@
 {
-  "_note": "Taska/tadika options whose fees are published by the operator itself (government agencies). Private centres don't publish fees online - parents type their own quotes. Checked on the official pages on the 'checked' date.",
+  "_note": "Taska/tadika options whose fees are published by the operator itself (government agencies, and private chains that publish a fee table). Most private centres don't publish fees online - parents type their own quotes. 'help' = official fee help (subsidies, tax relief); state '*' = nationwide. 'gov_ask' = state-run centres with no fee online. Checked on the official pages on the 'checked' date (26 Nov 2026 sweep of all states).",
   "options": [
     {
-      "id": "tabika-perpaduan", "kind": "tadika", "icon": "🏫", "name": "Tabika Perpaduan", "ages": "4-6",
-      "fee": 0, "reg": 0, "fee_en": "Free", "fee_ms": "Percuma", "inc": {"reg": true},
+      "id": "tabika-perpaduan",
+      "kind": "tadika",
+      "icon": "🏫",
+      "name": "Tabika Perpaduan",
+      "ages": "4-6",
+      "fee": 0,
+      "reg": 0,
+      "fee_en": "Free",
+      "fee_ms": "Percuma",
+      "inc": {
+        "reg": true
+      },
       "note_en": "Free, with no fees, says the Ministry of National Unity. 1,781 Tabika Perpaduan around Malaysia in 2026. Priority for children aged 5-6 who live, or whose parents work, within 10 km. Uniform and insurance follow JPNIN's rules - ask your Tabika.",
       "note_ms": "Percuma tanpa sebarang bayaran, kata Kementerian Perpaduan Negara. 1,781 Tabika Perpaduan di seluruh Malaysia pada 2026. Keutamaan kepada kanak-kanak berumur 5-6 tahun yang tinggal, atau ibu bapa bekerja, dalam lingkungan 10 km. Uniform dan insurans ikut peraturan JPNIN - tanya Tabika anda.",
       "source_url": "https://www.perpaduan.gov.my/index.php/en/kalendar-aktiviti-program/general/program-santuni-murid-tabika-perpaduan-kembali-ke-tabika-perpaduan-sesi-tahun-2026",
       "apply_url": "https://www.malaysia.gov.my/my/digital-services/pendaftaran-kanak-kanak-tabika-perpaduan",
-      "checked": "2026-11-26"
+      "checked": "2026-11-26",
+      "sector": "gov"
     },
     {
-      "id": "taska-perpaduan", "kind": "taska", "icon": "🧸", "name": "Taska Perpaduan", "ages": "2-4",
-      "fee": 0, "reg": 0, "fee_en": "Free", "fee_ms": "Percuma", "inc": {"reg": true},
+      "id": "taska-perpaduan",
+      "kind": "taska",
+      "icon": "🧸",
+      "name": "Taska Perpaduan",
+      "ages": "2-4",
+      "fee": 0,
+      "reg": 0,
+      "fee_en": "Free",
+      "fee_ms": "Percuma",
+      "inc": {
+        "reg": true
+      },
       "note_en": "Free, with no fees, says the Ministry of National Unity. Only 41 Taska Perpaduan around Malaysia in 2026, so places are limited - ask your nearest Jabatan Perpaduan office.",
       "note_ms": "Percuma tanpa sebarang bayaran, kata Kementerian Perpaduan Negara. Hanya 41 Taska Perpaduan di seluruh Malaysia pada 2026, jadi tempat terhad - tanya pejabat Jabatan Perpaduan terdekat.",
       "source_url": "https://www.perpaduan.gov.my/index.php/en/kalendar-aktiviti-program/general/program-santuni-murid-tabika-perpaduan-kembali-ke-tabika-perpaduan-sesi-tahun-2026",
-      "checked": "2026-11-26"
+      "checked": "2026-11-26",
+      "sector": "gov"
     },
     {
-      "id": "tabika-kemas", "kind": "tadika", "icon": "🏫", "name": "Tabika KEMAS", "ages": "4-6",
-      "fee": 25, "reg": 10, "fee_en": "RM10-25", "fee_ms": "RM10-25", "inc": {"reg": true},
+      "id": "tabika-kemas",
+      "kind": "tadika",
+      "icon": "🏫",
+      "name": "Tabika KEMAS",
+      "ages": "4-6",
+      "fee": 25,
+      "reg": 10,
+      "fee_en": "RM10-25",
+      "fee_ms": "RM10-25",
+      "inc": {
+        "reg": true
+      },
       "note_en": "RM10 registration (covers your child's insurance) plus a parents' contribution of RM10-25, set by each Tabika's committee. In the comparison we count RM25 a month to be safe - ask your Tabika how often it's paid. Up to 30 children; priority for 6-year-olds.",
       "note_ms": "Yuran pendaftaran RM10 (untuk insurans anak) serta sumbangan ibu bapa RM10-25 yang ditetapkan oleh jawatankuasa setiap Tabika. Dalam perbandingan kami kira RM25 sebulan supaya selamat - tanya Tabika berapa kerap ia dibayar. Maksimum 30 kanak-kanak; keutamaan kepada umur 6 tahun.",
       "source_url": "https://www.kemas.gov.my/soalan-lazim/",
-      "checked": "2026-11-26"
+      "checked": "2026-11-26",
+      "sector": "gov"
     },
     {
-      "id": "prasekolah-kpm", "kind": "tadika", "icon": "🎒", "name": "Prasekolah KPM", "ages": "5-6",
-      "fee": null, "reg": null, "fee_en": "Ask the school", "fee_ms": "Tanya sekolah", "inc": {"reg": true, "meals": true},
+      "id": "prasekolah-kpm",
+      "kind": "tadika",
+      "icon": "🎒",
+      "name": "Prasekolah KPM",
+      "ages": "5-6",
+      "fee": null,
+      "reg": null,
+      "fee_en": "Ask the school",
+      "fee_ms": "Tanya sekolah",
+      "inc": {
+        "reg": true,
+        "meals": true
+      },
       "note_en": "Preschool classes in government primary schools, with healthy meals. Priority for low-income (B40) families and rural areas. Apply online through KPM's e-Prasekolah system.",
       "note_ms": "Kelas prasekolah di sekolah rendah kerajaan, dengan makanan sihat. Keutamaan kepada keluarga berpendapatan rendah (B40) dan kawasan luar bandar. Mohon dalam talian melalui sistem e-Prasekolah KPM.",
       "source_url": "https://www.malaysia.gov.my/my/topics/pra-sekolah-kpm",
+      "checked": "2026-11-26",
+      "sector": "gov"
+    },
+    {
+      "id": "brainybunch-play",
+      "sector": "private",
+      "kind": "taska",
+      "icon": "🧩",
+      "name": "Brainy Bunch Playschool",
+      "ages": "2-3",
+      "fee": 480,
+      "reg": 1750,
+      "fee_en": "RM480-900",
+      "fee_ms": "RM480-900",
+      "inc": {
+        "reg": true
+      },
+      "area_en": "124 campuses around Malaysia",
+      "area_ms": "124 kampus di seluruh Malaysia",
+      "note_en": "2027 fees for ages 2-3. Monthly fee depends on the session and the campus type (A or B): half day 8am-12pm RM480/500, 8am-3pm RM680/800, full day 7am-7pm RM780/900. Plus RM200 enrolment (once), a yearly registration fee of RM1,550 (age 2) or RM1,950 (age 3), and RM280 for activities. In the comparison we count the cheapest half day plus enrolment and registration for age 2 - ask your campus for its exact fee.",
+      "note_ms": "Yuran 2027 untuk umur 2-3 tahun. Yuran bulanan bergantung pada sesi dan jenis kampus (A atau B): separuh hari 8am-12pm RM480/500, 8am-3pm RM680/800, sehari penuh 7am-7pm RM780/900. Tambah RM200 kemasukan (sekali), yuran pendaftaran tahunan RM1,550 (umur 2) atau RM1,950 (umur 3), dan RM280 aktiviti. Dalam perbandingan kami kira separuh hari paling murah serta kemasukan dan pendaftaran umur 2 - tanya kampus anda untuk yuran tepat.",
+      "source_url": "https://www.brainybunch.com/register/fee-structure",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "brainybunch-pre",
+      "sector": "private",
+      "kind": "tadika",
+      "icon": "🧩",
+      "name": "Brainy Bunch Preschool",
+      "ages": "4-6",
+      "fee": 430,
+      "reg": 2150,
+      "fee_en": "RM430-850",
+      "fee_ms": "RM430-850",
+      "inc": {
+        "reg": true
+      },
+      "area_en": "124 campuses around Malaysia",
+      "area_ms": "124 kampus di seluruh Malaysia",
+      "note_en": "2027 fees for ages 4-6 (Islamic Montessori). Monthly fee depends on the session and the campus type (A or B): half day 8am-12pm RM430/450, 8am-3pm RM630/750, full day 7am-7pm RM730/850. Plus RM200 enrolment (once), a yearly registration fee of RM1,950, and RM400 for activities. In the comparison we count the cheapest half day plus enrolment and registration - ask your campus for its exact fee.",
+      "note_ms": "Yuran 2027 untuk umur 4-6 tahun (Montessori Islam). Yuran bulanan bergantung pada sesi dan jenis kampus (A atau B): separuh hari 8am-12pm RM430/450, 8am-3pm RM630/750, sehari penuh 7am-7pm RM730/850. Tambah RM200 kemasukan (sekali), yuran pendaftaran tahunan RM1,950, dan RM400 aktiviti. Dalam perbandingan kami kira separuh hari paling murah serta kemasukan dan pendaftaran - tanya kampus anda untuk yuran tepat.",
+      "source_url": "https://www.brainybunch.com/register/fee-structure",
+      "checked": "2026-11-26"
+    }
+  ],
+  "gov_ask": [
+    {
+      "name": "Jauhar Child Care Centre (YPKDT)",
+      "state": "Johor",
+      "note_en": "Johor state foundation's taska - 10 centres around Johor. Fee not online: call 07-266 6526.",
+      "note_ms": "Taska yayasan negeri Johor - 10 pusat di seluruh Johor. Yuran tiada dalam talian: hubungi 07-266 6526.",
+      "url": "https://ypkdt.gov.my/jcc"
+    }
+  ],
+  "help": [
+    {
+      "id": "jkm",
+      "state": "*",
+      "icon": "🤝",
+      "name_en": "JKM taska fee subsidy",
+      "name_ms": "Subsidi yuran pengasuhan JKM",
+      "amount_en": "Up to RM180 a month",
+      "amount_ms": "Sehingga RM180 sebulan",
+      "who_en": "Lower-income families · under 4",
+      "who_ms": "Keluarga berpendapatan rendah · bawah 4 tahun",
+      "note_en": "For children under 4 at a JKM-registered taska (not Taska Komuniti). Your household income divided by the number of people in your household must be RM800 a month or less in towns, or RM500 or less in rural areas. The taska applies for you at the district welfare (JKM) office, in the first 2 months of the year - ask your taska. If the fee is under RM180, the subsidy covers the actual fee.",
+      "note_ms": "Untuk kanak-kanak bawah 4 tahun di TASKA berdaftar dengan JKM (bukan TASKA Komuniti). Pendapatan isi rumah dibahagi dengan bilangan ahli isi rumah mestilah RM800 sebulan atau kurang di bandar, atau RM500 atau kurang di luar bandar. TASKA memohon bagi pihak anda di pejabat JKM daerah, dalam 2 bulan pertama setiap tahun - tanya TASKA anda. Jika yuran kurang daripada RM180, subsidi mengikut yuran sebenar.",
+      "source_url": "https://www.jkm.gov.my/main/article/permohonan-subsidi-yuran-pengasuhan",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "jpa",
+      "state": "*",
+      "icon": "🏛️",
+      "name_en": "Civil servants: workplace taska subsidy",
+      "name_ms": "Penjawat awam: subsidi TASKA tempat kerja",
+      "amount_en": "Up to RM180 a month",
+      "amount_ms": "Sehingga RM180 sebulan",
+      "who_en": "Civil servants · household income up to RM7,000",
+      "who_ms": "Penjawat awam · pendapatan isi rumah hingga RM7,000",
+      "note_en": "For children under 4 at a taska at a government workplace. You and your spouse's income together must be RM7,000 a month or less. Your department pays the taska directly; you pay anything above RM180. Apply through your department's HR (Pekeliling Perkhidmatan Bil. 1 Tahun 2023).",
+      "note_ms": "Untuk anak bawah 4 tahun di TASKA tempat kerja sektor awam. Pendapatan anda dan pasangan tidak melebihi RM7,000 sebulan. Agensi membayar terus kepada TASKA; anda menanggung baki melebihi RM180. Mohon melalui bahagian sumber manusia agensi anda (Pekeliling Perkhidmatan Bil. 1 Tahun 2023).",
+      "source_url": "https://docs.jpa.gov.my/docs/pp/2023/pp012023.pdf",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "tax",
+      "state": "*",
+      "icon": "🧾",
+      "name_en": "Income tax relief",
+      "name_ms": "Pelepasan cukai pendapatan",
+      "amount_en": "Up to RM3,000 a year",
+      "amount_ms": "Sehingga RM3,000 setahun",
+      "who_en": "Parents who pay income tax · child 6 or under",
+      "who_ms": "Ibu bapa pembayar cukai · anak 6 tahun ke bawah",
+      "note_en": "Fees you pay to a registered taska or tadika for a child aged 6 and below can be claimed - up to RM3,000 a year in total, not per child (Year of Assessment 2025). Only the parent who paid can claim. Keep your receipts.",
+      "note_ms": "Yuran yang anda bayar kepada TASKA atau TADIKA berdaftar untuk anak berumur 6 tahun ke bawah boleh dituntut - sehingga RM3,000 setahun keseluruhannya, bukan bagi setiap anak (Tahun Taksiran 2025). Hanya ibu atau bapa yang membayar boleh menuntut. Simpan resit anda.",
+      "source_url": "https://www.hasil.gov.my/en/individu/pelepasan-cukai/",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "tunas",
+      "state": "Selangor",
+      "icon": "🌱",
+      "name_en": "Tunas Selangor (tadika)",
+      "name_ms": "Tunas Selangor (tadika)",
+      "amount_en": "RM50 a month",
+      "amount_ms": "RM50 sebulan",
+      "who_en": "Age 5-6 · household income up to RM5,000",
+      "who_ms": "Umur 5-6 · pendapatan isi rumah hingga RM5,000",
+      "note_en": "Selangor state aid, paid straight to the tadika. The tadika must be registered with KPM, JAIS, Perpaduan or KEMAS. Your child must be born or living in Selangor, and you must be a registered voter in Selangor. Apply on YAWAS's Tunas website.",
+      "note_ms": "Bantuan Kerajaan Negeri Selangor, dibayar terus kepada tadika. Tadika mesti berdaftar dengan KPM, JAIS, Perpaduan atau KEMAS. Anak lahir atau bermastautin di Selangor, dan anda pengundi berdaftar di Selangor. Mohon di laman Tunas YAWAS.",
+      "source_url": "https://tunas.yawas.com.my/syarat.php",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "asuhpintar",
+      "state": "Selangor",
+      "icon": "🧸",
+      "name_en": "Asuh Pintar Selangor (taska)",
+      "name_ms": "Asuh Pintar Selangor (taska)",
+      "amount_en": "RM100 a month",
+      "amount_ms": "RM100 sebulan",
+      "who_en": "Age 4 and under · household income up to RM5,000",
+      "who_ms": "Umur 4 tahun ke bawah · pendapatan isi rumah hingga RM5,000",
+      "note_en": "Selangor state aid, paid straight to a JKM-registered taska or nursery. Both parents working and registered voters; born and living in Selangor (or living there legally for 5 years); up to 2 children. Apply by the 15th for that month. Their page still shows 2024 dates - check it's open before you apply.",
+      "note_ms": "Bantuan Kerajaan Negeri Selangor, dibayar terus kepada TASKA atau nurseri berdaftar JKM. Kedua-dua ibu bapa bekerja dan pengundi berdaftar; lahir dan menetap di Selangor (atau menetap secara sah 5 tahun); maksimum 2 anak. Mohon sebelum 15 haribulan untuk bulan itu. Laman mereka masih menunjukkan tarikh 2024 - semak sama ada masih dibuka sebelum memohon.",
+      "source_url": "https://asuhpintar.yawas.com.my/",
+      "checked": "2026-11-26"
+    },
+    {
+      "id": "sarawak",
+      "state": "Sarawak",
+      "icon": "🌺",
+      "name_en": "Sarawak fee subsidy (Subsidi Yuran PAKK 2026)",
+      "name_ms": "Subsidi Yuran PAKK Sarawak 2026",
+      "amount_en": "Ask your taska / tadika",
+      "amount_ms": "Tanya taska / tadika",
+      "who_en": "Registered private taska & tadika in Sarawak",
+      "who_ms": "Taska & tadika swasta berdaftar di Sarawak",
+      "note_en": "From 2026 the Sarawak government subsidises monthly fees at registered private taska and tadika in Sarawak, especially for families with more than one child enrolled. Apply through your taska or tadika - applications sent straight to the ministry aren't accepted. The amount isn't on the ministry's page. Questions: 082-374700 ext. 125 or subsidiyuran@sarawak.gov.my.",
+      "note_ms": "Mulai 2026 Kerajaan Sarawak memberi subsidi yuran bulanan di TASKA dan TADIKA swasta berdaftar di Sarawak, terutama bagi ibu bapa yang mempunyai lebih seorang anak berdaftar. Mohon melalui TASKA atau TADIKA anda - permohonan terus ke Kementerian tidak diterima. Jumlah tidak dinyatakan di laman Kementerian. Pertanyaan: 082-374700 samb. 125 atau subsidiyuran@sarawak.gov.my.",
+      "source_url": "https://kpwk.sarawak.gov.my/web/subpage/webpage_view/111",
       "checked": "2026-11-26"
     }
   ]

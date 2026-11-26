@@ -1858,11 +1858,15 @@ def p_nursery(lang):
                  ("meals", "Meals included", "Makanan termasuk"), ("halal", "Halal food", "Makanan halal"),
                  ("near", "Near home / work", "Dekat rumah / tempat kerja"), ("transport", "Transport", "Pengangkutan")]
     with open(os.path.join(HERE, "site-data", "nursery.json"), encoding="utf-8") as f:
-        NU = json.load(f)["options"]
+        NUD = json.load(f)
+    NU = NUD["options"]
     def nu_fee(o):
         return x(o["fee_en"], o["fee_ms"])
-    nu_opts = ('<optgroup label="' + esc(x("Government (fees published)", "Kerajaan (yuran diterbitkan)")) + '">'
-               + "".join(f'<option value="{esc(o["id"])}">{esc(o["name"])} · {esc(nu_fee(o))}</option>' for o in NU) + "</optgroup>")
+    nu_opts = "".join(
+        '<optgroup label="' + esc(lbl) + '">'
+        + "".join(f'<option value="{esc(o["id"])}">{esc(o["name"])} · {esc(nu_fee(o))}</option>' for o in NU if o.get("sector", "gov") == sec) + "</optgroup>"
+        for sec, lbl in (("gov", x("Government (fees published)", "Kerajaan (yuran diterbitkan)")),
+                         ("private", x("Private chains (fees published)", "Rangkaian swasta (yuran diterbitkan)"))))
     nu_cards = []
     for i in range(1, 5):
         chips = "".join(f'<label class="chip"><input type="checkbox" name="inc" value="{k}"><span>{esc(x(en, ms))}</span></label>'
@@ -1894,17 +1898,41 @@ def p_nursery(lang):
                  f'<a class="btn ghost" href="{esc(o["source_url"])}" target="_blank" rel="noopener">{x("Official page", "Laman rasmi")} ↗</a>'
                  + (f'<a class="btn ghost" href="{esc(o["apply_url"])}" target="_blank" rel="noopener">{x("Apply", "Mohon")} ↗</a>' if o.get("apply_url") else "")
                  + f'<span class="small muted">{x("checked", "disemak")} {_dmy(o["checked"], lang)}</span></p>')
-        kind = x("Government tadika", "Tadika kerajaan") if o["kind"] == "tadika" else x("Government taska", "Taska kerajaan")
+        if o.get("sector") == "private":
+            kind = x("Private tadika (chain)", "Tadika swasta (rangkaian)") if o["kind"] == "tadika" else x("Private playschool (chain)", "Playschool swasta (rangkaian)")
+        else:
+            kind = x("Government tadika", "Tadika kerajaan") if o["kind"] == "tadika" else x("Government taska", "Taska kerajaan")
         year = (o["fee"] * 12 + (o["reg"] or 0)) if o["fee"] is not None else 999999
         nsort = {"year": year, "name": o["name"].lower(), "age": int(o["ages"].split("-")[0])}
-        nu_dir.append(pcard(x, kind, o["icon"], o["name"], x("All over Malaysia", "Seluruh Malaysia"),
+        nu_dir.append(pcard(x, kind, o["icon"], o["name"], x(o["area_en"], o["area_ms"]) if o.get("area_en") else x("All over Malaysia", "Seluruh Malaysia"),
                             f'{x("Ages", "Umur")} {esc(o["ages"])}', esc(nu_fee(o)) + (f'<small>{x("a month", "sebulan")}</small>' if o["fee"] else ""), body_,
                             sort=nsort))
-    nu_compare = f"""<p class="dp-intro">{x("Government taska and tadika publish their fees, so you can add them straight to your comparison. Private ones don't - visit them, then enter their quote.",
-                                         "Taska dan tadika kerajaan menyiarkan yuran mereka, jadi anda boleh terus menambahnya ke perbandingan. Yang swasta tidak - lawat dahulu, kemudian masukkan sebut harga mereka.")}</p>
+    gask = NUD.get("gov_ask", [])
+    gask_html = ("" if not gask else
+                 f'<details class="acc"><summary>{x("State-run taska with no fee online - call them", "Taska kerajaan negeri tanpa yuran dalam talian - hubungi mereka")}</summary><ul>'
+                 + "".join(f'<li><a href="{esc(a["url"])}" target="_blank" rel="noopener">{esc(a["name"])}</a> <span class="muted">· {esc(a["state"])}</span><br>'
+                           f'<span class="small">{esc(x(a["note_en"], a["note_ms"]))}</span></li>' for a in gask) + "</ul></details>")
+    help_cards = []
+    for h in NUD.get("help", []):
+        loc = x("All over Malaysia", "Seluruh Malaysia") if h["state"] == "*" else h["state"]
+        hb = (f'<p>{esc(x(h["note_en"], h["note_ms"]))}</p>'
+              f'<p class="pc-actions"><a class="btn" href="{esc(h["source_url"])}" target="_blank" rel="noopener">{x("Official page", "Laman rasmi")} ↗</a>'
+              f'<span class="small muted">{x("checked", "disemak")} {_dmy(h["checked"], lang)}</span></p>')
+        help_cards.append(pcard(x, x("Help with fees", "Bantuan yuran"), h["icon"], x(h["name_en"], h["name_ms"]), loc,
+                                esc(x(h["who_en"], h["who_ms"])), esc(x(h["amount_en"], h["amount_ms"])), hb, state=h["state"]))
+    help_states = sorted({h["state"] for h in NUD.get("help", []) if h["state"] != "*"})
+    nu_help = f"""<p class="dp-intro">{x("Official help with taska and tadika fees. Tap your state to see what you may get there - the ones marked 'All over Malaysia' apply everywhere.",
+                                       "Bantuan rasmi untuk yuran taska dan tadika. Pilih negeri anda - yang bertanda 'Seluruh Malaysia' terpakai di semua negeri.")}</p>
+{state_chips(x, "help-list", help_states)}
+<div class="pgrid" id="help-list">{"".join(help_cards)}</div>
+<aside class="box note"><p>{x("We checked every state in November 2026. Only Selangor and Sarawak publish their own fee help online; elsewhere, use the national subsidy and tax relief above, and ask your state assemblyman's (ADUN) office about local aid.",
+                            "Kami menyemak setiap negeri pada November 2026. Hanya Selangor dan Sarawak menyiarkan bantuan yuran negeri dalam talian; di negeri lain, gunakan subsidi kebangsaan dan pelepasan cukai di atas, dan tanya pejabat ADUN anda tentang bantuan setempat.")}</p></aside>"""
+    nu_compare = f"""<p class="dp-intro">{x("Government taska and tadika - and a few private chains - publish their fees, so you can add them straight to your comparison. Most private ones don't - visit them, then enter their quote.",
+                                         "Taska dan tadika kerajaan - serta beberapa rangkaian swasta - menyiarkan yuran mereka, jadi anda boleh terus menambahnya ke perbandingan. Kebanyakan yang swasta tidak - lawat dahulu, kemudian masukkan sebut harga mereka.")}</p>
 {sort_select(x, "nu-list", [("year:asc", "Cheapest first", "Paling murah dahulu"), ("age:asc", "Youngest age first", "Umur paling muda dahulu"),
                             ("name:asc", "Name A-Z", "Nama A-Z")])}
 <div class="pgrid" id="nu-list">{"".join(nu_dir)}</div>
+{gask_html}
 <section class="card" id="nu-compare">
   <h2>{x("Compare taska & tadika", "Banding taska & tadika")} {tip(x("Pick a government option or enter what a centre told you. We rank them by first-year cost (12 months of fees plus registration and deposit). Saved only on this phone.",
                                                                    "Pilih pilihan kerajaan atau masukkan apa yang pusat beritahu anda. Kami susun mengikut kos tahun pertama (12 bulan yuran serta pendaftaran dan deposit). Disimpan dalam telefon ini sahaja."), x)}</h2>
@@ -1955,7 +1983,8 @@ def p_nursery(lang):
 {page_head(x, "🧸", "t-nursery", x("After the birth", "Selepas bersalin"), x("Taska & tadika", "Taska & tadika"),
              x("Find, check and compare childcare near you.", "Cari, semak dan banding penjagaan anak berhampiran anda."))}
 {tabbar(x, "nu", [("find", "📍", "Find near you", "Cari berhampiran", "Google Maps", "taska & tadika", "taska & tadika", False),
-                    ("compare", "⚖️", "Compare", "Banding", x("Free – RM25 a month", "Percuma – RM25 sebulan"), "government options + your quotes", "pilihan kerajaan + sebut harga anda", False),
+                    ("compare", "⚖️", "Compare", "Banding", x("Free – RM900 a month", "Percuma – RM900 sebulan"), "published fees + your quotes", "yuran diterbitkan + sebut harga anda", False),
+                    ("help", "💸", "Help with fees", "Bantuan yuran", x("Up to RM180 a month", "Sehingga RM180 sebulan"), "subsidies & tax relief", "subsidi & pelepasan cukai", False),
                     ("guide", "📚", "Types & checks", "Jenis & semakan", x("Taska · Tadika", "Taska · Tadika"), "what to ask", "apa perlu ditanya", False)],
                 prompt=x("Tap what you need:", "Pilih apa yang anda perlukan:"))}
 <div class="dpanel" role="tabpanel" id="tp-nu-find" aria-labelledby="tb-nu-find" data-group="nu" data-tab="find">
@@ -1978,6 +2007,9 @@ def p_nursery(lang):
 <div class="dpanel" role="tabpanel" id="tp-nu-compare" aria-labelledby="tb-nu-compare" data-group="nu" data-tab="compare">
 {nu_compare}
 </div>
+<div class="dpanel" role="tabpanel" id="tp-nu-help" aria-labelledby="tb-nu-help" data-group="nu" data-tab="help">
+{nu_help}
+</div>
 <div class="dpanel" role="tabpanel" id="tp-nu-guide" aria-labelledby="tb-nu-guide" data-group="nu" data-tab="guide">
 <h2>{x("Taska, tadika or preschool?", "Taska, tadika atau prasekolah?")}</h2>
 {type_table}
@@ -1988,8 +2020,8 @@ def p_nursery(lang):
 <a href="https://www.malaysia.gov.my/my/personas/ibu-bapa-kepada-anak-kecil-0-6-tahun/menghantar-anak-ke-pusat-jagaan/taman-asuhan-kanak-kanak-taska" target="_blank" rel="noopener">MyGOV</a>.</li>
 <li>{x("To report an unregistered taska, call Talian Kasih 15999 or your nearest welfare office.",
        "Untuk melaporkan taska tidak berdaftar, hubungi Talian Kasih 15999 atau pejabat kebajikan masyarakat terdekat.")}</li>
-<li>{x("Fees paid to a registered taska or tadika for a child aged 6 or below can get income tax relief (up to RM3,000 a year - check LHDN for the current rules).",
-       "Yuran taska atau tadika berdaftar untuk anak berumur 6 tahun ke bawah boleh mendapat pelepasan cukai pendapatan (sehingga RM3,000 setahun - semak peraturan terkini dengan LHDN).")}</li>
+<li>{x("Fees paid to a registered taska or tadika for a child aged 6 or below get income tax relief of up to RM3,000 a year (Year of Assessment 2025) - see 'Help with fees'.",
+       "Yuran taska atau tadika berdaftar untuk anak berumur 6 tahun ke bawah layak pelepasan cukai pendapatan sehingga RM3,000 setahun (Tahun Taksiran 2025) - lihat 'Bantuan yuran'.")}</li>
 </ul></details>
 </div>
 </div>

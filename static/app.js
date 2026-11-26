@@ -488,7 +488,7 @@
         c.addEventListener("click", function () {
           var s = c.getAttribute("data-state");
           chips.forEach(function (o) { o.setAttribute("aria-pressed", o === c ? "true" : "false"); });
-          $$("[data-state]", list).forEach(function (h) { h.hidden = !!s && h.getAttribute("data-state") !== s; });
+          $$("[data-state]", list).forEach(function (h) { var hs = h.getAttribute("data-state"); h.hidden = !!s && hs !== s && hs !== "*"; });
           if (askBox) {
             var any = false;
             $$("li", askBox).forEach(function (li) { li.hidden = !!s && li.getAttribute("data-state") !== s; if (!li.hidden) any = true; });
