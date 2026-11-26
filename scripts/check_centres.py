@@ -37,14 +37,16 @@ def main():
         page = browser.new_page(user_agent=("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                                             "(KHTML, like Gecko) Chrome/130.0 Safari/537.36"))
         for c in data["centres"]:
-            want = [c["price_from_rm"]] + ([c["price_to_rm"]] if c.get("price_to_rm") else [])
+            # Only the "from" price must be on the source page (top room prices are often on other pages).
+            want = [c["price_from_rm"]]
             try:
                 page.goto(c["source_url"], wait_until="domcontentloaded", timeout=60000)
                 try:
                     page.wait_for_load_state("networkidle", timeout=20000)
                 except Exception:
                     pass
-                text = digits(page.inner_text("body"))
+                # Visible text plus the page source: some prices sit in tabs/accordions that are hidden until clicked.
+                text = digits(page.inner_text("body")) + digits(page.content())
                 missing = [str(p) for p in want if str(p) not in text]
                 if missing:
                     problems.append(f"- **{c['name']}**: price RM{', RM'.join(missing)} is no longer on {c['source_url']} "
