@@ -121,6 +121,10 @@ JS_STR = {
         "nuTaska": "Taska in {area}", "nuTadika": "Tadika in {area}",
         "nuArea": "your area",
         "qDays": "days", "qPerDay": "/day", "qOneMore": "Add one more quote to compare.",
+        "wcWeek": "Week {w}", "wcDays": "+ {d} days",
+        "nuOneMore": "Add one more taska or tadika to compare.", "nuYear": "first year", "nuMonth": "/month",
+        "nuNotReg": "Not ticked as registered - ask to see the JKM / KPM certificate",
+        "nuOption": "Option {n}", "nuCheapest": "Lowest first-year cost",
         "promoEnded": "(This promotion may have ended - check the current price.)", "moreInfo": "More info",
         "bfNote": "Breast milk is the best food for babies - the Ministry of Health and WHO recommend only breast milk for the first 6 months. If you use formula, ask your doctor or nurse which type suits your baby. We don't sell or advertise infant formula.",
         "online": "Check online prices (Google Shopping)",
@@ -180,6 +184,10 @@ JS_STR = {
         "nuTaska": "Taska di {area}", "nuTadika": "Tadika di {area}",
         "nuArea": "kawasan anda",
         "qDays": "hari", "qPerDay": "/hari", "qOneMore": "Tambah satu lagi sebut harga untuk dibandingkan.",
+        "wcWeek": "Minggu {w}", "wcDays": "+ {d} hari",
+        "nuOneMore": "Tambah satu lagi taska atau tadika untuk dibandingkan.", "nuYear": "tahun pertama", "nuMonth": "/bulan",
+        "nuNotReg": "Tidak ditanda berdaftar - minta untuk melihat sijil JKM / KPM",
+        "nuOption": "Pilihan {n}", "nuCheapest": "Kos tahun pertama paling rendah",
         "promoEnded": "(Promosi ini mungkin sudah tamat - semak harga terkini.)", "moreInfo": "Maklumat lanjut",
         "bfNote": "Susu ibu ialah makanan terbaik untuk bayi - Kementerian Kesihatan dan WHO mengesyorkan susu ibu sahaja untuk 6 bulan pertama. Jika anda menggunakan susu formula, tanya doktor atau jururawat jenis yang sesuai. Kami tidak menjual atau mengiklankan susu formula bayi.",
         "online": "Semak harga dalam talian (Google Shopping)",
@@ -550,25 +558,40 @@ def p_home(lang):
         f'<span><strong>{esc(x(te, tm))}</strong><span class="muted">{esc(x(de, dm))}</span></span></a>'
         for h, i, te, tm, de, dm, c in tools)
     body = f"""
-<section class="hero">
-  {HERO_SVG}
-  <h1>{x("Your pregnancy & pantang companion", "Teman kehamilan & berpantang anda")}</h1>
-  <p class="lead">{x("Free, simple tools for Malaysian families.", "Alat percuma dan mudah untuk keluarga Malaysia.")}</p>
-</section>
-<section class="card" id="due-tool">
-  <h2>{x("Which week am I?", "Minggu ke berapa saya?")} {tip(x("Your date is saved only on this phone. No sign-up.", "Tarikh anda disimpan dalam telefon ini sahaja. Tiada pendaftaran."), x)}</h2>
-  <div class="seg" role="group" aria-label="{x("I know my", "Saya tahu")}">
-    <button type="button" data-mode="due" aria-pressed="true">{x("Due date", "Tarikh jangkaan bersalin")}</button>
-    <button type="button" data-mode="lmp" aria-pressed="false">{x("First day of last period", "Hari pertama haid terakhir")}</button>
+<section class="hero2">
+  <div class="hero-text">
+    <p class="eyebrow">{x("Free · No sign-up · English & BM", "Percuma · Tanpa daftar · BM & English")}</p>
+    <h1>{x("Your pregnancy &amp; <span class=\"hl\">pantang</span> companion", "Teman kehamilan &amp; <span class=\"hl\">berpantang</span> anda")}</h1>
+    <p class="lead">{x("Follow your baby week by week, plan pantang, compare confinement costs and find the cheapest milk and diapers near you.",
+                       "Ikuti bayi minggu demi minggu, rancang pantang, banding kos berpantang dan cari susu serta lampin paling murah berhampiran.")}</p>
+    <div class="due-box" id="due-tool">
+      <div class="due-top">
+        <span class="due-q">{x("Which week am I?", "Minggu ke berapa saya?")}</span>
+        {tip(x("Your date is saved only on this phone. No sign-up.", "Tarikh anda disimpan dalam telefon ini sahaja. Tiada pendaftaran."), x)}
+      </div>
+      <div class="seg" role="group" aria-label="{x("I know my", "Saya tahu")}">
+        <button type="button" data-mode="due" aria-pressed="true">{x("Due date", "Tarikh jangkaan")}</button>
+        <button type="button" data-mode="lmp" aria-pressed="false">{x("Last period", "Haid terakhir")}</button>
+      </div>
+      <span id="due-label" class="sr-only" data-due="{x("My due date", "Tarikh jangkaan bersalin saya")}" data-lmp="{x("First day of my last period", "Hari pertama haid terakhir saya")}">{x("My due date", "Tarikh jangkaan bersalin saya")}</span>
+      <div class="due-row">
+        <input type="date" id="due-input" aria-labelledby="due-label">
+        <button type="button" class="btn" id="due-go">{x("Show my week", "Tunjuk minggu saya")}</button>
+      </div>
+    </div>
   </div>
-  <label class="field"><span id="due-label" data-due="{x("My due date", "Tarikh jangkaan bersalin saya")}" data-lmp="{x("First day of my last period", "Hari pertama haid terakhir saya")}">{x("My due date", "Tarikh jangkaan bersalin saya")}</span>
-    <input type="date" id="due-input"></label>
-  <button type="button" class="btn" id="due-go">{x("Show my week", "Tunjuk minggu saya")}</button>
-  <div id="due-result" aria-live="polite"></div>
+  <div class="hero-visual">{HERO_SVG}</div>
 </section>
+<div id="due-result" aria-live="polite"></div>
 <section>
+  <h2 class="sec-title">{x("Everything in one place", "Semua di satu tempat")}</h2>
   <div class="tools">{cards}</div>
 </section>
+<ul class="trust">
+  <li><span aria-hidden="true">📊</span>{x("Official shop prices from the government's KPDN survey", "Harga kedai rasmi daripada tinjauan KPDN kerajaan")}</li>
+  <li><span aria-hidden="true">🔒</span>{x("What you type stays on your phone", "Apa yang anda taip kekal dalam telefon anda")}</li>
+  <li><span aria-hidden="true">🇲🇾</span>{x("Made for Malaysian families", "Dibina untuk keluarga Malaysia")}</li>
+</ul>
 {ad("in_content", x)}
 """
     write_page(lang, "index.html", x("Pregnancy & pantang companion", "Teman kehamilan & berpantang"),
@@ -702,7 +725,7 @@ def p_cost(lang):
       <option value="">{x("Choose a centre or package...", "Pilih pusat atau pakej...")}</option></select>
     <span class="q-tip"></span></div>
   <p class="q-sum" hidden></p>
-  <details class="q-edit"><summary>{x("Edit details / enter your own quote", "Ubah butiran / masukkan sebut harga sendiri")}</summary>
+  <details class="q-edit"><summary>{x("Edit / enter your own", "Ubah / isi sendiri")}</summary>
     <div class="q-fields">
       <label class="field q-name">{x("Name", "Nama")}<input type="text" name="name" maxlength="60" autocomplete="off"></label>
       <label class="field">{x("Total (RM)", "Jumlah (RM)")}<input type="number" name="price" min="0" step="1" inputmode="decimal"></label>
@@ -746,8 +769,8 @@ def p_cost(lang):
   <div id="q-result" aria-live="polite"></div>
 </section>
 <p class="maps-row"><a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query={maps_q}" target="_blank" rel="noopener">🔎 {x("More centres near you (Google Maps)", "Lagi pusat berhampiran (Google Maps)")} ↗</a>
-{tip(x("Smaller local centres are often cheaper but don't publish prices online. Ask them for a quote, then choose 'Edit details / enter your own quote' above.",
-       "Pusat kecil berhampiran selalunya lebih murah tetapi tidak menerbitkan harga dalam talian. Minta sebut harga, kemudian pilih 'Ubah butiran / masukkan sebut harga sendiri' di atas."), x)}</p>
+{tip(x("Smaller local centres are often cheaper but don't publish prices online. Ask them for a quote, then choose 'Edit / enter your own' above.",
+       "Pusat kecil berhampiran selalunya lebih murah tetapi tidak menerbitkan harga dalam talian. Minta sebut harga, kemudian pilih 'Ubah / isi sendiri' di atas."), x)}</p>
 {ad("in_content", x)}
 <section><h2>{x("Typical prices for 28 days", "Harga biasa untuk 28 hari")} {tip(x("Rough 2026 ranges from price guides (malaysia4u.com). Prices differ a lot by city and by what's included - always get a written quote.",
                                                                               "Anggaran julat 2026 daripada panduan harga (malaysia4u.com). Harga sangat berbeza mengikut bandar dan apa yang termasuk - sentiasa minta sebut harga bertulis."), x)}</h2>
@@ -902,6 +925,48 @@ def p_nursery(lang):
          "Tabika KEMAS dan PERPADUAN, serta kelas prasekolah di sekolah kerajaan - biasanya yuran rendah."),
     ]
     cards = "".join(f'<details class="acc"><summary>{esc(x(a, b))}</summary><p>{esc(x(c, d))}</p></details>' for a, b, c, d in kinds)
+    # Compare tool: mums type in the taska/tadika they visit; ranked by first-year cost.
+    nu_extras = [("reg", "Registered (JKM / KPM)", "Berdaftar (JKM / KPM)"), ("cctv", "CCTV for parents", "CCTV untuk ibu bapa"),
+                 ("meals", "Meals included", "Makanan termasuk"), ("halal", "Halal food", "Makanan halal"),
+                 ("near", "Near home / work", "Dekat rumah / tempat kerja"), ("transport", "Transport", "Pengangkutan")]
+    nu_cards = []
+    for i in range(1, 5):
+        chips = "".join(f'<label class="chip"><input type="checkbox" name="inc" value="{k}"><span>{esc(x(en, ms))}</span></label>'
+                        for k, en, ms in nu_extras)
+        nu_cards.append(f"""<div class="quote" data-q="{i}"{" hidden" if i > 2 else ""}>
+  <div class="q-head"><span class="q-num">{i}</span>
+    <input type="text" name="name" maxlength="60" autocomplete="off" placeholder="{x("Name of taska / tadika", "Nama taska / tadika")}" aria-label="{x("Name", "Nama")} {i}"></div>
+  <div class="q-fields">
+    <label class="field">{x("Monthly fee (RM)", "Yuran bulanan (RM)")}<input type="number" name="fee" min="0" inputmode="decimal"></label>
+    <label class="field">{x("Registration + deposit (RM)", "Pendaftaran + deposit (RM)")}<input type="number" name="reg_fee" min="0" inputmode="decimal"></label>
+    <label class="field">{x("Opens", "Buka")}<input type="time" name="open"></label>
+    <label class="field">{x("Closes", "Tutup")}<input type="time" name="close"></label>
+    <label class="field">{x("Children per carer", "Kanak-kanak/pengasuh")}<input type="number" name="ratio" min="1" max="30" inputmode="numeric"></label>
+  </div>
+  <p class="q-sum" hidden></p>
+  <div class="chips">{chips}</div>
+</div>""")
+    nu_compare = f"""<section class="card" id="nu-compare">
+  <h2>{x("Compare taska & tadika", "Banding taska & tadika")} {tip(x("Visit a few places, then type in what they told you. We rank them by first-year cost (12 months of fees plus registration and deposit). Saved only on this phone.",
+                                                                   "Lawat beberapa tempat, kemudian masukkan apa yang mereka beritahu. Kami susun mengikut kos tahun pertama (12 bulan yuran serta pendaftaran dan deposit). Disimpan dalam telefon ini sahaja."), x)}</h2>
+  <div class="quotes">{"".join(nu_cards)}</div>
+  <div class="q-actions">
+    <button type="button" class="link-btn" id="nu-add">+ {x("Add another", "Tambah lagi")}</button>
+    <button type="button" class="link-btn muted" id="nu-clear">{x("Clear all", "Padam semua")}</button>
+  </div>
+  <div id="nu-result" aria-live="polite"></div>
+</section>"""
+    type_rows = [
+        ("🧸", "Taska", "Taska", "Under 4", "Bawah 4 tahun", "JKM", "JKM", "Private: varies by area", "Swasta: berbeza ikut kawasan"),
+        ("🎒", "Tadika", "Tadika", "4 - 6", "4 - 6 tahun", "KPM", "KPM", "Private: varies by area", "Swasta: berbeza ikut kawasan"),
+        ("🏫", "Government preschool", "Prasekolah kerajaan", "4 - 6", "4 - 6 tahun", "KEMAS · PERPADUAN · KPM", "KEMAS · PERPADUAN · KPM",
+         "Usually low", "Biasanya rendah"),
+    ]
+    type_table = ('<div class="table-wrap"><table class="types"><thead><tr><th>' + x("Type", "Jenis") + "</th><th>" + x("Ages", "Umur") +
+                  "</th><th>" + x("Registered with", "Berdaftar dengan") + '</th><th class="hide-sm">' + x("Fees", "Yuran") + "</th></tr></thead><tbody>" +
+                  "".join(f'<tr><td><span aria-hidden="true">{ic}</span> <strong>{esc(x(te, tm))}</strong></td><td>{esc(x(ae, am))}</td>'
+                          f'<td>{esc(x(re, rm_))}</td><td class="hide-sm">{esc(x(fe, fm))}</td></tr>'
+                          for ic, te, tm, ae, am, re, rm_, fe, fm in type_rows) + "</tbody></table></div>")
     checks_en = [
         "Is it registered? A registered taska shows its JKM certificate and registration plaque - ask to see them.",
         "Are the carers trained (for example JKM's basic childcare course, KAAK)?",
@@ -945,9 +1010,11 @@ def p_nursery(lang):
     <a class="btn ghost" id="nu-tadika" href="#" target="_blank" rel="noopener"></a>
   </div>
 </section>
+{nu_compare}
+<h2>{x("Taska, tadika or preschool?", "Taska, tadika atau prasekolah?")}</h2>
+{type_table}
 {ad("in_content", x)}
 <div class="acc-list">
-{cards}
 <details class="acc"><summary>{x("Check before you choose", "Semak sebelum memilih")}</summary><ol>{ql}</ol></details>
 <details class="acc"><summary>{x("Registration, complaints & tax relief", "Pendaftaran, aduan & pelepasan cukai")}</summary><ul>
 <li>{x("The government's official list of registered taska:", "Senarai rasmi taska berdaftar:")}

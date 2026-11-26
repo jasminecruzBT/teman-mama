@@ -57,18 +57,17 @@
         return;
       }
       var w = Math.floor(ga / 7), d = ga % 7;
-      var html = '<div class="result"><p class="big">' + esc(fill(S.weeksDays, { w: w, d: d })) + "</p>";
-      if (w < 4) {
-        html += "<p>" + esc(S.early) + "</p>";
-      } else {
-        var pw = Math.min(w, 40), info = (TM.weeks || {})[pw];
-        var tri = w <= 13 ? 1 : (w <= 27 ? 2 : 3);
-        html += '<p class="muted">' + esc(fill(S.tri, { t: tri })) + "</p>";
-        if (info) html += "<p>" + info[0] + " " + esc(fill(S.sizeOf, { size: info[1] })) + "</p>";
-        html += "<p>" + esc(fill(S.daysToGo, { n: left, date: fmt(due) })) + "</p>";
-        html += '<a class="btn" href="weeks/' + pw + '.html">' + esc(fill(S.readWeek, { w: pw })) + " →</a>";
-      }
-      out.innerHTML = html + "</div>";
+      if (w < 4) { out.innerHTML = '<div class="week-card"><p class="wc-week">' + esc(fill(S.weeksDays, { w: w, d: d })) + "</p><p>" + esc(S.early) + "</p></div>"; return; }
+      // Progress card: week, trimester, baby size, a progress bar to the due date, link to that week
+      var pw = Math.min(w, 40), info = (TM.weeks || {})[pw] || ["👶", ""];
+      var tri = w <= 13 ? 1 : (w <= 27 ? 2 : 3), pct = Math.min(100, Math.round(ga / 280 * 100));
+      out.innerHTML = '<div class="week-card">' +
+        '<div class="wc-top"><span class="wc-emoji" aria-hidden="true">' + info[0] + "</span><div>" +
+        '<p class="wc-week">' + esc(fill(S.wcWeek, { w: w })) + ' <span>' + esc(fill(S.wcDays, { d: d })) + "</span></p>" +
+        '<p class="wc-sub">' + esc(fill(S.tri, { t: tri })) + " · " + esc(fill(S.sizeOf, { size: info[1] })) + "</p></div></div>" +
+        '<div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><span style="width:' + pct + '%"></span></div>' +
+        '<div class="wc-foot"><span>' + esc(fill(S.daysToGo, { n: left, date: fmt(due) })) + "</span>" +
+        '<a class="btn small-btn" href="weeks/' + pw + '.html">' + esc(fill(S.readWeek, { w: pw })) + " →</a></div></div>";
     }
     $("#due-go").addEventListener("click", function () {
       var d = parseDate(input.value);
@@ -147,7 +146,7 @@
   function quotes() {
     var box = $("#quote-tool"); if (!box) return;
     var cards = $$(".quote", box), out = $("#q-result"), addBtn = $("#q-add");
-    var saved = get("tm_quotes", []), presets = {};
+    var saved = get("tm_quotes", []), presets = {}, presetsReady = false;
     function val(c, n) { return c.querySelector('[name="' + n + '"]'); }
     cards.forEach(function (c, i) {
       var q = saved[i] || {};
@@ -198,6 +197,7 @@
       Object.keys(byState).sort().forEach(function (st) {
         html += '<optgroup label="' + esc(fill(S.preCentres, { state: st })) + '">' + byState[st].join("") + "</optgroup>";
       });
+      presetsReady = true;
       cards.forEach(function (c, i) {
         var sel = val(c, "preset");
         sel.insertAdjacentHTML("beforeend", html);
@@ -214,7 +214,9 @@
     function read() {
       return cards.map(function (c) {
         return {
-          preset: val(c, "preset").value, name: val(c, "name").value.trim(), price: val(c, "price").value,
+          // until the drop-down has loaded its options, keep the saved choice instead of wiping it
+          preset: presetsReady ? val(c, "preset").value : ((saved[cards.indexOf(c)] || {}).preset || ""),
+          name: val(c, "name").value.trim(), price: val(c, "price").value,
           days: val(c, "days").value, ratio: val(c, "ratio").value,
           inc: $$('input[name="inc"]:checked', c).map(function (cb) { return cb.value; })
         };
@@ -252,6 +254,66 @@
         val(c, "days").value = 28; val(c, "preset").value = ""; setTip(c, null);
         $$('input[type="checkbox"]', c).forEach(function (cb) { cb.checked = false; });
         $(".q-edit", c).open = false;
+        c.hidden = i > 1;
+      });
+      render();
+    });
+    render();
+  }
+
+  // ---------- taska / tadika compare: ranked by first-year cost (12 x monthly fee + registration/deposit)
+  function nurseryCompare() {
+    var box = $("#nu-compare"); if (!box) return;
+    var cards = $$(".quote", box), out = $("#nu-result"), addBtn = $("#nu-add"), F = ["name", "fee", "reg_fee", "open", "close", "ratio"];
+    var saved = get("tm_nursery", []);
+    function val(c, n) { return c.querySelector('[name="' + n + '"]'); }
+    cards.forEach(function (c, i) {
+      var q = saved[i] || {};
+      F.forEach(function (k) { if (q[k]) val(c, k).value = q[k]; });
+      $$('input[name="inc"]', c).forEach(function (cb) { cb.checked = (q.inc || []).indexOf(cb.value) >= 0; });
+      if (q.name || q.fee) c.hidden = false;
+    });
+    function render() {
+      var qs = cards.map(function (c) {
+        var q = { inc: $$('input[name="inc"]:checked', c).map(function (cb) { return cb.value; }) };
+        F.forEach(function (k) { q[k] = val(c, k).value.trim(); });
+        return q;
+      });
+      set("tm_nursery", qs);
+      addBtn.hidden = cards.every(function (c) { return !c.hidden; });
+      var rows = [];
+      qs.forEach(function (q, i) {
+        var fee = parseFloat(q.fee) || 0, reg = parseFloat(q.reg_fee) || 0, sum = $(".q-sum", cards[i]);
+        var hours = q.open && q.close ? q.open + " - " + q.close : "";
+        if (fee > 0) {
+          var year = fee * 12 + reg;
+          sum.innerHTML = "<strong>" + rm(fee).replace(".00", "") + "</strong>" + esc(S.nuMonth) + " · " + esc(S.nuYear) + " <strong>" +
+            rm(year).replace(".00", "") + "</strong>" + (hours ? " · " + esc(hours) : "");
+          sum.hidden = false;
+          rows.push({ name: q.name || fill(S.nuOption, { n: i + 1 }), year: year, fee: fee, hours: hours, reg: q.inc.indexOf("reg") >= 0, ratio: q.ratio });
+        } else sum.hidden = true;
+      });
+      if (rows.length < 2) { out.innerHTML = rows.length ? '<p class="hint">' + esc(S.nuOneMore) + "</p>" : ""; return; }
+      rows.sort(function (a, b) { return a.year - b.year; });
+      out.innerHTML = '<ol class="rank">' + rows.map(function (r, k) {
+        return '<li class="' + (k === 0 ? "best" : "") + '"><span class="rank-name">' + esc(r.name) +
+          (k === 0 ? ' <span class="badge">' + esc(S.nuCheapest) + "</span>" : "") +
+          (r.hours ? '<span class="flag muted-flag">' + esc(r.hours) + "</span>" : "") +
+          (!r.reg ? '<span class="flag">⚠ ' + esc(S.nuNotReg) + "</span>" : "") +
+          '</span><span class="rank-per"><strong>' + rm(r.year).replace(".00", "") + "</strong> " + esc(S.nuYear) + "</span></li>";
+      }).join("") + "</ol>";
+    }
+    box.addEventListener("input", render);
+    box.addEventListener("change", render);
+    addBtn.addEventListener("click", function () {
+      var next = cards.find(function (c) { return c.hidden; });
+      if (next) { next.hidden = false; val(next, "name").focus(); }
+      render();
+    });
+    $("#nu-clear").addEventListener("click", function () {
+      cards.forEach(function (c, i) {
+        F.forEach(function (k) { val(c, k).value = ""; });
+        $$('input[type="checkbox"]', c).forEach(function (cb) { cb.checked = false; });
         c.hidden = i > 1;
       });
       render();
@@ -466,11 +528,20 @@
   }
 
   // ---------- menu (a <details> drop-down on the left): close on outside click, Escape or after picking
+  // On laptops (>= 1100px wide) the menu is pinned open as a sidebar on the left; on phones it's the ☰ drop-down.
   function menu() {
     var m = $("details.menu"); if (!m) return;
-    document.addEventListener("click", function (e) { if (m.open && !m.contains(e.target)) m.open = false; });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && m.open) { m.open = false; $("summary", m).focus(); } });
-    $$(".menu-panel a", m).forEach(function (a) { a.addEventListener("click", function () { m.open = false; }); });
+    var wide = window.matchMedia("(min-width: 1100px)");
+    function pin() {
+      document.documentElement.classList.toggle("pinned", wide.matches);
+      if (wide.matches) m.open = true; else m.open = false;
+    }
+    pin();
+    if (wide.addEventListener) wide.addEventListener("change", pin); else wide.addListener(pin);
+    m.addEventListener("toggle", function () { if (wide.matches && !m.open) m.open = true; });
+    document.addEventListener("click", function (e) { if (!wide.matches && m.open && !m.contains(e.target)) m.open = false; });
+    document.addEventListener("keydown", function (e) { if (!wide.matches && e.key === "Escape" && m.open) { m.open = false; $("summary", m).focus(); } });
+    $$(".menu-panel a", m).forEach(function (a) { a.addEventListener("click", function () { if (!wide.matches) m.open = false; }); });
   }
 
   // ---------- ⓘ tips: hover on computers, tap on phones; one open at a time, kept on screen
@@ -571,5 +642,5 @@
     $(".chat-form", panel).addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); input.value = ""; });
   }
 
-  tips(); menu(); dueTool(); weekMarkers(); pantang(); quotes(); bag(); leave(); prices(); nursery(); bot();
+  tips(); menu(); dueTool(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery(); bot();
 })();
