@@ -830,8 +830,8 @@ def p_names(lang):
     data = [[n, g, (mm if lang == "ms" else me), o] for n, g, me, mm, o in extra.NAMES]
     body = f"""
 {page_head(x, "✨", "t-names", x("Pregnant", "Sedang hamil"), x("Baby names", "Nama bayi"),
-           x("Malay, Chinese, Indian, Punjabi, Iban, English, Japanese and Korean names with their meanings.", "Nama Melayu, Cina, India, Punjabi, Iban, Inggeris, Jepun dan Korea beserta maksudnya."), extra=tip(x("Meanings are common interpretations - many names have more than one. For Chinese, Japanese and Korean names the meaning depends on the characters you choose. Punjabi, Iban, Kadazan-Dusun, English, Japanese and Korean meanings were checked in name references and dictionaries (Behind the Name; Richards' Iban-English Dictionary; the Kadazan Dictionary on Webonary). Kadazan-Dusun names are Kadazan words with lovely meanings. Check with family, a trusted source or your religious teacher before deciding.",
-                                                                                                                        "Maksud ialah tafsiran biasa - banyak nama mempunyai lebih daripada satu maksud. Untuk nama Cina, Jepun dan Korea, maksudnya bergantung pada aksara yang dipilih. Maksud nama Punjabi, Iban, Kadazan-Dusun, Inggeris, Jepun dan Korea disemak dalam rujukan nama dan kamus (Behind the Name; Kamus Iban-Inggeris Richards; Kamus Kadazan di Webonary). Nama Kadazan-Dusun ialah perkataan Kadazan yang bermaksud indah. Semak dengan keluarga, sumber dipercayai atau guru agama anda sebelum memutuskan."), x))}
+           x("Names from Malaysia's many communities - Malay, Chinese, Indian, Punjabi, Sabah and Sarawak peoples, Orang Asli, Siamese and Kristang - plus English, Japanese and Korean, with their meanings.", "Nama daripada pelbagai kaum di Malaysia - Melayu, Cina, India, Punjabi, kaum Sabah dan Sarawak, Orang Asli, Siam dan Kristang - serta Inggeris, Jepun dan Korea, beserta maksudnya."), extra=tip(x("Meanings are common interpretations - many names have more than one. For Chinese, Japanese and Korean names the meaning depends on the characters you choose. Punjabi, Iban, Kadazan-Dusun, English, Japanese and Korean meanings were checked in name references and dictionaries (Behind the Name; Richards' Iban-English Dictionary; Borneo Dictionary; SIL dictionaries on Webonary). Most Sabah, Sarawak and Orang Asli names are words with lovely meanings in that language - the language is shown after each meaning. Check with family, a trusted source or your religious teacher before deciding.",
+                                                                                                                        "Maksud ialah tafsiran biasa - banyak nama mempunyai lebih daripada satu maksud. Untuk nama Cina, Jepun dan Korea, maksudnya bergantung pada aksara yang dipilih. Maksud nama Punjabi, Iban, Kadazan-Dusun, Inggeris, Jepun dan Korea disemak dalam rujukan nama dan kamus (Behind the Name; Kamus Iban-Inggeris Richards; Borneo Dictionary; kamus SIL di Webonary). Kebanyakan nama Sabah, Sarawak dan Orang Asli ialah perkataan yang bermaksud indah dalam bahasa itu - bahasanya ditunjukkan selepas setiap maksud. Semak dengan keluarga, sumber dipercayai atau guru agama anda sebelum memutuskan."), x))}
 <section class="card" id="names-tool">
   <div class="search-row"><input type="search" id="nm-q" placeholder="{x("Search a name or meaning, e.g. light", "Cari nama atau maksud, cth. cahaya")}" aria-label="{x("Search names", "Cari nama")}"></div>
   <div class="chips nm-origin" role="group" aria-label="{x("Origin", "Asal")}">
@@ -840,7 +840,10 @@ def p_names(lang):
     <button type="button" class="chip-btn" data-o="chinese" aria-pressed="false">🏮 {x("Chinese", "Cina")}</button>
     <button type="button" class="chip-btn" data-o="indian" aria-pressed="false">🪔 {x("Indian", "India")}</button>
     <button type="button" class="chip-btn" data-o="punjabi" aria-pressed="false">☬ {x("Punjabi & Sikh", "Punjabi & Sikh")}</button>
-    <button type="button" class="chip-btn" data-o="borneo" aria-pressed="false">🦜 {x("Iban & Kadazan-Dusun", "Iban & Kadazan-Dusun")}</button>
+    <button type="button" class="chip-btn" data-o="borneo" aria-pressed="false">🦜 {x("Sabah & Sarawak", "Sabah & Sarawak")}</button>
+    <button type="button" class="chip-btn" data-o="orangasli" aria-pressed="false">🌿 {x("Orang Asli", "Orang Asli")}</button>
+    <button type="button" class="chip-btn" data-o="siam" aria-pressed="false">🐘 {x("Siamese", "Siam")}</button>
+    <button type="button" class="chip-btn" data-o="kristang" aria-pressed="false">⛵ {x("Kristang (Portuguese-Eurasian)", "Kristang (Serani)")}</button>
     <button type="button" class="chip-btn" data-o="english" aria-pressed="false">📖 {x("English & biblical", "Inggeris & Alkitab")}</button>
     <button type="button" class="chip-btn" data-o="japanese" aria-pressed="false">🌸 {x("Japanese", "Jepun")}</button>
     <button type="button" class="chip-btn" data-o="korean" aria-pressed="false">🎎 {x("Korean", "Korea")}</button>
@@ -859,9 +862,9 @@ def p_names(lang):
 </section>
 {ad("bottom", x)}
 """
-    write_page(lang, "names.html", x("Baby names with meanings: Malay, Chinese, Indian & more", "Nama bayi beserta maksud: Melayu, Cina, India & lain-lain"),
-               x("Browse Malay, Islamic, Chinese, Indian, Punjabi, Iban, English, Japanese and Korean baby names for boys and girls with their meanings, and save your favourites.",
-                 "Senarai nama bayi lelaki dan perempuan Melayu, Islam, Cina, India, Punjabi, Iban, Inggeris, Jepun dan Korea beserta maksud - simpan nama kegemaran anda."), body, {"names": data})
+    write_page(lang, "names.html", x("Baby names with meanings from every Malaysian community", "Nama bayi beserta maksud daripada pelbagai kaum di Malaysia"),
+               x("Browse Malay, Islamic, Chinese, Indian (Tamil, Telugu, Malayalam), Punjabi, Iban, Kadazan-Dusun, Bidayuh, Kelabit, Bajau, Murut, Rungus, Orang Asli, Siamese, Kristang, English, Japanese and Korean baby names with their meanings, and save your favourites.",
+                 "Senarai nama bayi lelaki dan perempuan Melayu, Islam, Cina, India (Tamil, Telugu, Malayalam), Punjabi, Iban, Kadazan-Dusun, Bidayuh, Kelabit, Bajau, Murut, Rungus, Orang Asli, Siam, Kristang, Inggeris, Jepun dan Korea beserta maksud - simpan nama kegemaran anda."), body, {"names": data})
 
 
 def p_labour(lang):
@@ -1316,7 +1319,7 @@ def p_home(lang):
     desc = {h: (de, dm) for h, i, te, tm, de, dm, c in tools}
     desc.update({
         "fertility.html": ("When you're most likely to conceive", "Bila peluang hamil paling tinggi"),
-        "names.html": ("Malay, Chinese, Indian & more", "Melayu, Cina, India & lain-lain"),
+        "names.html": ("From every Malaysian community", "Daripada pelbagai kaum di Malaysia"),
         "labour.html": ("Count kicks, time contractions", "Kira tendangan, masa kontraksi"),
         "after-birth.html": ("Birth cert, MyKid, ASB & savings", "Sijil lahir, MyKid, ASB & simpanan"),
         "planning.html": ("Folic acid, checks & fertility help", "Asid folik, saringan & bantuan kesuburan"),

@@ -344,10 +344,124 @@ BORNEO_NAMES = [
     ("Vasi", "u", "kind, good (Kadazan-Dusun)", "baik, bagus (Kadazan-Dusun)"),
 ]
 
+# ---- More of Malaysia's languages (added 26 Nov 2026).
+# Bidayuh (Bau), Kelabit, Lun Bawang: Borneo Dictionary (borneodictionary.com - Bidayuh Bau list based on the
+# Dayak Bidayuh National Association wordlist). Bajau (West Coast), Murut (Timugon), Rungus, Semai: SIL dictionaries
+# on Webonary (webonary.org/wcbajau, /timugon_murut, /rungus, /semai). These are words with lovely meanings, used as
+# name ideas; words aren't gendered, so they are 'u'. Telugu, Malayalam, Siamese (Thai) and Kristang (Portuguese)
+# names: Behind the Name.
+BORNEO_NAMES += [
+    ("A'a", 'f', "a traditional Bidayuh girl's name (Bidayuh)", 'nama tradisional gadis Bidayuh (Bidayuh)'),
+    ('Sangon', 'u', 'beautiful, pretty (Bidayuh)', 'cantik (Bidayuh)'),
+    ('Jumieh', 'u', 'dew (Bidayuh)', 'embun (Bidayuh)'),
+    ('Girongan', 'u', 'rainbow (Bidayuh)', 'pelangi (Bidayuh)'),
+    ('Sipagi', 'u', 'morning (Bidayuh)', 'pagi (Bidayuh)'),
+    ('Bosow', 'u', 'dawn (Bidayuh)', 'awal pagi (Bidayuh)'),
+    ('Bulant', 'u', 'moon (Bidayuh)', 'bulan (Bidayuh)'),
+    ('Longgit', 'u', 'sky (Bidayuh)', 'langit (Bidayuh)'),
+    ('Kining', 'u', 'clear, bright (of the day) (Bidayuh)', 'cerah (Bidayuh)'),
+    ('Bilingieng', 'u', 'shining (Bidayuh)', 'bersinar (Bidayuh)'),
+    ('Tatih', 'u', 'kind-hearted (Bidayuh)', 'baik hati (Bidayuh)'),
+    ('Nyayang', 'u', 'to love (Bidayuh)', 'sayang (Bidayuh)'),
+    ('Bitojit', 'u', 'to smile (Bidayuh)', 'senyum (Bidayuh)'),
+    ('Suat', 'u', 'flowering, a bud (Bidayuh)', 'putik bunga (Bidayuh)'),
+    ('Doras', 'u', 'strong (Bidayuh)', 'kuat (Bidayuh)'),
+    ('Sangguoh', 'u', 'hornbill (Bidayuh)', 'burung enggang (Bidayuh)'),
+    ('Puni', 'u', 'green pigeon (Bidayuh)', 'burung punai (Bidayuh)'),
+    ('Lipitie', 'u', 'butterfly (Bidayuh)', 'rama-rama (Bidayuh)'),
+    ('Lekedtang', 'u', 'dawn, morning (Kelabit)', 'fajar, pagi (Kelabit)'),
+    ('Uka', 'u', 'dawn (Kelabit)', 'fajar (Kelabit)'),
+    ('Edtang', 'u', 'light, radiance (Kelabit)', 'cahaya, sinar (Kelabit)'),
+    ('Beresat', 'u', 'bright (of light) (Kelabit)', 'terang (Kelabit)'),
+    ('Ribed', 'u', 'pretty, beautiful (Kelabit)', 'cantik, lawa (Kelabit)'),
+    ('Tegkang', 'u', 'rainbow (Kelabit)', 'pelangi (Kelabit)'),
+    ('Makat', 'u', 'brave (Kelabit)', 'berani (Kelabit)'),
+    ('Duru', 'u', 'honey (Kelabit)', 'madu (Kelabit)'),
+    ('Sinung', 'u', 'happy, successful (Kelabit)', 'gembira, berjaya (Kelabit)'),
+    ('Rimod', 'u', 'smile (Kelabit)', 'senyum (Kelabit)'),
+    ('Metaga', 'u', 'beautiful (Lun Bawang)', 'cantik (Lun Bawang)'),
+    ('Rimud', 'u', 'smile (Lun Bawang)', 'senyum (Lun Bawang)'),
+    ('Lapung', 'u', 'light (Lun Bawang)', 'cahaya (Lun Bawang)'),
+    ('Sumping', 'u', 'flower bud (Bajau)', 'kuntum bunga (Bajau)'),
+    ('Telak', 'u', 'bright (Bajau)', 'terang (Bajau)'),
+    ('Mentio', 'u', 'pearl (Bajau)', 'mutiara (Bajau)'),
+    ('Bani', 'u', 'brave (Bajau)', 'berani (Bajau)'),
+    ('Pana', 'u', 'ray of light, shining (Bajau)', 'sinaran cahaya (Bajau)'),
+    ('Bulintung', 'u', 'rainbow (Murut)', 'pelangi (Murut)'),
+    ('Butitin', 'u', 'star (Murut)', 'bintang (Murut)'),
+    ('Rondom', 'u', 'dawn, early morning (Murut)', 'subuh, awal pagi (Murut)'),
+    ('Sanggong', 'u', 'beautiful (Rungus)', 'cantik (Rungus)'),
+    ('Uravung', 'u', 'rice flower (Rungus)', 'bunga padi (Rungus)'),
+    ('Buluntung', 'u', 'rainbow (Rungus)', 'pelangi (Rungus)'),
+    ('Kalamangkag', 'u', 'the Venus star, queen of the stars (Rungus)', 'bintang kejora, ratu bintang (Rungus)'),
+    ('Siou', 'u', 'brave (Rungus)', 'berani (Rungus)'),
+]
+INDIAN_NAMES += [
+    ('Harsha', 'm', 'happiness (Telugu)', 'kegembiraan (Telugu)'),
+    ('Kalyan', 'm', 'beautiful, lovely, auspicious (Telugu)', 'cantik, membawa tuah (Telugu)'),
+    ('Prasanna', 'm', 'clear, bright, calm (Telugu)', 'jernih, terang, tenang (Telugu)'),
+    ('Sudhir', 'm', 'wise, considerate (Telugu)', 'bijak, bertimbang rasa (Telugu)'),
+    ('Manohar', 'm', 'charming, captivating (Telugu)', 'menawan hati (Telugu)'),
+    ('Nikhil', 'm', 'whole, complete (Telugu)', 'sempurna, lengkap (Telugu)'),
+    ('Lavanya', 'f', 'beauty, charm (Telugu)', 'kecantikan, pesona (Telugu)'),
+    ('Meghana', 'f', 'cloud (Telugu)', 'awan (Telugu)'),
+    ('Mallika', 'f', 'jasmine (Telugu)', 'bunga melur (Telugu)'),
+    ('Sandhya', 'f', 'twilight (Telugu)', 'senja (Telugu)'),
+    ('Madhuri', 'f', 'sweetness (Telugu)', 'kemanisan (Telugu)'),
+    ('Manjula', 'f', 'pleasing, beautiful (Telugu)', 'menyenangkan, cantik (Telugu)'),
+    ('Vishnu', 'm', 'all-pervading; name of a Hindu god (Malayalam)', 'meliputi segala; nama dewa Hindu (Malayalam)'),
+    ('Vivek', 'm', 'wisdom (Malayalam)', 'kebijaksanaan (Malayalam)'),
+    ('Vinod', 'm', 'joy, pleasure (Malayalam)', 'kegembiraan (Malayalam)'),
+    ('Vipin', 'm', 'forest (Malayalam)', 'hutan (Malayalam)'),
+    ('Anup', 'm', 'lagoon, place near the water (Malayalam)', 'lagun, tempat dekat air (Malayalam)'),
+    ('Manish', 'm', 'thought, wisdom (Malayalam)', 'fikiran, kebijaksanaan (Malayalam)'),
+    ('Amala', 'f', 'clean, pure (Malayalam)', 'bersih, suci (Malayalam)'),
+    ('Asha', 'f', 'hope, wish (Malayalam)', 'harapan, hasrat (Malayalam)'),
+    ('Nalini', 'f', 'lotus (Malayalam)', 'teratai (Malayalam)'),
+    ('Namrata', 'f', 'humility (Malayalam)', 'rendah diri (Malayalam)'),
+]
+ORANG_ASLI_NAMES = [
+    ('Perloi', 'u', 'star (Semai)', 'bintang (Semai)'),
+    ('Cedau', 'u', 'rainbow (Semai)', 'pelangi (Semai)'),
+    ('Perper', 'u', 'dawn (Semai)', 'subuh (Semai)'),
+    ('Lunau', 'u', 'light (Semai)', 'cahaya (Semai)'),
+    ('Gecek', 'u', 'moon (Semai)', 'bulan (Semai)'),
+    ('Kantat', 'u', 'torch ginger flower (kantan) (Semai)', 'bunga kantan (Semai)'),
+]
+SIAM_NAMES = [
+    ('Arthit', 'm', 'sun', 'matahari'),
+    ('Klahan', 'm', 'brave', 'berani'),
+    ('Mongkut', 'm', 'crown', 'mahkota'),
+    ('Preecha', 'm', 'wisdom', 'kebijaksanaan'),
+    ('Prasit', 'm', 'success, achievement', 'kejayaan'),
+    ('Wichai', 'm', 'victory', 'kemenangan'),
+    ('Anong', 'f', 'beautiful woman', 'wanita jelita'),
+    ('Kanchana', 'f', 'golden', 'keemasan'),
+    ('Kanda', 'f', 'beloved', 'tersayang'),
+    ('Lawan', 'f', 'beauty', 'kecantikan'),
+    ('Malee', 'f', 'flower, jasmine', 'bunga, melur'),
+    ('Porntip', 'f', 'divine blessing', 'rahmat ilahi'),
+]
+KRISTANG_NAMES = [
+    ('Gabriel', 'm', 'God is my strength', 'Tuhan kekuatanku'),
+    ('David', 'm', 'beloved', 'yang dikasihi'),
+    ('Victor', 'm', 'winner, conqueror', 'pemenang, penakluk'),
+    ('Benigno', 'm', 'kind, friendly', 'baik hati, mesra'),
+    ('Abel', 'm', 'breath', 'nafas'),
+    ('Clara', 'f', 'clear, bright', 'jernih, terang'),
+    ('Aurora', 'f', 'dawn', 'fajar'),
+    ('Celeste', 'u', 'heavenly', 'dari syurga'),
+    ('Diana', 'f', 'divine', 'ilahi'),
+    ('Amanda', 'f', 'worthy of love', 'layak dikasihi'),
+    ('Luzia', 'f', 'light', 'cahaya'),
+]
+
 NAMES = ([n + ("malay",) for n in MALAY_NAMES] + [n + ("chinese",) for n in CHINESE_NAMES]
          + [n + ("indian",) for n in INDIAN_NAMES] + [n + ("punjabi",) for n in PUNJABI_NAMES]
          + [n + ("borneo",) for n in BORNEO_NAMES] + [n + ("english",) for n in ENGLISH_NAMES]
-         + [n + ("japanese",) for n in JAPANESE_NAMES] + [n + ("korean",) for n in KOREAN_NAMES])
+         + [n + ("japanese",) for n in JAPANESE_NAMES] + [n + ("korean",) for n in KOREAN_NAMES]
+         + [n + ("orangasli",) for n in ORANG_ASLI_NAMES] + [n + ("siam",) for n in SIAM_NAMES]
+         + [n + ("kristang",) for n in KRISTANG_NAMES])
 
 # After-birth documents checklist: (title EN, title MS, icon, [(key, EN, MS, tip EN, tip MS)])
 AFTER_BIRTH = [
