@@ -208,7 +208,7 @@
       $$('input[name="inc"]', c).forEach(function (cb) { cb.checked = inc[cb.value] === true; });
     }
     function setTip(c, p) { $(".q-tip", c).innerHTML = p ? makeTip(noteFor(p)) : ""; }
-    fetch(TM.root + "data/confinement.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    fetch(TM.root + "data/confinement.json?v=" + TM.ver).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       if (!d) return;
       var html = '<optgroup label="' + esc(S.preTypical) + '">' + d.typical.map(function (t) {
         presets[t.id] = Object.assign({ kind: "typical" }, t);
@@ -748,9 +748,9 @@
     var tables = $("#pr-tables"); if (!tables) return;
     var shopCache = {};
     var pics = {};
-    var picsReady = fetch(TM.root + "data/product-images.json").then(function (r) { return r.ok ? r.json() : {}; })
+    var picsReady = fetch(TM.root + "data/product-images.json?v=" + TM.ver).then(function (r) { return r.ok ? r.json() : {}; })
       .then(function (j) { pics = j || {}; }).catch(function () { /* pictures are optional */ });
-    Promise.all([fetch(TM.root + "data/prices-summary.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }), picsReady]).then(function (res) {
+    Promise.all([fetch(TM.root + "data/prices-summary.json?v=" + TM.ver).then(function (r) { if (!r.ok) throw 0; return r.json(); }), picsReady]).then(function (res) {
       var data = res[0];
       var sortSel = $("#pr-sort");
       function nameOf(it) { return LANG === "ms" && it.nm ? it.nm : it.n; }
@@ -865,7 +865,7 @@
         var online = '<a class="online" href="https://www.google.com/search?tbm=shop&amp;q=' + encodeURIComponent(nameOf(it0) + " " + it0.u) +
           '" target="_blank" rel="noopener">' + esc(S.online) + " ↗</a>";
         if (!cur.state) { cell.innerHTML = esc(S.chooseState) + "<br>" + online; return; }
-        var p = shopCache[st] || fetch(TM.root + "data/shops/" + slug(st) + ".json").then(function (r) { if (!r.ok) throw 0; return r.json(); });
+        var p = shopCache[st] || fetch(TM.root + "data/shops/" + slug(st) + ".json?v=" + TM.ver).then(function (r) { if (!r.ok) throw 0; return r.json(); });
         shopCache[st] = p;
         p.then(function (sd) {
           var list = [];
@@ -893,7 +893,7 @@
     var box = $("#nursery-tool"); if (!box) return;
     var links = $("#nu-area-links"), ta = $("#nu-taska"), td = $("#nu-tadika");
     function maps(q) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
-    fetch(TM.root + "data/districts.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (states) {
+    fetch(TM.root + "data/districts.json?v=" + TM.ver).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (states) {
       areaPicker($("#nu-state"), $("#nu-district"), states, function (s, d) {
         links.hidden = !s;
         if (!s) return;
