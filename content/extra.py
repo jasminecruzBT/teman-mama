@@ -219,8 +219,106 @@ INDIAN_NAMES += [
     ("Tharani", "f", "the earth", "bumi"), ("Yamini", "f", "night", "malam"),
 ]
 
+
+# ---- More languages (added 26 Nov 2026). Gender: m / f / u (used for both).
+# Meanings checked on Behind the Name (behindthename.com/name/<name>) on 26 Nov 2026. For Japanese and Korean
+# names the meaning depends on the characters - we show one common spelling, as with Chinese names.
+PUNJABI_NAMES = [
+    ("Gurpreet", "u", "love of the guru (teacher); joy", "kasih kepada guru; kegembiraan"),
+    ("Harpreet", "u", "love of God (Hari)", "kasih kepada Tuhan (Hari)"),
+    ("Manpreet", "u", "love and joy of the heart and mind", "kasih dan kegembiraan jiwa"),
+    ("Navdeep", "u", "new light, new lamp", "cahaya baharu, pelita baharu"),
+    ("Mandeep", "u", "light of the mind", "cahaya jiwa"),
+    ("Amandeep", "u", "light of peace", "pelita kedamaian"),
+    ("Gurdeep", "u", "light of the guru (teacher)", "cahaya guru"),
+    ("Sukhdeep", "u", "light of happiness", "pelita kebahagiaan"),
+    ("Hardeep", "u", "light of God (Hari)", "cahaya Tuhan (Hari)"),
+    ("Jagjit", "u", "conqueror of the world", "penakluk dunia"),
+    ("Manjeet", "u", "victory of the mind", "kemenangan jiwa"),
+    ("Navneet", "u", "new and everlasting", "baharu dan kekal abadi"),
+    ("Simran", "u", "always remembering God", "sentiasa mengingati Tuhan"),
+    ("Kuldeep", "m", "light of the family", "pelita keluarga"),
+    ("Karan", "m", "clever, skilful", "bijak, mahir"),
+    ("Zorawar", "m", "strong, powerful", "kuat, gagah"),
+    ("Amrita", "f", "immortal; nectar of life", "abadi; air kehidupan"),
+]
+ENGLISH_NAMES = [
+    ("Noah", "m", "rest, peace (Hebrew)", "rehat, ketenangan (Ibrani)"),
+    ("Ethan", "m", "strong, firm, lasting (Hebrew)", "teguh, kukuh, kekal (Ibrani)"),
+    ("Daniel", "m", "God is my judge (Hebrew)", "Tuhan hakimku (Ibrani)"),
+    ("Joshua", "m", "God is salvation (Hebrew)", "Tuhan penyelamat (Ibrani)"),
+    ("Samuel", "m", "name of God; God has heard (Hebrew)", "nama Tuhan; Tuhan telah mendengar (Ibrani)"),
+    ("Isaac", "m", "he will laugh, he will rejoice (Hebrew)", "dia akan ketawa, dia akan bergembira (Ibrani)"),
+    ("Benjamin", "m", "son of the south / of the right hand (Hebrew)", "anak dari selatan / tangan kanan (Ibrani)"),
+    ("Emma", "f", "whole, complete (Germanic)", "sempurna, lengkap (Jermanik)"),
+    ("Olivia", "f", "olive (Latin)", "zaitun (Latin)"),
+    ("Grace", "f", "grace, kindness (Latin)", "rahmat, kebaikan (Latin)"),
+    ("Abigail", "f", "my father is joy (Hebrew)", "ayahku kegembiraan (Ibrani)"),
+    ("Esther", "f", "possibly 'star' (Persian)", "mungkin 'bintang' (Parsi)"),
+    ("Chloe", "f", "young green shoot (Greek)", "tunas hijau muda (Yunani)"),
+    ("Rachel", "f", "ewe, a gentle sheep (Hebrew)", "biri-biri betina (Ibrani)"),
+]
+JAPANESE_NAMES = [
+    ("Haruto 陽翔", "m", "sun + soar", "matahari + terbang tinggi"),
+    ("Ren 蓮", "u", "lotus", "teratai"),
+    ("Riku 陸", "m", "land", "daratan"),
+    ("Kaito 海翔", "m", "sea + soar", "laut + terbang tinggi"),
+    ("Minato 湊", "u", "harbour", "pelabuhan"),
+    ("Haruki 晴輝", "m", "clear weather + brightness", "cuaca cerah + sinar"),
+    ("Itsuki 樹", "m", "tree", "pokok"),
+    ("Hinata 陽向", "u", "towards the sun", "menghadap matahari"),
+    ("Yui 結衣", "f", "tie, bind + clothing", "ikatan + pakaian"),
+    ("Sakura 桜", "f", "cherry blossom", "bunga sakura"),
+    ("Mei 芽依", "f", "bud, sprout + rely on", "tunas + bergantung"),
+    ("Rin 凛", "u", "dignified", "bermaruah"),
+    ("Hana 花", "f", "flower", "bunga"),
+    ("Akari 明里", "f", "bright + village", "terang + kampung"),
+    ("Himari 陽葵", "f", "sun + hollyhock; sunflower", "matahari + bunga hollyhock; bunga matahari"),
+    ("Aoi 葵", "u", "hollyhock", "bunga hollyhock"),
+]
+KOREAN_NAMES = [
+    ("Min-jun 敏俊", "m", "quick, clever + talented", "pantas, bijak + berbakat"),
+    ("Seo-jun 瑞俊", "m", "good omen + talented", "petanda baik + berbakat"),
+    ("Ha-jun 夏准", "m", "summer, great + approve", "musim panas, hebat + merestui"),
+    ("Do-yun 道允", "m", "path, way + allow", "jalan + mengizinkan"),
+    ("Min-ho 敏浩", "m", "quick, clever + vast", "pantas, bijak + luas"),
+    ("Ye-jun 藝俊", "m", "art, talent + talented", "seni, bakat + berbakat"),
+    ("Ji-ho 智昊", "u", "wisdom + sky", "kebijaksanaan + langit"),
+    ("Ji-min 智敏", "u", "wisdom + quick, clever", "kebijaksanaan + pantas, bijak"),
+    ("Ji-an 智安", "u", "wisdom + peace", "kebijaksanaan + ketenangan"),
+    ("Min-seo 敏序", "u", "quick, clever + order", "pantas, bijak + teratur"),
+    ("Su-bin 秀斌", "u", "outstanding + refined", "cemerlang + halus budi"),
+    ("Seo-yeon 瑞妍", "f", "good omen + beautiful", "petanda baik + cantik"),
+    ("Seo-yun 瑞潤", "f", "good omen + soft, sleek", "petanda baik + lembut"),
+    ("Ha-eun 夏恩", "f", "summer, great + kindness", "musim panas, hebat + kebaikan"),
+    ("Da-eun 多恩", "f", "much + kindness", "banyak + kebaikan"),
+    ("Chae-won 彩原", "f", "colour + origin", "warna + asal"),
+]
+
+# Iban meanings: Anthony Richards, An Iban-English Dictionary (Oxford, 1981) - each word is also listed there as a
+# personal name (archive.org/details/AnIbanEnglishDictionaryByAnthonyRichards, checked 26 Nov 2026).
+# Huminodun: Sabah State Library, "Kaamatan Festival". Kadazan-Dusun word lists online could not be reached, so only
+# names with a reliable source are included.
+BORNEO_NAMES = [
+    ("Keling", "m", "legendary Iban hero - handsome, strong and brave", "wira legenda Iban - kacak, kuat dan berani"),
+    ("Kumang", "f", "the ideal woman; Iban goddess of beauty", "wanita idaman; dewi kecantikan Iban"),
+    ("Rentap", "m", "name of the Iban warrior who fought the Brooke Rajah", "nama pahlawan Iban yang menentang Rajah Brooke"),
+    ("Awan", "m", "cloud", "awan di langit"),
+    ("Belayong", "m", "very strong, like the warriors of old", "sangat kuat, seperti pahlawan zaman dahulu"),
+    ("Laju", "m", "swift, fast", "pantas, laju"),
+    ("Dayang", "f", "maiden; a title of honour for women", "gadis; gelaran hormat untuk wanita"),
+    ("Madu", "f", "honey", "madu"),
+    ("Jereni", "f", "clear, like clean water", "jernih, seperti air bersih"),
+    ("Siti", "f", "a title of honour for women", "gelaran hormat untuk wanita"),
+    ("Ina", "f", "mother", "ibu"),
+    ("Mula", "u", "beginning, origin", "permulaan, asal usul"),
+    ("Huminodun", "f", "maiden of the Kaamatan legend, honoured at the harvest festival (Kadazan-Dusun)", "gadis dalam legenda Kaamatan, diraikan pada Pesta Menuai (Kadazan-Dusun)"),
+]
+
 NAMES = ([n + ("malay",) for n in MALAY_NAMES] + [n + ("chinese",) for n in CHINESE_NAMES]
-         + [n + ("indian",) for n in INDIAN_NAMES])
+         + [n + ("indian",) for n in INDIAN_NAMES] + [n + ("punjabi",) for n in PUNJABI_NAMES]
+         + [n + ("borneo",) for n in BORNEO_NAMES] + [n + ("english",) for n in ENGLISH_NAMES]
+         + [n + ("japanese",) for n in JAPANESE_NAMES] + [n + ("korean",) for n in KOREAN_NAMES])
 
 # After-birth documents checklist: (title EN, title MS, icon, [(key, EN, MS, tip EN, tip MS)])
 AFTER_BIRTH = [

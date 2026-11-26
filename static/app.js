@@ -613,7 +613,7 @@
       var qq = (q.value || "").toLowerCase().trim(), rows = (TM.names || []).filter(function (n) {
         if (filter === "fav" && !fav[n[0]]) return false;
         if (origin !== "all" && n[3] !== origin) return false;
-        if (filter === "m" || filter === "f") { if (n[1] !== filter) return false; }
+        if (filter === "m" || filter === "f") { if (n[1] !== filter && n[1] !== "u") return false; }
         if (letter !== "all" && n[0].charAt(0).toUpperCase() !== letter) return false;
         return !qq || (n[0] + " " + n[2]).toLowerCase().indexOf(qq) >= 0;
       }).sort(function (a, b) { return a[0].localeCompare(b[0]); });
@@ -622,7 +622,7 @@
       list.innerHTML = rows.length ? rows.map(function (n) {
         var L = n[0].charAt(0).toUpperCase(), head = "";
         if (letter === "all" && L !== lastL) { head = '<li class="nm-letter" aria-hidden="true">' + esc(L) + "</li>"; lastL = L; }
-        return head + '<li class="nm-' + n[1] + '"><div><strong>' + esc(n[0]) + '</strong><span class="muted">' + esc(n[2]) + "</span></div>" +
+        return head + '<li class="nm-' + n[1] + '"><div><strong>' + esc(n[0]) + '</strong><span class="muted">' + (n[1] === "u" ? '<span class="nm-uni">' + esc(S.nmUni) + "</span> " : "") + esc(n[2]) + "</span></div>" +
           '<button type="button" class="nm-fav" data-n="' + esc(n[0]) + '" aria-pressed="' + (fav[n[0]] ? "true" : "false") + '" aria-label="' + esc(S.nmFav) + '">' + (fav[n[0]] ? "♥" : "♡") + "</button></li>";
       }).join("") : '<li class="muted">' + esc(S.nmNone) + "</li>";
     }

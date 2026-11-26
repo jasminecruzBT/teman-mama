@@ -155,7 +155,7 @@ JS_STR = {
         "pStartsLbl": "Pantang starts", "pInDays": "in {n} days", "pCheckLbl": "Postnatal check-up", "pCheckSmall": "around 6 weeks after birth", "pNext": "Next",
         "vaxBirth": "At birth", "vaxMonths": "{m} months",
         "milkUseBy": "Use by", "milkLabel": "Write on the bag: expressed {a}",
-        "nmFav": "Save to favourites", "nmNone": "No names match.", "nmCount": "{n} names",
+        "nmFav": "Save to favourites", "nmNone": "No names match.", "nmUni": "Boy or girl", "nmCount": "{n} names",
         "fWindow": "Most fertile days", "fWindowSmall": "best chance of pregnancy", "fOv": "Likely ovulation", "fNext": "Next period",
         "fDue": "If you conceive this cycle, due around {d}",
         "kickIdle": "Tap each time you feel a movement.", "kickRunning": "{m} min since your first tap", "kickDone": "10 movements in {m} min",
@@ -240,7 +240,7 @@ JS_STR = {
         "pStartsLbl": "Pantang bermula", "pInDays": "{n} hari lagi", "pCheckLbl": "Pemeriksaan postnatal", "pCheckSmall": "lebih kurang 6 minggu selepas bersalin", "pNext": "Seterusnya",
         "vaxBirth": "Semasa lahir", "vaxMonths": "{m} bulan",
         "milkUseBy": "Guna sebelum", "milkLabel": "Tulis pada beg: diperah {a}",
-        "nmFav": "Simpan sebagai kegemaran", "nmNone": "Tiada nama sepadan.", "nmCount": "{n} nama",
+        "nmFav": "Simpan sebagai kegemaran", "nmNone": "Tiada nama sepadan.", "nmUni": "Lelaki atau perempuan", "nmCount": "{n} nama",
         "fWindow": "Hari paling subur", "fWindowSmall": "peluang hamil paling tinggi", "fOv": "Ovulasi dijangka", "fNext": "Haid seterusnya",
         "fDue": "Jika hamil kitaran ini, jangkaan lahir sekitar {d}",
         "kickIdle": "Tekan setiap kali anda rasa bayi bergerak.", "kickRunning": "{m} minit sejak tekanan pertama", "kickDone": "10 gerakan dalam {m} minit",
@@ -830,8 +830,8 @@ def p_names(lang):
     data = [[n, g, (mm if lang == "ms" else me), o] for n, g, me, mm, o in extra.NAMES]
     body = f"""
 {page_head(x, "✨", "t-names", x("Pregnant", "Sedang hamil"), x("Baby names", "Nama bayi"),
-           x("Malay, Chinese and Indian names with their meanings.", "Nama Melayu, Cina dan India beserta maksudnya."), extra=tip(x("Meanings are common interpretations - many names have more than one. For Chinese names the meaning depends on the characters you choose. Check with family, a trusted source or ustaz/ustazah before deciding.",
-                                                                                                                        "Maksud ialah tafsiran biasa - banyak nama mempunyai lebih daripada satu maksud. Untuk nama Cina, maksudnya bergantung pada aksara yang dipilih. Semak dengan keluarga, sumber dipercayai atau ustaz/ustazah sebelum memutuskan."), x))}
+           x("Malay, Chinese, Indian, Punjabi, Iban, English, Japanese and Korean names with their meanings.", "Nama Melayu, Cina, India, Punjabi, Iban, Inggeris, Jepun dan Korea beserta maksudnya."), extra=tip(x("Meanings are common interpretations - many names have more than one. For Chinese, Japanese and Korean names the meaning depends on the characters you choose. Punjabi, Iban, English, Japanese and Korean meanings were checked in name references and dictionaries (Behind the Name; Richards' Iban-English Dictionary). Check with family, a trusted source or your religious teacher before deciding.",
+                                                                                                                        "Maksud ialah tafsiran biasa - banyak nama mempunyai lebih daripada satu maksud. Untuk nama Cina, Jepun dan Korea, maksudnya bergantung pada aksara yang dipilih. Maksud nama Punjabi, Iban, Inggeris, Jepun dan Korea disemak dalam rujukan nama dan kamus (Behind the Name; Kamus Iban-Inggeris Richards). Semak dengan keluarga, sumber dipercayai atau guru agama anda sebelum memutuskan."), x))}
 <section class="card" id="names-tool">
   <div class="search-row"><input type="search" id="nm-q" placeholder="{x("Search a name or meaning, e.g. light", "Cari nama atau maksud, cth. cahaya")}" aria-label="{x("Search names", "Cari nama")}"></div>
   <div class="chips nm-origin" role="group" aria-label="{x("Origin", "Asal")}">
@@ -839,6 +839,11 @@ def p_names(lang):
     <button type="button" class="chip-btn" data-o="malay" aria-pressed="false">🌙 {x("Malay & Islamic", "Melayu & Islam")}</button>
     <button type="button" class="chip-btn" data-o="chinese" aria-pressed="false">🏮 {x("Chinese", "Cina")}</button>
     <button type="button" class="chip-btn" data-o="indian" aria-pressed="false">🪔 {x("Indian", "India")}</button>
+    <button type="button" class="chip-btn" data-o="punjabi" aria-pressed="false">☬ {x("Punjabi & Sikh", "Punjabi & Sikh")}</button>
+    <button type="button" class="chip-btn" data-o="borneo" aria-pressed="false">🦜 {x("Iban & Kadazan-Dusun", "Iban & Kadazan-Dusun")}</button>
+    <button type="button" class="chip-btn" data-o="english" aria-pressed="false">📖 {x("English & biblical", "Inggeris & Alkitab")}</button>
+    <button type="button" class="chip-btn" data-o="japanese" aria-pressed="false">🌸 {x("Japanese", "Jepun")}</button>
+    <button type="button" class="chip-btn" data-o="korean" aria-pressed="false">🎎 {x("Korean", "Korea")}</button>
   </div>
   <div class="seg nm-seg">
     <button type="button" data-f="all" aria-pressed="true">{x("All", "Semua")}</button>
@@ -854,9 +859,9 @@ def p_names(lang):
 </section>
 {ad("bottom", x)}
 """
-    write_page(lang, "names.html", x("Malay, Chinese & Indian baby names with meanings", "Nama bayi Melayu, Cina & India beserta maksud"),
-               x("Browse Malay, Islamic, Chinese and Indian baby names for boys and girls with their meanings, and save your favourites.",
-                 "Senarai nama bayi lelaki dan perempuan Melayu, Islam, Cina dan India beserta maksud - simpan nama kegemaran anda."), body, {"names": data})
+    write_page(lang, "names.html", x("Baby names with meanings: Malay, Chinese, Indian & more", "Nama bayi beserta maksud: Melayu, Cina, India & lain-lain"),
+               x("Browse Malay, Islamic, Chinese, Indian, Punjabi, Iban, English, Japanese and Korean baby names for boys and girls with their meanings, and save your favourites.",
+                 "Senarai nama bayi lelaki dan perempuan Melayu, Islam, Cina, India, Punjabi, Iban, Inggeris, Jepun dan Korea beserta maksud - simpan nama kegemaran anda."), body, {"names": data})
 
 
 def p_labour(lang):
@@ -1311,7 +1316,7 @@ def p_home(lang):
     desc = {h: (de, dm) for h, i, te, tm, de, dm, c in tools}
     desc.update({
         "fertility.html": ("When you're most likely to conceive", "Bila peluang hamil paling tinggi"),
-        "names.html": ("Malay, Chinese & Indian names", "Nama Melayu, Cina & India"),
+        "names.html": ("Malay, Chinese, Indian & more", "Melayu, Cina, India & lain-lain"),
         "labour.html": ("Count kicks, time contractions", "Kira tendangan, masa kontraksi"),
         "after-birth.html": ("Birth cert, MyKid, ASB & savings", "Sijil lahir, MyKid, ASB & simpanan"),
         "planning.html": ("Folic acid, checks & fertility help", "Asid folik, saringan & bantuan kesuburan"),
