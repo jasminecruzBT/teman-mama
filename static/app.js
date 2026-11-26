@@ -90,17 +90,23 @@
     if (li) { li.classList.add("current"); li.querySelector(".wk-n").insertAdjacentHTML("beforeend", ' <span class="pill">' + esc(S.youAreHere) + "</span>"); }
   }
 
-  // ---------- pantang planner
+  // ---------- pantang planner: tradition pills, summary tiles, timeline with icons
   function pantang() {
     var box = $("#pantang-tool"); if (!box) return;
     var trad = $("#p-trad"), daysWrap = $("#p-days-wrap"), days = $("#p-days"), date = $("#p-date"), out = $("#p-result");
+    var pills = $$(".pill-opt", box);
     var st = get("tm_pantang", {});
     if (st.trad) trad.value = st.trad;
     if (st.days) days.value = st.days;
     if (st.kind) $$('input[name="p-kind"]').forEach(function (r) { r.checked = r.value === st.kind; });
     date.value = st.date || get("tm_due", "") || "";
-    function sync() { daysWrap.hidden = trad.value !== "custom"; }
+    function sync() {
+      daysWrap.hidden = trad.value !== "custom";
+      pills.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-v") === trad.value ? "true" : "false"); });
+    }
+    pills.forEach(function (b) { b.addEventListener("click", function () { trad.value = b.getAttribute("data-v"); sync(); if (date.value) run(); }); });
     trad.addEventListener("change", sync); sync();
+    $$('input[name="p-kind"]').forEach(function (r) { r.addEventListener("change", function () { if (date.value) run(); }); });
 
     function run() {
       var d = parseDate(date.value);
@@ -108,33 +114,35 @@
       var kind = ($('input[name="p-kind"]:checked') || {}).value || "due";
       var n = trad.value === "custom" ? Math.max(7, Math.min(120, parseInt(days.value, 10) || 40)) : parseInt(trad.value, 10);
       set("tm_pantang", { trad: trad.value, days: days.value, kind: kind, date: date.value });
-      var t = today();
-      var before = [
-        [-168, S.pShortlist], [-140, S.pBook], [-42, S.pBuy], [-28, S.pBag]
-      ];
+      var t = today(), end = addDays(d, n - 1), dayNo = diffDays(d, t) + 1;
+      // summary tiles
+      var tiles = '<div class="stats p-stats">' +
+        '<div class="stat t1"><p class="stat-label">' + esc(S.pEndsLbl) + '</p><p class="stat-big">' + esc(fmt(end)) + '</p><p class="stat-small">' + esc(fill(S.pDaysN, { n: n })) + "</p></div>";
+      if (dayNo >= 1 && dayNo <= n) {
+        tiles += '<div class="stat t2"><p class="stat-label">' + esc(S.pTodayLbl) + '</p><p class="stat-big">' + esc(fill(S.pDayOf, { d: dayNo, n: n })) + "</p>" +
+          '<div class="progress"><span style="width:' + Math.round(dayNo / n * 100) + '%"></span></div></div>';
+      } else if (dayNo < 1) {
+        tiles += '<div class="stat t2"><p class="stat-label">' + esc(S.pStartsLbl) + '</p><p class="stat-big">' + esc(fill(S.pInDays, { n: 1 - dayNo })) + '</p><p class="stat-small">' + esc(fmt(d)) + "</p></div>";
+      }
+      tiles += '<div class="stat t3"><p class="stat-label">' + esc(S.pCheckLbl) + '</p><p class="stat-big">' + esc(fmt(addDays(d, 41))) + '</p><p class="stat-small">' + esc(S.pCheckSmall) + "</p></div></div>";
+      var before = [[-168, "📋", S.pShortlist], [-140, "💳", S.pBook], [-42, "🛒", S.pBuy], [-28, "👜", S.pBag]];
       var after = [
-        [0, (kind === "birth" ? S.pBirth : S.pDue) + " - " + S.pVacc],
-        [3, S.pMilk],
-        [6, S.pPat],
-        [41, S.pCheck],
-        [n - 1, fill(S.pEnd, { n: n })],
-        [59, S.pReg],
-        [97, S.pMat]
-      ].sort(function (a, b) { return a[0] - b[0]; });
+        [0, "👶", (kind === "birth" ? S.pBirth : S.pDue) + " - " + S.pVacc], [3, "🤱", S.pMilk], [6, "👨", S.pPat],
+        [41, "🩺", S.pCheck], [n - 1, "🌿", fill(S.pEnd, { n: n })], [59, "📝", S.pReg], [97, "💼", S.pMat]
+      ].sort(function (x, y) { return x[0] - y[0]; });
       var nextMarked = false;
       function list(items, title) {
-        var h = "<h3>" + esc(title) + '</h3><ol class="timeline">';
+        var h = "<h3>" + esc(title) + '</h3><ol class="timeline tl2">';
         items.forEach(function (it) {
-          var day = addDays(d, it[0]);
-          var cls = day < t ? "past" : "";
+          var day = addDays(d, it[0]), cls = day < t ? "past" : "";
           if (!cls && !nextMarked) { cls = "next"; nextMarked = true; }
-          var when = fmt(day) + (iso(day) === iso(t) ? " · " + S.pToday : "");
-          h += '<li class="' + cls + '"><span class="when">' + esc(when) + "</span>" + esc(it[1]) + "</li>";
+          h += '<li class="' + cls + '"><span class="tl-ico" aria-hidden="true">' + it[1] + '</span><div><span class="when">' + esc(fmt(day)) +
+            (iso(day) === iso(t) ? ' <span class="badge">' + esc(S.pToday) + "</span>" : "") +
+            (cls === "next" ? ' <span class="badge">' + esc(S.pNext) + "</span>" : "") + "</span>" + esc(it[2]) + "</div></li>";
         });
         return h + "</ol>";
       }
-      var html = kind === "due" ? list(before, S.pBefore) : "";
-      html += list(after, S.pAfter);
+      var html = tiles + (kind === "due" ? list(before, S.pBefore) : "") + list(after, S.pAfter);
       if (kind === "due") html += '<p class="hint">' + esc(S.pNoteDue) + "</p>";
       out.innerHTML = html;
     }
@@ -321,10 +329,162 @@
     render();
   }
 
+
+  // ---------- home: stage tabs (pregnant / new mum / mum & kids); picks a sensible tab from the saved due date
+  function homeTabs() {
+    var tabs = $$(".stage-tab"); if (!tabs.length) return;
+    var due = parseDate(get("tm_due", "")), stage = get("tm_stage", "");
+    if (!stage) stage = due && diffDays(today(), due) < 0 ? "new" : "preg";
+    function show(sv) {
+      tabs.forEach(function (t) { t.setAttribute("aria-selected", t.getAttribute("data-stage") === sv ? "true" : "false"); });
+      $$(".stage-panel").forEach(function (p) { p.hidden = p.getAttribute("data-stage") !== sv; });
+    }
+    tabs.forEach(function (t) { t.addEventListener("click", function () { var v = t.getAttribute("data-stage"); set("tm_stage", v); show(v); }); });
+    show(stage);
+  }
+
+  // ---------- vaccination dates from the baby's birth date (ticks saved on this phone)
+  function vaccines() {
+    var box = $("#vax-tool"); if (!box) return;
+    var input = $("#vax-birth"), out = $("#vax-result"), st = get("tm_vax", { birth: "", done: {} });
+    input.value = st.birth || "";
+    function addMonths(d, m) { var x = new Date(d.getTime()); x.setUTCMonth(x.getUTCMonth() + m); return x; }
+    function render() {
+      var b = parseDate(input.value);
+      if (!b) { out.innerHTML = ""; return; }
+      st.birth = input.value; set("tm_vax", st);
+      var t = today(), nextDone = false, html = '<ol class="vax-list">';
+      (TM.vax || []).forEach(function (v, i) {
+        var due = addMonths(b, v[0]), done = !!st.done[i], cls = done ? "done" : (due < t ? "late" : "");
+        if (!done && !nextDone && due >= addDays(t, -60)) { cls += " next"; nextDone = true; }
+        html += '<li class="' + cls + '"><label class="vax-check"><input type="checkbox" data-i="' + i + '"' + (done ? " checked" : "") + "></label>" +
+          '<div class="vax-main"><span class="vax-age">' + esc(v[0] === 0 ? S.vaxBirth : fill(S.vaxMonths, { m: v[0] })) + "</span>" +
+          "<strong>" + esc(v[1]) + "</strong>" + (v[2] ? '<span class="muted small"> · ' + esc(v[2]) + "</span>" : "") + "</div>" +
+          '<span class="vax-date">' + esc(fmt(due)) + "</span></li>";
+      });
+      out.innerHTML = html + "</ol>";
+    }
+    input.addEventListener("change", render);
+    out.addEventListener("change", function (e) {
+      var cb = e.target.closest("input[data-i]"); if (!cb) return;
+      st.done[cb.getAttribute("data-i")] = cb.checked; set("tm_vax", st); render();
+    });
+    render();
+  }
+
+  // ---------- breast milk: "use by" from when it was expressed and where it is stored (KKM times)
+  function milk() {
+    var box = $("#milk-tool"); if (!box) return;
+    var when = $("#milk-when"), where = $("#milk-where"), out = $("#milk-result");
+    var n = new Date(); n.setMinutes(n.getMinutes() - n.getTimezoneOffset());
+    when.value = n.toISOString().slice(0, 16);
+    function render() {
+      var t = when.value ? new Date(when.value) : null, opt = where.options[where.selectedIndex];
+      if (!t || isNaN(t)) { out.innerHTML = ""; return; }
+      var hrs = parseFloat(opt.getAttribute("data-h")), use = new Date(t.getTime() + hrs * 3600 * 1000);
+      var txt = use.toLocaleString(LOCALE, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+      out.innerHTML = '<div class="stat t1"><p class="stat-label">' + esc(S.milkUseBy) + '</p><p class="stat-big">' + esc(txt) + "</p>" +
+        '<p class="stat-small">' + esc(fill(S.milkLabel, { a: t.toLocaleString(LOCALE, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) })) + "</p></div>";
+    }
+    when.addEventListener("input", render); where.addEventListener("change", render); render();
+  }
+
+  // ---------- baby names: search, filter by boy/girl, favourites saved on this phone
+  function names() {
+    var box = $("#names-tool"); if (!box) return;
+    var q = $("#nm-q"), list = $("#nm-list"), fav = get("tm_names_fav", {}), filter = "all";
+    var segs = $$(".nm-seg button", box);
+    function render() {
+      var qq = (q.value || "").toLowerCase().trim(), rows = (TM.names || []).filter(function (n) {
+        if (filter === "fav" && !fav[n[0]]) return false;
+        if (filter === "m" || filter === "f") { if (n[1] !== filter) return false; }
+        return !qq || (n[0] + " " + n[2]).toLowerCase().indexOf(qq) >= 0;
+      });
+      list.innerHTML = rows.length ? rows.map(function (n) {
+        return '<li class="nm-' + n[1] + '"><div><strong>' + esc(n[0]) + '</strong><span class="muted">' + esc(n[2]) + "</span></div>" +
+          '<button type="button" class="nm-fav" data-n="' + esc(n[0]) + '" aria-pressed="' + (fav[n[0]] ? "true" : "false") + '" aria-label="' + esc(S.nmFav) + '">' + (fav[n[0]] ? "♥" : "♡") + "</button></li>";
+      }).join("") : '<li class="muted">' + esc(S.nmNone) + "</li>";
+    }
+    segs.forEach(function (b) { b.addEventListener("click", function () {
+      filter = b.getAttribute("data-f"); segs.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); render(); }); });
+    q.addEventListener("input", render);
+    list.addEventListener("click", function (e) {
+      var b = e.target.closest(".nm-fav"); if (!b) return;
+      var k = b.getAttribute("data-n"); if (fav[k]) delete fav[k]; else fav[k] = 1; set("tm_names_fav", fav); render();
+    });
+    render();
+  }
+
+  // ---------- fertile days: ovulation about 14 days before the next period
+  function fertility() {
+    var box = $("#fert-tool"); if (!box) return;
+    var lmp = $("#fert-lmp"), cyc = $("#fert-cycle"), out = $("#fert-result"), st = get("tm_fert", {});
+    if (st.lmp) lmp.value = st.lmp; if (st.cycle) cyc.value = st.cycle;
+    function render() {
+      var d = parseDate(lmp.value), c = Math.max(21, Math.min(40, parseInt(cyc.value, 10) || 28));
+      if (!d) { out.innerHTML = ""; return; }
+      set("tm_fert", { lmp: lmp.value, cycle: c });
+      var ov = addDays(d, c - 14), from = addDays(ov, -5), to = addDays(ov, 1), next = addDays(d, c), due = addDays(d, 280);
+      out.innerHTML = '<div class="stats">' +
+        '<div class="stat t1"><p class="stat-label">' + esc(S.fWindow) + '</p><p class="stat-big">' + esc(fmt(from).replace(/ \d{4}$/, "")) + " – " + esc(fmt(to)) + '</p><p class="stat-small">' + esc(S.fWindowSmall) + "</p></div>" +
+        '<div class="stat t2"><p class="stat-label">' + esc(S.fOv) + '</p><p class="stat-big">' + esc(fmt(ov)) + "</p></div>" +
+        '<div class="stat t3"><p class="stat-label">' + esc(S.fNext) + '</p><p class="stat-big">' + esc(fmt(next)) + '</p><p class="stat-small">' + esc(fill(S.fDue, { d: fmt(due) })) + "</p></div></div>";
+    }
+    lmp.addEventListener("change", render); cyc.addEventListener("input", render); render();
+  }
+
+  // ---------- kick counter + contraction timer (kept on this phone)
+  function labour() {
+    var k = $("#kick-tool");
+    if (k) {
+      var kc = $("#kick-count"), kt = $("#kick-time"), kst = get("tm_kicks", { start: 0, n: 0 }), timer;
+      function kr() {
+        kc.textContent = kst.n;
+        if (!kst.start) { kt.textContent = S.kickIdle; return; }
+        var mins = Math.floor((Date.now() - kst.start) / 60000);
+        kt.textContent = kst.n >= 10 ? fill(S.kickDone, { m: mins }) : fill(S.kickRunning, { m: mins });
+      }
+      $("#kick-btn").addEventListener("click", function () { if (!kst.start) kst.start = Date.now(); kst.n += 1; set("tm_kicks", kst); kr(); });
+      $("#kick-reset").addEventListener("click", function () { kst = { start: 0, n: 0 }; set("tm_kicks", kst); kr(); });
+      timer = setInterval(kr, 30000); kr();
+    }
+    var c = $("#con-tool");
+    if (c) {
+      var btn = $("#con-btn"), log = $("#con-log"), sum = $("#con-sum"), cst = get("tm_con", []), cur = null, tick;
+      function mmss(ms) { var s2 = Math.round(ms / 1000); return Math.floor(s2 / 60) + ":" + ("0" + (s2 % 60)).slice(-2); }
+      function cr() {
+        btn.textContent = cur ? S.conStop : S.conStart;
+        btn.classList.toggle("running", !!cur);
+        var rows = cst.slice(-8).reverse();
+        log.innerHTML = rows.map(function (r, i) {
+          var prev = cst[cst.length - 1 - i - 1];
+          return "<li><span>" + new Date(r.s).toLocaleTimeString(LOCALE, { hour: "numeric", minute: "2-digit" }) + "</span><span>" + esc(S.conLasts) + " <strong>" + mmss(r.e - r.s) +
+            "</strong></span><span>" + (prev ? esc(S.conApart) + " <strong>" + mmss(r.s - prev.s) + "</strong>" : "") + "</span></li>";
+        }).join("");
+        var last = cst.slice(-4);
+        if (last.length >= 3) {
+          var gaps = [], lens = [];
+          for (var i = 1; i < last.length; i++) gaps.push(last[i].s - last[i - 1].s);
+          last.forEach(function (r) { lens.push(r.e - r.s); });
+          var avg = function (a) { return a.reduce(function (x, y) { return x + y; }, 0) / a.length; };
+          sum.textContent = fill(S.conAvg, { gap: mmss(avg(gaps)), len: mmss(avg(lens)) });
+        } else sum.textContent = S.conHint;
+      }
+      btn.addEventListener("click", function () {
+        if (!cur) { cur = { s: Date.now() }; tick = setInterval(function () { btn.textContent = S.conStop + " · " + mmss(Date.now() - cur.s); }, 1000); }
+        else { clearInterval(tick); cur.e = Date.now(); cst.push(cur); cur = null; set("tm_con", cst.slice(-50)); }
+        cr();
+      });
+      $("#con-reset").addEventListener("click", function () { cst = []; set("tm_con", cst); cr(); });
+      cr();
+    }
+  }
+
   // ---------- hospital bag
   function bag() {
     var boxes = $$("input[data-key]"); if (!boxes.length) return;
-    var st = get("tm_bag", {}), prog = $("#bag-progress");
+    var storeKey = (document.querySelector("[data-store]") || { getAttribute: function () { return "tm_bag"; } }).getAttribute("data-store");
+    var st = get(storeKey, {}), prog = $("#bag-progress");
     function upd() {
       var n = boxes.filter(function (b) { return b.checked; }).length;
       prog.textContent = n === boxes.length ? S.bagDone : fill(S.bagProgress, { n: n, t: boxes.length });
@@ -332,9 +492,9 @@
     }
     boxes.forEach(function (b) {
       b.checked = !!st[b.getAttribute("data-key")];
-      b.addEventListener("change", function () { st[b.getAttribute("data-key")] = b.checked; set("tm_bag", st); upd(); });
+      b.addEventListener("change", function () { st[b.getAttribute("data-key")] = b.checked; set(storeKey, st); upd(); });
     });
-    $("#bag-reset").addEventListener("click", function () { st = {}; set("tm_bag", st); boxes.forEach(function (b) { b.checked = false; }); upd(); });
+    $("#bag-reset").addEventListener("click", function () { st = {}; set(storeKey, st); boxes.forEach(function (b) { b.checked = false; }); upd(); });
     upd();
   }
 
@@ -659,5 +819,6 @@
     $(".chat-form", panel).addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); input.value = ""; });
   }
 
-  freshness(); tips(); menu(); dueTool(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery(); bot();
+  freshness(); tips(); menu(); dueTool(); homeTabs(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery();
+  vaccines(); milk(); names(); fertility(); labour(); bot();
 })();

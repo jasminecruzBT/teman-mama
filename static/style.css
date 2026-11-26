@@ -463,3 +463,106 @@ html.pinned .chat-panel { right: 24px; }
 .stat-big { margin: 4px 0 2px; font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
 .stat-small { margin: 0; font-size: .82rem; color: var(--muted); }
 @media (min-width: 640px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- new section colours */
+.t-fert .mi-ico, .t-fert .tool-ico, .t-fert .ph-ico { background: #ffe3ef; }
+.t-names .mi-ico, .t-names .tool-ico, .t-names .ph-ico { background: #fff4c9; }
+.t-labour .mi-ico, .t-labour .tool-ico, .t-labour .ph-ico { background: #e6ecff; }
+.t-vax .mi-ico, .t-vax .tool-ico, .t-vax .ph-ico { background: #dff3f7; }
+.t-milk .mi-ico, .t-milk .tool-ico, .t-milk .ph-ico { background: #fbe7e1; }
+.t-kit .mi-ico, .t-kit .tool-ico, .t-kit .ph-ico { background: #e8f5df; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mi-ico { background: var(--faint) !important; } }
+
+/* ---------- menu groups */
+.menu-group { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 4px; }
+.menu-panel > ul > li:first-child + .menu-group { padding-top: 10px; }
+
+/* ---------- home stage tabs */
+.stages { margin: 26px 0 8px; }
+.stage-tabs { display: flex; gap: 6px; background: var(--faint); padding: 5px; border-radius: 999px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
+.stage-tab { flex: 1; white-space: nowrap; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: .9rem; font-weight: 600; padding: 9px 14px; border-radius: 999px; cursor: pointer; }
+.stage-tab[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+
+/* ---------- pantang: pills, segmented radio, tradition cards, richer timeline */
+.field-label { font-weight: 600; font-size: .88rem; color: var(--muted); margin: 0 0 8px; }
+.pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.pill-opt { border: 0; font: inherit; font-weight: 600; font-size: .9rem; padding: 9px 14px; border-radius: 14px; background: var(--faint); color: var(--ink); cursor: pointer; box-shadow: inset 0 0 0 1px transparent; }
+.pill-opt small { color: var(--muted); font-weight: 500; }
+.pill-opt[aria-pressed="true"] { background: var(--brand-soft); color: var(--brand); box-shadow: inset 0 0 0 1.5px var(--brand); }
+.seg-radio label { flex: 1; position: relative; cursor: pointer; }
+.seg-radio input { position: absolute; opacity: 0; }
+.seg-radio span { display: block; text-align: center; padding: 8px 10px; border-radius: 999px; color: var(--muted); font-size: .88rem; }
+.seg-radio input:checked + span { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--shadow); }
+.seg-radio input:focus-visible + span { outline: 2px solid var(--brand); }
+#pantang-tool .due-row { margin-top: 4px; }
+.p-stats { margin: 18px 0 6px; }
+.stat .progress { margin: 8px 0 0; height: 6px; }
+.tl2 li { display: flex; gap: 12px; padding-left: 0; border-left: 0; margin-left: 0; padding-bottom: 12px; }
+.tl2 li::before { display: none; }
+.tl-ico { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: 12px; background: var(--faint); font-size: 1rem; }
+.tl2 li.next .tl-ico { background: var(--brand-soft); box-shadow: 0 0 0 2px var(--brand); }
+.tl2 .badge { margin-left: 4px; }
+.trad-grid { display: grid; gap: 10px; }
+.trad-card { background: var(--surface); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.trad-card h3 { margin: 8px 0 6px; font-size: .98rem; }
+.trad-card p { margin: 0; font-size: .9rem; color: var(--muted); }
+.trad-ico { font-size: 1.6rem; }
+@media (min-width: 700px) { .trad-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- vaccines */
+.vax-list { list-style: none; padding: 0; margin: 14px 0 0; }
+.vax-list li { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 1px solid var(--line); margin: 0; }
+.vax-list li:last-child { border-bottom: 0; }
+.vax-check input { width: 22px; height: 22px; accent-color: var(--brand); }
+.vax-main { flex: 1; min-width: 0; }
+.vax-main strong { display: block; font-size: .95rem; }
+.vax-age { font-size: .74rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: .05em; }
+.vax-date { font-size: .85rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.vax-list li.done { opacity: .55; }
+.vax-list li.done strong { text-decoration: line-through; }
+.vax-list li.next { background: var(--brand-soft); border-radius: 12px; padding-left: 10px; padding-right: 10px; }
+.grow { flex: 1; margin: 0; }
+
+/* ---------- breast milk */
+.milk-list { list-style: none; padding: 0; margin: 0 0 16px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); }
+.milk-list li { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); margin: 0; }
+.milk-list li:last-child { border-bottom: 0; }
+.ms-ico { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: 12px; background: var(--faint); }
+.milk-list div { flex: 1; }
+.ms-time { font-weight: 800; white-space: nowrap; }
+#milk-result .stat { margin-top: 12px; }
+
+/* ---------- names */
+.nm-seg { margin: 10px 0 6px; }
+.nm-list { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
+.nm-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--faint); margin: 0; }
+.nm-list li strong { display: block; font-size: 1.02rem; }
+.nm-list li .muted { font-size: .85rem; }
+.nm-list li.nm-m { border-left: 3px solid #7aa7f0; } .nm-list li.nm-f { border-left: 3px solid #f07da1; }
+.nm-fav { border: 0; background: none; font-size: 1.3rem; color: var(--brand); cursor: pointer; min-width: 40px; min-height: 40px; }
+@media (min-width: 640px) { .nm-list { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- fertility / milk fields */
+.fert-fields { grid-template-columns: 1fr !important; }
+@media (min-width: 560px) { .fert-fields { grid-template-columns: 1fr 1fr !important; } }
+.fert-fields input[type="datetime-local"] { display: block; width: 100%; margin-top: 6px; font: inherit; color: var(--ink); background: var(--faint); border: 1px solid transparent; border-radius: 12px; padding: 10px 12px; min-height: 46px; }
+
+/* ---------- labour tools */
+.center { text-align: center; }
+.kick-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 160px; height: 160px; margin: 8px auto 4px; border-radius: 50%; border: 0; cursor: pointer;
+  background: radial-gradient(circle at 30% 30%, #f7a8c4, var(--brand)); color: #fff; box-shadow: 0 10px 30px rgba(184, 50, 94, .35); font: inherit; transition: transform .08s ease; }
+.kick-btn:active { transform: scale(.95); }
+.kick-btn span { font-size: 3rem; font-weight: 800; line-height: 1; }
+.kick-btn small { font-size: .75rem; opacity: .9; margin-top: 4px; }
+.con-btn { width: 100%; min-height: 56px; font-size: 1.05rem; }
+.con-btn.running { background: var(--accent); }
+.con-log { list-style: none; padding: 0; margin: 8px 0 0; font-size: .85rem; }
+.con-log li { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); margin: 0; color: var(--muted); }
+.con-log strong { color: var(--ink); }
+
+/* ---------- checklist grid (newborn) */
+.check-grid { display: grid; gap: 12px; }
+.check-grid .card { margin: 0; }
+@media (min-width: 760px) { .check-grid { grid-template-columns: 1fr 1fr; } }
+
+@media (max-width: 480px) { .stage-tab { flex: 1 1 0; min-width: 0; white-space: normal; line-height: 1.2; font-size: .8rem; padding: 8px 6px; } .stage-tabs { border-radius: 16px; } .stage-tab { border-radius: 12px; } }

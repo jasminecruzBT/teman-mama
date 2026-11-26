@@ -15,6 +15,7 @@ import shutil
 from urllib.parse import quote_plus
 
 import config
+from content import extra
 from content import weeks as wk
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -35,13 +36,22 @@ def tr(lang):
 
 
 NAV = [
-    # (page, English, Malay, icon, colour class)
+    # (page, English, Malay, icon, colour class); entries starting with "#" are group headings
     ("index.html", "Home", "Utama", "🏠", "t-home"),
+    ("#preg", "Pregnant", "Sedang hamil", "🤰", ""),
     ("weeks/index.html", "Week by week", "Minggu demi minggu", "📅", "t-weeks"),
-    ("pantang.html", "Pantang planner", "Perancang pantang", "🍲", "t-pantang"),
-    ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
+    ("fertility.html", "Fertile days", "Hari subur", "🌸", "t-fert"),
+    ("names.html", "Baby names", "Nama bayi", "✨", "t-names"),
+    ("labour.html", "Kicks & contractions", "Tendangan & kontraksi", "⏱️", "t-labour"),
     ("hospital-bag.html", "Hospital bag", "Beg hospital", "👜", "t-bag"),
+    ("confinement-cost.html", "Confinement cost", "Kos berpantang", "💰", "t-cost"),
+    ("#new", "New mum", "Ibu baharu", "👶", ""),
+    ("pantang.html", "Pantang planner", "Perancang pantang", "🍲", "t-pantang"),
+    ("vaccines.html", "Vaccination dates", "Jadual imunisasi", "💉", "t-vax"),
+    ("breastmilk.html", "Breast milk storage", "Simpan susu ibu", "🤱", "t-milk"),
+    ("newborn.html", "Newborn essentials", "Barang bayi baru lahir", "🧺", "t-kit"),
     ("leave.html", "Maternity leave", "Cuti bersalin", "🗓️", "t-leave"),
+    ("#kids", "Mum & kids", "Ibu & anak", "🧒", ""),
     ("prices.html", "Milk & diaper prices", "Harga susu & lampin", "🍼", "t-prices"),
     ("nursery.html", "Taska & tadika", "Taska & tadika", "🧸", "t-nursery"),
 ]
@@ -122,6 +132,16 @@ JS_STR = {
         "nuArea": "your area",
         "qDays": "days", "qPerDay": "/day", "qOneMore": "Add one more quote to compare.",
         "wcWeek": "Week {w}", "wcDays": "+ {d} days",
+        "pEndsLbl": "Pantang ends", "pDaysN": "{n}-day pantang", "pTodayLbl": "Today", "pDayOf": "Day {d} of {n}",
+        "pStartsLbl": "Pantang starts", "pInDays": "in {n} days", "pCheckLbl": "Postnatal check-up", "pCheckSmall": "around 6 weeks after birth", "pNext": "Next",
+        "vaxBirth": "At birth", "vaxMonths": "{m} months",
+        "milkUseBy": "Use by", "milkLabel": "Write on the bag: expressed {a}",
+        "nmFav": "Save to favourites", "nmNone": "No names match.",
+        "fWindow": "Most fertile days", "fWindowSmall": "best chance of pregnancy", "fOv": "Likely ovulation", "fNext": "Next period",
+        "fDue": "If you conceive this cycle, due around {d}",
+        "kickIdle": "Tap each time you feel a movement.", "kickRunning": "{m} min since your first tap", "kickDone": "10 movements in {m} min",
+        "conStart": "Start contraction", "conStop": "Stop", "conLasts": "lasts", "conApart": "apart",
+        "conAvg": "Last few: about {gap} apart, lasting {len}.", "conHint": "Tap Start when a contraction begins and Stop when it ends.",
         "nuOneMore": "Add one more taska or tadika to compare.", "nuYear": "first year", "nuMonth": "/month",
         "nuNotReg": "Not ticked as registered - ask to see the JKM / KPM certificate",
         "nuOption": "Option {n}", "nuCheapest": "Lowest first-year cost",
@@ -185,6 +205,16 @@ JS_STR = {
         "nuArea": "kawasan anda",
         "qDays": "hari", "qPerDay": "/hari", "qOneMore": "Tambah satu lagi sebut harga untuk dibandingkan.",
         "wcWeek": "Minggu {w}", "wcDays": "+ {d} hari",
+        "pEndsLbl": "Pantang tamat", "pDaysN": "Pantang {n} hari", "pTodayLbl": "Hari ini", "pDayOf": "Hari {d} / {n}",
+        "pStartsLbl": "Pantang bermula", "pInDays": "{n} hari lagi", "pCheckLbl": "Pemeriksaan postnatal", "pCheckSmall": "lebih kurang 6 minggu selepas bersalin", "pNext": "Seterusnya",
+        "vaxBirth": "Semasa lahir", "vaxMonths": "{m} bulan",
+        "milkUseBy": "Guna sebelum", "milkLabel": "Tulis pada beg: diperah {a}",
+        "nmFav": "Simpan sebagai kegemaran", "nmNone": "Tiada nama sepadan.",
+        "fWindow": "Hari paling subur", "fWindowSmall": "peluang hamil paling tinggi", "fOv": "Ovulasi dijangka", "fNext": "Haid seterusnya",
+        "fDue": "Jika hamil kitaran ini, jangkaan lahir sekitar {d}",
+        "kickIdle": "Tekan setiap kali anda rasa bayi bergerak.", "kickRunning": "{m} minit sejak tekanan pertama", "kickDone": "10 gerakan dalam {m} minit",
+        "conStart": "Mula kontraksi", "conStop": "Berhenti", "conLasts": "tempoh", "conApart": "jarak",
+        "conAvg": "Beberapa terakhir: jarak lebih kurang {gap}, tempoh {len}.", "conHint": "Tekan Mula apabila kontraksi bermula dan Berhenti apabila tamat.",
         "nuOneMore": "Tambah satu lagi taska atau tadika untuk dibandingkan.", "nuYear": "tahun pertama", "nuMonth": "/bulan",
         "nuNotReg": "Tidak ditanda berdaftar - minta untuk melihat sijil JKM / KPM",
         "nuOption": "Pilihan {n}", "nuCheapest": "Kos tahun pertama paling rendah",
@@ -229,6 +259,12 @@ BOT_KW = {
     "birthreg": ["register", "daftar", "birth certificate", "sijil lahir", "sijil kelahiran", "=jpn", "mykid"],
     "feedback": ["feedback", "cadangan", "suggest", "improve", "tambah baik", "complain", "aduan", "contact", "hubungi",
                  "=bug", "salah", "wrong"],
+    "milkstore": ["simpan susu", "susu perah", "susu perahan", "=ebm", "freezer", "peti sejuk", "breast milk storage", "store breast milk",
+                  "expressed milk", "tahan berapa lama", "how long breast milk"],
+    "names": ["nama bayi", "nama anak", "baby name", "nama lelaki", "nama perempuan", "maksud nama", "name meaning"],
+    "fertile": ["hari subur", "ovulasi", "ovulation", "subur", "nak hamil", "cuba hamil", "trying to conceive", "=ttc", "fertile"],
+    "kicks": ["tendangan", "kick count", "kick counter", "kira tendangan", "kontraksi", "contraction", "sakit nak bersalin", "labour pain", "labor"],
+    "essentials": ["barang bayi", "barang baby", "newborn essentials", "what to buy", "beli apa", "baby list", "persediaan bayi"],
     "hello": ["=hi", "=hello", "=hai", "=helo", "=hey", "salam", "assalamualaikum", "good morning", "selamat pagi"],
     "thanks": ["thank", "terima kasih", "=tq", "=tqvm", "=ty"],
 }
@@ -259,15 +295,28 @@ BOT_ANS = {  # id: (page or "", English answer, Malay answer, English link text,
     "breastfeed": ("hospital-bag.html", "Breast milk is the best food for babies - the Ministry of Health recommends only breast milk for the first 6 months. For latching or supply worries, ask your clinic's or hospital's lactation nurse.",
                    "Susu ibu ialah makanan terbaik untuk bayi - Kementerian Kesihatan mengesyorkan susu ibu sahaja untuk 6 bulan pertama. Jika ada masalah penyusuan, tanya jururawat laktasi di klinik atau hospital.",
                    "Breastfeeding items for your bag", "Barang penyusuan untuk beg anda"),
-    "vaccine": ("pantang.html", "Babies usually get their first vaccines (BCG and Hepatitis B) at birth. After that, follow the schedule in your baby's health book at your klinik kesihatan.",
+    "vaccine": ("vaccines.html", "Babies usually get their first vaccines (BCG and Hepatitis B) at birth. After that, follow the schedule in your baby's health book at your klinik kesihatan.",
                 "Bayi biasanya menerima vaksin pertama (BCG dan Hepatitis B) semasa lahir. Selepas itu, ikut jadual dalam buku kesihatan bayi di klinik kesihatan.",
-                "See your after-birth timeline", "Lihat jadual selepas bersalin"),
+                "See your baby's vaccine dates", "Lihat tarikh vaksin bayi"),
     "birthreg": ("pantang.html", "Register the birth with JPN - in Peninsular Malaysia within 60 days (many hospitals have a JPN counter). Bring both parents' MyKad and your marriage certificate.",
                  "Daftar kelahiran di JPN - di Semenanjung dalam tempoh 60 hari (banyak hospital ada kaunter JPN). Bawa MyKad kedua-dua ibu bapa dan sijil nikah.",
                  "See your after-birth timeline", "Lihat jadual selepas bersalin"),
     "feedback": ("feedback.html", "Thank you! Tell us what to fix or add - it takes a minute.",
                  "Terima kasih! Beritahu kami apa yang perlu dibaiki atau ditambah - hanya seminit.",
                  "Suggest an improvement", "Hantar cadangan"),
+    "milkstore": ("breastmilk.html", "KKM says expressed milk keeps 4 hours at room temperature, 8 hours in an air-conditioned room, 3-5 days in the fridge and 6 months in a deep freezer.",
+                  "KKM: susu perahan tahan 4 jam pada suhu bilik, 8 jam dalam bilik berhawa dingin, 3-5 hari dalam peti sejuk dan 6 bulan dalam peti sejuk beku.",
+                  "Breast milk storage guide", "Panduan simpan susu ibu"),
+    "names": ("names.html", "Browse Malay and Islamic baby names with their meanings, and save your favourites.",
+              "Lihat nama bayi Melayu dan Islam beserta maksud, dan simpan pilihan kegemaran anda.", "Browse baby names", "Lihat nama bayi"),
+    "fertile": ("fertility.html", "Ovulation is usually about 14 days before your next period. The calculator shows your likely fertile days.",
+                "Ovulasi biasanya lebih kurang 14 hari sebelum haid seterusnya. Kalkulator menunjukkan hari subur anda.", "Find your fertile days", "Cari hari subur anda"),
+    "kicks": ("labour.html", "Count your baby's kicks or time your contractions. If movements slow down, or contractions come regularly and get stronger, call your hospital.",
+              "Kira tendangan bayi atau masa kontraksi. Jika gerakan berkurang, atau kontraksi datang secara tetap dan semakin kuat, hubungi hospital.",
+              "Open kick counter & contraction timer", "Buka pengira tendangan & kontraksi"),
+    "essentials": ("newborn.html", "Our newborn checklist covers sleeping, feeding, bathing, diapers, clothes and going out.",
+                   "Senarai semak bayi baru lahir merangkumi tidur, menyusu, mandi, lampin, pakaian dan keluar rumah.",
+                   "Open newborn checklist", "Buka senarai barang bayi"),
     "hello": ("", "Hi! Ask me about your pregnancy week, pantang, confinement costs, maternity leave, milk prices or taska.",
               "Hai! Tanya saya tentang minggu kehamilan, pantang, kos berpantang, cuti bersalin, harga susu atau taska.", "", ""),
     "thanks": ("", "You're welcome! Take care.", "Sama-sama! Jaga diri.", "", ""),
@@ -386,6 +435,9 @@ def write_page(lang, path, title, desc, body, data=None):
     # Menu: one button on the left that drops down the list of sections (built on <details>, works without JS).
     items, current = [], x("Menu", "Menu")
     for href, en, ms, ico, cls in NAV:
+        if href.startswith("#"):
+            items.append(f'<li class="menu-group"><span aria-hidden="true">{ico}</span> {esc(x(en, ms))}</li>')
+            continue
         active = href == path or (href == "weeks/index.html" and path.startswith("weeks/"))
         label = x(en, ms) if href != "prices.html" else x("Prices", "Harga")
         if active and href != "index.html":
@@ -534,6 +586,161 @@ HERO_SVG = """<svg class="hero-art" viewBox="0 0 640 200" role="img" aria-hidden
 
 # ---------------------------------------------------------------- pages
 
+def p_fertility(lang):
+    x = tr(lang)
+    body = f"""
+{page_head(x, "🌸", "t-fert", x("Trying for a baby", "Merancang kehamilan"), x("Fertile days calculator", "Kalkulator hari subur"),
+           x("Find the days you're most likely to conceive.", "Cari hari peluang hamil paling tinggi."), extra=tip(x("Ovulation usually happens about 14 days before your next period. Your fertile window is the 5 days before ovulation and the day after. Cycles vary - this is an estimate, not contraception.",
+                                                                                                                  "Ovulasi biasanya berlaku lebih kurang 14 hari sebelum haid seterusnya. Tempoh subur ialah 5 hari sebelum ovulasi dan sehari selepasnya. Kitaran berbeza - ini anggaran, bukan kaedah perancang keluarga."), x))}
+<section class="card" id="fert-tool">
+  <div class="q-fields fert-fields">
+    <label class="field">{x("First day of your last period", "Hari pertama haid terakhir")}<input type="date" id="fert-lmp"></label>
+    <label class="field">{x("Cycle length (days)", "Panjang kitaran (hari)")}<input type="number" id="fert-cycle" min="21" max="40" value="28" inputmode="numeric"></label>
+  </div>
+  <div id="fert-result" aria-live="polite"></div>
+</section>
+{ad("in_content", x)}
+<details class="acc"><summary>{x("Tips when trying to conceive", "Tip ketika merancang kehamilan")}</summary><ul>
+<li>{x("Start folic acid before you conceive - ask your pharmacist or klinik kesihatan.", "Mulakan asid folik sebelum hamil - tanya ahli farmasi atau klinik kesihatan.")}</li>
+<li>{x("Track a few cycles: if yours vary a lot, the dates here will too.", "Catat beberapa kitaran: jika kitaran anda banyak berubah, tarikh di sini juga berubah.")}</li>
+<li>{x("See a doctor if you haven't conceived after a year of trying (or 6 months if you're 35 or older).", "Jumpa doktor jika belum hamil selepas setahun mencuba (atau 6 bulan jika berumur 35 tahun ke atas).")}</li>
+</ul></details>
+"""
+    write_page(lang, "fertility.html", x("Fertile days & ovulation calculator", "Kalkulator hari subur & ovulasi"),
+               x("Free fertile days and ovulation calculator: find your most fertile days, likely ovulation and next period.",
+                 "Kalkulator hari subur dan ovulasi percuma: cari hari paling subur, tarikh ovulasi dan haid seterusnya."), body)
+
+
+def p_names(lang):
+    x = tr(lang)
+    data = [[n, g, (mm if lang == "ms" else me)] for n, g, me, mm in extra.NAMES]
+    body = f"""
+{page_head(x, "✨", "t-names", x("Pregnant", "Sedang hamil"), x("Baby names", "Nama bayi"),
+           x("Malay and Islamic names with their meanings.", "Nama Melayu dan Islam beserta maksudnya."), extra=tip(x("Meanings are common interpretations - many names have more than one. Check with a trusted source or ustaz/ustazah before deciding.",
+                                                                                                                        "Maksud ialah tafsiran biasa - banyak nama mempunyai lebih daripada satu maksud. Semak dengan sumber dipercayai atau ustaz/ustazah sebelum memutuskan."), x))}
+<section class="card" id="names-tool">
+  <div class="search-row"><input type="search" id="nm-q" placeholder="{x("Search a name or meaning, e.g. light", "Cari nama atau maksud, cth. cahaya")}" aria-label="{x("Search names", "Cari nama")}"></div>
+  <div class="seg nm-seg">
+    <button type="button" data-f="all" aria-pressed="true">{x("All", "Semua")}</button>
+    <button type="button" data-f="m" aria-pressed="false">{x("Boys", "Lelaki")}</button>
+    <button type="button" data-f="f" aria-pressed="false">{x("Girls", "Perempuan")}</button>
+    <button type="button" data-f="fav" aria-pressed="false">♥ {x("Saved", "Disimpan")}</button>
+  </div>
+  <ul class="nm-list" id="nm-list"></ul>
+</section>
+{ad("bottom", x)}
+"""
+    write_page(lang, "names.html", x("Malay & Islamic baby names with meanings", "Nama bayi Melayu & Islam beserta maksud"),
+               x("Browse Malay and Islamic baby names for boys and girls with their meanings, and save your favourites.",
+                 "Senarai nama bayi lelaki dan perempuan Melayu dan Islam beserta maksud - simpan nama kegemaran anda."), body, {"names": data})
+
+
+def p_labour(lang):
+    x = tr(lang)
+    body = f"""
+{page_head(x, "⏱️", "t-labour", x("Third trimester", "Trimester ketiga"), x("Kick counter & contraction timer", "Pengira tendangan & masa kontraksi"),
+           x("Simple tools for the last weeks. Saved only on this phone.", "Alat mudah untuk minggu-minggu terakhir. Disimpan dalam telefon ini sahaja."))}
+<div class="info-grid">
+<section class="card" id="kick-tool">
+  <h2><span aria-hidden="true">👣</span> {x("Kick counter", "Pengira tendangan")} {tip(x("From about 28 weeks, get to know your baby's usual pattern. Pick a time when baby is usually active and count movements. If movements slow down or change, go to your clinic or hospital the same day - don't wait.",
+                                                                                     "Dari lebih kurang 28 minggu, kenali corak biasa bayi. Pilih waktu bayi biasanya aktif dan kira gerakan. Jika gerakan berkurang atau berubah, pergi ke klinik atau hospital pada hari yang sama - jangan tunggu."), x)}</h2>
+  <button type="button" class="kick-btn" id="kick-btn"><span id="kick-count">0</span><small>{x("tap for each movement", "tekan setiap gerakan")}</small></button>
+  <p class="hint center" id="kick-time"></p>
+  <p class="center"><button type="button" class="link-btn muted" id="kick-reset">{x("Start again", "Mula semula")}</button></p>
+</section>
+<section class="card" id="con-tool">
+  <h2><span aria-hidden="true">⏱️</span> {x("Contraction timer", "Pemasa kontraksi")} {tip(x("Time from the start of one contraction to the start of the next. Contractions that come regularly, get stronger and closer together may mean labour is starting - call your hospital for advice. Go straight away if your waters break, you bleed, or baby moves less.",
+                                                                                        "Kira dari permulaan satu kontraksi ke permulaan kontraksi seterusnya. Kontraksi yang datang secara tetap, semakin kuat dan rapat mungkin tanda bersalin bermula - hubungi hospital untuk nasihat. Pergi segera jika air ketuban pecah, berdarah, atau bayi kurang bergerak."), x)}</h2>
+  <button type="button" class="btn con-btn" id="con-btn">{x("Start contraction", "Mula kontraksi")}</button>
+  <p class="hint" id="con-sum"></p>
+  <ol class="con-log" id="con-log"></ol>
+  <p><button type="button" class="link-btn muted" id="con-reset">{x("Clear", "Padam")}</button></p>
+</section>
+</div>
+{danger(x)}
+{ad("in_content", x)}
+"""
+    write_page(lang, "labour.html", x("Kick counter & contraction timer", "Pengira tendangan & pemasa kontraksi"),
+               x("Free baby kick counter and contraction timer for the last weeks of pregnancy.", "Pengira tendangan bayi dan pemasa kontraksi percuma untuk minggu-minggu akhir kehamilan."), body)
+
+
+def p_vaccines(lang):
+    x = tr(lang)
+    vax = [[m, (vm if lang == "ms" else ve), (nm if lang == "ms" else ne)] for m, ve, vm, ne, nm in extra.VACCINES]
+    body = f"""
+{page_head(x, "💉", "t-vax", x("New mum", "Ibu baharu"), x("Vaccination dates", "Jadual imunisasi"),
+           x("Your baby's free KKM vaccines, with dates.", "Vaksin percuma KKM untuk bayi anda, beserta tarikh."), extra=tip(x("Based on KKM's National Immunisation Programme. Ages can differ by state and clinic, so always follow your baby's health record book and your klinik kesihatan. Vaccines in the programme are free at government clinics.",
+                                                                                                                                  "Berdasarkan Program Imunisasi Kebangsaan KKM. Umur boleh berbeza mengikut negeri dan klinik, jadi sentiasa ikut buku rekod kesihatan bayi dan klinik kesihatan anda. Vaksin dalam program ini percuma di klinik kerajaan."), x))}
+<section class="card" id="vax-tool">
+  <div class="due-row"><label class="field grow">{x("Baby's birth date", "Tarikh lahir bayi")}<input type="date" id="vax-birth"></label></div>
+  <div id="vax-result" aria-live="polite"></div>
+  <p class="hint">{x("Tick each vaccine when it's done - saved on this phone.", "Tandakan setiap vaksin yang sudah diambil - disimpan dalam telefon ini.")}</p>
+</section>
+{ad("in_content", x)}
+<details class="acc"><summary>{x("After a vaccine", "Selepas vaksin")}</summary><ul>
+<li>{x("A little fever, fussiness or a sore spot is common for a day or two.", "Demam sedikit, meragam atau bengkak di tempat suntikan adalah biasa selama sehari dua.")}</li>
+<li>{x("Get medical help straight away for a high fever, fits, a floppy or unusually sleepy baby, or trouble breathing.", "Dapatkan rawatan segera jika demam tinggi, sawan, bayi lembik atau terlalu mengantuk, atau sukar bernafas.")}</li>
+<li>{x("Missed a date? Go to your klinik kesihatan - they will catch your baby up.", "Terlepas tarikh? Pergi ke klinik kesihatan - mereka akan menyusun semula jadual.")}</li>
+</ul></details>
+"""
+    write_page(lang, "vaccines.html", x("Baby vaccination schedule Malaysia (KKM)", "Jadual imunisasi bayi Malaysia (KKM)"),
+               x("Malaysia's baby vaccination schedule (KKM National Immunisation Programme) with your baby's dates - BCG, Hepatitis B, 6-in-1, pneumococcal and MMR.",
+                 "Jadual imunisasi bayi Malaysia (Program Imunisasi Kebangsaan KKM) beserta tarikh bayi anda - BCG, Hepatitis B, 6-dalam-1, pneumokokal dan MMR."), body, {"vax": vax})
+
+
+def p_breastmilk(lang):
+    x = tr(lang)
+    rows = "".join(f'<li><span class="ms-ico" aria-hidden="true">{ic}</span><div><strong>{esc(x(pe, pm))}</strong>{f" <span class=muted>{t}</span>" if t else ""}</div>'
+                   f'<span class="ms-time">{esc(x(he, hm))}</span></li>' for k, ic, pe, pm, t, h, he, hm in extra.MILK)
+    opts = "".join(f'<option value="{k}" data-h="{h}">{esc(x(pe, pm))}{(" (" + t + ")") if t else ""}</option>' for k, ic, pe, pm, t, h, he, hm in extra.MILK)
+    body = f"""
+{page_head(x, "🤱", "t-milk", x("New mum", "Ibu baharu"), x("Breast milk storage", "Simpan susu ibu"),
+           x("How long expressed milk keeps, from KKM's guide.", "Berapa lama susu perahan tahan, mengikut panduan KKM."), extra=tip(x("Times from the Ministry of Health's nutrition division poster for working mothers (Penyusuan Susu Ibu - Ibu Bekerja). Ask your clinic if your baby is premature or unwell - times can be shorter.",
+                                                                                                                                         "Tempoh daripada poster Bahagian Pemakanan KKM untuk ibu bekerja (Penyusuan Susu Ibu - Ibu Bekerja). Tanya klinik jika bayi pramatang atau kurang sihat - tempohnya mungkin lebih singkat."), x))}
+<ul class="milk-list">{rows}</ul>
+<section class="card" id="milk-tool">
+  <h2><span aria-hidden="true">🏷️</span> {x("Label calculator", "Kalkulator label")}</h2>
+  <div class="q-fields fert-fields">
+    <label class="field">{x("Expressed at", "Diperah pada")}<input type="datetime-local" id="milk-when"></label>
+    <label class="field">{x("Stored in", "Disimpan di")}<select id="milk-where">{opts}</select></label>
+  </div>
+  <div id="milk-result" aria-live="polite"></div>
+</section>
+{ad("in_content", x)}
+<details class="acc"><summary>{x("Good habits", "Amalan baik")}</summary><ul>
+<li>{x("Store milk in a clean, closed container or bag and label it with the date and time.", "Simpan susu dalam bekas atau beg yang bersih dan bertutup, dan labelkan dengan tarikh dan masa.")}</li>
+<li>{x("Use the oldest milk first.", "Guna susu yang paling lama dahulu.")}</li>
+<li>{x("Thaw frozen milk in the chiller overnight. Once thawed, don't freeze it again.", "Cairkan susu beku dalam bahagian dingin semalaman. Susu yang sudah cair tidak boleh dibekukan semula.")}</li>
+<li>{x("Warm it in a bowl of warm water - never in a microwave - and test it on your wrist.", "Panaskan dalam mangkuk air suam - jangan guna ketuhar gelombang mikro - dan uji pada pergelangan tangan.")}</li>
+</ul></details>
+"""
+    write_page(lang, "breastmilk.html", x("Breast milk storage guide (KKM)", "Panduan simpan susu ibu (KKM)"),
+               x("How long expressed breast milk lasts at room temperature, in the fridge and freezer, from Malaysia's Ministry of Health guide.",
+                 "Berapa lama susu ibu perahan tahan pada suhu bilik, dalam peti sejuk dan peti sejuk beku, mengikut panduan KKM."), body)
+
+
+def p_newborn(lang):
+    x = tr(lang)
+    secs = []
+    for te, tm, items in extra.ESSENTIALS:
+        lis = "".join(
+            f'<li><label class="check"><input type="checkbox" data-key="nb_{k}"> {esc(x(en, ms))}</label>'
+            f'{shop(aff, en, x) if aff else ""}</li>' for k, en, ms, aff in items)
+        secs.append(f'<section class="card"><h2>{esc(x(te, tm))}</h2><ul class="checklist">{lis}</ul></section>')
+    body = f"""
+<div data-store="tm_newborn"></div>
+{page_head(x, "🧺", "t-kit", x("New mum", "Ibu baharu"), x("Newborn essentials", "Barang bayi baru lahir"), extra=tip(x("A starting list - you won't need everything at once. 'Shop' links open Shopee; some are affiliate links, so we may earn a small commission at no extra cost to you.",
+                                                                                                                    "Senarai permulaan - anda tidak perlukan semuanya sekali gus. Pautan 'Beli' membuka Shopee; sesetengahnya pautan afiliasi, jadi kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda."), x))}
+<div class="bag-progress card"><div class="bp-top"><strong id="bag-progress" aria-live="polite"></strong><button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button></div>
+<div class="progress"><span id="bag-bar" style="width:0%"></span></div></div>
+<div class="check-grid">{"".join(secs)}</div>
+{ad("in_content", x)}
+"""
+    write_page(lang, "newborn.html", x("Newborn baby checklist Malaysia", "Senarai barang bayi baru lahir"),
+               x("What to buy before your baby arrives: sleeping, feeding, bathing, diapers, clothes and car seat - a free checklist saved on your phone.",
+                 "Apa perlu dibeli sebelum bayi lahir: tidur, menyusu, mandi, lampin, pakaian dan kerusi kereta - senarai semak percuma."), body)
+
+
 def p_feedback(lang):
     x = tr(lang)
     url = config.FEEDBACK_FORM_URL
@@ -561,10 +768,27 @@ def p_home(lang):
         ("prices.html", "🍼", "Milk & diaper prices", "Harga susu & lampin", "Cheapest shops near you", "Kedai termurah berhampiran", "t-prices"),
         ("nursery.html", "🧸", "Taska & tadika", "Taska & tadika", "Childcare near you", "Penjagaan anak berhampiran", "t-nursery"),
     ]
-    cards = "".join(
-        f'<a class="tool-card {c}" href="{h}"><span class="tool-ico" aria-hidden="true">{i}</span>'
-        f'<span><strong>{esc(x(te, tm))}</strong><span class="muted">{esc(x(de, dm))}</span></span></a>'
-        for h, i, te, tm, de, dm, c in tools)
+    desc = {h: (de, dm) for h, i, te, tm, de, dm, c in tools}
+    desc.update({
+        "fertility.html": ("When you're most likely to conceive", "Bila peluang hamil paling tinggi"),
+        "names.html": ("Malay & Islamic names with meanings", "Nama Melayu & Islam beserta maksud"),
+        "labour.html": ("Count kicks, time contractions", "Kira tendangan, masa kontraksi"),
+        "vaccines.html": ("Your baby's KKM vaccine dates", "Tarikh vaksin bayi (KKM)"),
+        "breastmilk.html": ("How long it keeps (KKM)", "Berapa lama tahan (KKM)"),
+        "newborn.html": ("What to buy before baby", "Apa perlu dibeli sebelum bayi"),
+    })
+    stages, cur_stage = [], None
+    for h, en, ms, ico, cls in NAV:
+        if h.startswith("#"):
+            cur_stage = [h[1:], ico, x(en, ms), []]
+            stages.append(cur_stage)
+        elif cur_stage:
+            de, dm = desc.get(h, ("", ""))
+            cur_stage[3].append(f'<a class="tool-card {cls}" href="{h}"><span class="tool-ico" aria-hidden="true">{ico}</span>'
+                                f'<span><strong>{esc(x(en, ms))}</strong><span class="muted">{esc(x(de, dm))}</span></span></a>')
+    stage_tabs = "".join(f'<button type="button" class="stage-tab" role="tab" data-stage="{k}" aria-selected="false"><span aria-hidden="true">{ic}</span> {esc(lbl)}</button>'
+                         for k, ic, lbl, _ in stages)
+    stage_panels = "".join(f'<div class="stage-panel tools" role="tabpanel" data-stage="{k}">{"".join(cs)}</div>' for k, ic, lbl, cs in stages)
     body = f"""
 <section class="hero2">
   <div class="hero-text">
@@ -591,14 +815,14 @@ def p_home(lang):
   <div class="hero-visual">{HERO_SVG}</div>
 </section>
 <div id="due-result" aria-live="polite"></div>
-<section>
-  <h2 class="sec-title">{x("Everything in one place", "Semua di satu tempat")}</h2>
-  <div class="tools">{cards}</div>
+<section class="stages">
+  <div class="stage-tabs" role="tablist" aria-label="{x("Your stage", "Peringkat anda")}">{stage_tabs}</div>
+  {stage_panels}
 </section>
 <ul class="trust">
   <li><span aria-hidden="true">📊</span>{x("Official shop prices from the government's KPDN survey", "Harga kedai rasmi daripada tinjauan KPDN kerajaan")}</li>
   <li><span aria-hidden="true">🔒</span>{x("What you type stays on your phone", "Apa yang anda taip kekal dalam telefon anda")}</li>
-  <li><span aria-hidden="true">🇲🇾</span>{x("Made for Malaysian families", "Dibina untuk keluarga Malaysia")}</li>
+  <li><span aria-hidden="true">💗</span>{x("Made for Malaysian families", "Dibina untuk keluarga Malaysia")}</li>
 </ul>
 {ad("in_content", x)}
 """
@@ -682,13 +906,22 @@ def p_pantang(lang):
          "Common practices: warm home-cooked food with garlic and spices, herbal drinks, oil massage and herbal baths, and plenty of rest.",
          "Amalan biasa: makanan panas masakan rumah dengan bawang putih dan rempah, minuman herba, urutan minyak dan mandi herba, serta banyak berehat."),
     ]
-    cards = "".join(f'<details class="acc"><summary>{esc(x(a, b))}</summary><p>{esc(x(c, d))}</p></details>' for a, b, c, d in trads)
+    ticons = ["🌙", "🏮", "🪔"]
+    cards = "".join(f'<div class="trad-card"><span class="trad-ico" aria-hidden="true">{ticons[i]}</span><h3>{esc(x(a, b))}</h3><p>{esc(x(c, d))}</p></div>'
+                    for i, (a, b, c, d) in enumerate(trads))
     body = f"""
 {page_head(x, "🍲", "t-pantang", x("Pantang", "Pantang"), x("Pantang planner", "Perancang pantang"),
              x("A dated timeline for before and after the birth.", "Jadual bertarikh sebelum dan selepas bersalin."))}
 <section class="card" id="pantang-tool">
-  <label class="field">{x("Tradition", "Tradisi")}
-    <select id="p-trad">
+  <p class="field-label">{x("Your tradition", "Tradisi anda")}</p>
+  <div class="pill-group" role="group" aria-label="{x("Tradition", "Tradisi")}">
+    <button type="button" class="pill-opt" data-v="44"><span aria-hidden="true">🌙</span> {x("Malay", "Melayu")} <small>44 {x("days", "hari")}</small></button>
+    <button type="button" class="pill-opt" data-v="30"><span aria-hidden="true">🏮</span> {x("Chinese", "Cina")} <small>30 {x("days", "hari")}</small></button>
+    <button type="button" class="pill-opt" data-v="40"><span aria-hidden="true">🪔</span> {x("Indian", "India")} <small>40 {x("days", "hari")}</small></button>
+    <button type="button" class="pill-opt" data-v="custom"><span aria-hidden="true">✏️</span> {x("Other", "Lain-lain")}</button>
+  </div>
+  <label class="sr-only">{x("Tradition", "Tradisi")}
+    <select id="p-trad" tabindex="-1">
       <option value="44">{x("Malay - 44 days", "Melayu - 44 hari")}</option>
       <option value="30">{x("Chinese - 30 days", "Cina - 30 hari")}</option>
       <option value="40">{x("Indian - 40 days", "India - 40 hari")}</option>
@@ -696,17 +929,19 @@ def p_pantang(lang):
     </select></label>
   <label class="field" id="p-days-wrap" hidden>{x("Number of days", "Bilangan hari")}
     <input type="number" id="p-days" min="7" max="120" value="40" inputmode="numeric"></label>
-  <fieldset class="field"><legend>{x("I know my baby's", "Saya tahu")}</legend>
-    <label class="radio"><input type="radio" name="p-kind" value="due" checked> {x("due date", "tarikh jangkaan bersalin")}</label>
-    <label class="radio"><input type="radio" name="p-kind" value="birth"> {x("birth date (baby is here)", "tarikh lahir (bayi sudah lahir)")}</label>
-  </fieldset>
-  <label class="field">{x("Date", "Tarikh")}<input type="date" id="p-date"></label>
-  <button type="button" class="btn" id="p-go">{x("Make my timeline", "Buat jadual saya")}</button>
+  <div class="seg seg-radio" role="radiogroup" aria-label="{x("I know my baby's", "Saya tahu")}">
+    <label><input type="radio" name="p-kind" value="due" checked><span>{x("Due date", "Tarikh jangkaan")}</span></label>
+    <label><input type="radio" name="p-kind" value="birth"><span>{x("Baby is born", "Bayi sudah lahir")}</span></label>
+  </div>
+  <div class="due-row">
+    <input type="date" id="p-date" aria-label="{x("Date", "Tarikh")}">
+    <button type="button" class="btn" id="p-go">{x("Make my timeline", "Buat jadual saya")}</button>
+  </div>
   <div id="p-result" aria-live="polite"></div>
 </section>
 {ad("in_content", x)}
 <section><h2>{x("Pantang traditions in Malaysia", "Tradisi berpantang di Malaysia")} {tip(x("Every family is different - these are common practices, not rules.", "Setiap keluarga berbeza - ini amalan biasa, bukan peraturan."), x)}</h2>
-<div class="acc-list">{cards}</div></section>
+<div class="trad-grid">{cards}</div></section>
 <aside class="box note"><h2>{x("Stay safe during pantang", "Berpantang dengan selamat")}</h2><ul>
 <li>{x("Ask your doctor before urut, bertungku or a tight binder - especially after a caesarean, when the wound needs to heal first.",
        "Tanya doktor sebelum berurut, bertungku atau memakai bengkung yang ketat - terutama selepas pembedahan caesarean, kerana luka perlu sembuh dahulu.")}</li>
@@ -1100,6 +1335,8 @@ def p_about(lang):
 <li>{x("Prices: PriceCatcher by KPDN, published on data.gov.my.", "Harga: PriceCatcher oleh KPDN, diterbitkan di data.gov.my.")}</li>
 <li>{x("Leave rules: Employment Act 1955 (amended 2023).", "Peraturan cuti: Akta Kerja 1955 (dipinda 2023).")}</li>
 <li>{x("Baby sizes are rough averages from common pregnancy references.", "Saiz bayi ialah anggaran purata daripada rujukan kehamilan biasa.")}</li>
+<li>{x("Vaccination dates: KKM National Immunisation Programme.", "Tarikh vaksin: Program Imunisasi Kebangsaan KKM.")}</li>
+<li>{x("Breast milk storage: KKM nutrition division (Bahagian Pemakanan) poster for working mothers.", "Simpan susu ibu: poster Bahagian Pemakanan KKM untuk ibu bekerja.")}</li>
 </ul>
 {email}
 """
@@ -1177,6 +1414,12 @@ def main():
         p_about(lang)
         if config.FEEDBACK_FORM_URL:
             p_feedback(lang)
+        p_fertility(lang)
+        p_names(lang)
+        p_labour(lang)
+        p_vaccines(lang)
+        p_breastmilk(lang)
+        p_newborn(lang)
     root_files()
     print(f"built {len(WRITTEN)} pages into {OUT}" + (" (ad preview)" if AD_PREVIEW else ""))
 
