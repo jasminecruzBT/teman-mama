@@ -1605,7 +1605,14 @@ def p_cost(lang):
         centre_cards.append(pcard(x, x("Confinement centre", "Pusat berpantang"), "🏨", c["name"], f'{c["area"]}, {c["state"]}',
                                   x("days not stated", "tempoh tidak dinyatakan") if c.get("days_unstated") else f'{days} {x("days", "hari")}',
                                   f'{x("From", "Dari")} {_rm(c["price_from_rm"])}<small>{_rm(per_day)}{x("/day", "/hari")}</small>', body_, state=c["state"], sort=csort))
-    c_states = sorted({c["state"] for c in CD["centres"]})
+    c_ask = CD.get("centres_ask", [])
+    c_states = sorted({c["state"] for c in CD["centres"]} | {a["state"] for a in c_ask})
+    c_ask_html = ""
+    if c_ask:
+        lis = "".join(f'<li data-state="{esc(a["state"])}"><a href="{esc(a["url"])}" target="_blank" rel="noopener">{esc(a["name"])}</a> '
+                      f'<span class="muted">· {esc(a["area"])}, {esc(a["state"])}</span></li>' for a in c_ask)
+        c_ask_html = (f'<details class="acc" id="centre-ask"><summary>{x(f"{len(c_ask)} more centres with no price online - call them", f"{len(c_ask)} lagi pusat tanpa harga dalam talian - hubungi mereka")}</summary>'
+                      f'<ul>{lis}</ul></details>')
     c_min = min(c["price_from_rm"] for c in CD["centres"])
     typ = {t["id"]: t for t in CD["typical"]}
     def typ_row(tid, en, ms, rng):
@@ -1616,11 +1623,12 @@ def p_cost(lang):
         per = h.get("per_days", 7)
         body_ = (f'<div class="pc-rows"><div>{x("Price", "Harga")}<strong>{x("from", "dari")} {_rm(h["price_from_rm"])}</strong></div>'
                  f'<div>{x("For", "Untuk")}<strong>{per} {x("days", "hari")}</strong></div>'
-                 f'<div>{x("28 days at this rate", "28 hari pada kadar ini")}<strong>~{_rm(round(h["price_from_rm"] * 28 / per))}</strong></div></div>'
+                 + ("" if per == 28 else f'<div>{x("28 days", "28 hari")}<strong>{_rm(h["p28_rm"])}</strong></div>' if h.get("p28_rm")
+                    else f'<div>{x("28 days at this rate", "28 hari pada kadar ini")}<strong>~{_rm(round(h["price_from_rm"] * 28 / per))}</strong></div>') + '</div>'
                  f'<p>{esc(x(h["note_en"], h["note_ms"]))}</p>'
                  f'<p class="pc-actions"><a class="btn" href="{esc(h["source_url"])}" target="_blank" rel="noopener">{x("Their website", "Laman web mereka")} ↗</a>'
                  f'<span class="small muted">{x("checked", "disemak")} {_dmy(h["checked"], lang)}</span></p>')
-        home_cards.append(pcard(x, x("Pantang carer at home", "Penjaga pantang di rumah"), "👩‍🍼", h["name"], x(h["area_en"], h["area_ms"]),
+        home_cards.append(pcard(x, x("Pantang carer at home", "Penjaga pantang di rumah"), "👩‍🍼", x(h["name"], h.get("name_ms", h["name"])), x(h["area_en"], h["area_ms"]),
                                 f'{per} {x("days", "hari")}', f'{x("From", "Dari")} {_rm(h["price_from_rm"])}<small>{x("per", "untuk")} {per} {x("days", "hari")}</small>', body_))
     home_html = (f'<h2 class="sv-head">{x("Home pantang services with a published price", "Perkhidmatan pantang di rumah dengan harga diterbitkan")}</h2>'
                  f'<div class="pgrid">{"".join(home_cards)}</div>') if home_cards else ""
@@ -1644,10 +1652,14 @@ def p_cost(lang):
 {tabpanel("cost", "centres", f"""
 <p class="dp-intro">{x("Centres that publish a price on their own website, cheapest first. Tap a card for details, or add it to your comparison.",
                        "Pusat yang menyiarkan harga di laman web sendiri, paling murah dahulu. Tekan kad untuk butiran, atau tambah ke perbandingan anda.")}</p>
-{state_chips(x, "centre-list", c_states)}
+{state_chips(x, "centre-list", c_states).replace('data-for="centre-list"', 'data-for="centre-list" data-ask="centre-ask"')}
 {sort_select(x, "centre-list", [("price:asc", "Cheapest first", "Paling murah dahulu"), ("price:desc", "Most expensive first", "Paling mahal dahulu"),
                                  ("perday:asc", "Cheapest per day", "Sehari paling murah"), ("name:asc", "Name A-Z", "Nama A-Z"), ("state:asc", "State", "Negeri")])}
 <div class="pgrid" id="centre-list">{"".join(centre_cards)}</div>
+{c_ask_html}
+<aside class="box note"><p>{x("In other states (Kedah, Perlis, Perak, Kelantan, Terengganu, Pahang, Negeri Sembilan, Melaka, Sabah, Sarawak) we checked again in November 2026: no confinement centre publishes its price online. Home pantang services with published prices do cover several of these states -",
+                            "Di negeri lain (Kedah, Perlis, Perak, Kelantan, Terengganu, Pahang, Negeri Sembilan, Melaka, Sabah, Sarawak) kami menyemak semula pada November 2026: tiada pusat berpantang yang menyiarkan harga dalam talian. Perkhidmatan pantang di rumah dengan harga diterbitkan meliputi beberapa negeri ini -")}
+<a href="#nanny">{x("see Nanny at home", "lihat Pengasuh di rumah")} →</a></p></aside>
 <section><h2>{x("Typical prices for 28 days", "Harga biasa untuk 28 hari")} {tip(x("Rough 2026 ranges from price guides (malaysia4u.com). Prices differ a lot by city and by what's included - always get a written quote.",
                                                                               "Anggaran julat 2026 daripada panduan harga (malaysia4u.com). Harga sangat berbeza mengikut bandar dan apa yang termasuk - sentiasa minta sebut harga bertulis."), x)}</h2>
 <ul class="price-list typ-list">

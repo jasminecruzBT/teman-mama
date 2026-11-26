@@ -557,6 +557,11 @@
       counts();
       var h = location.hash.replace("#", ""), saved = get("tm_tab_" + g, ""), def = bar.getAttribute("data-default");
       show(bar.hasAttribute("data-hash") && keys.indexOf(h) >= 0 ? h : keys.indexOf(saved) >= 0 ? saved : keys.indexOf(def) >= 0 ? def : keys[0], false);
+      // in-page links like <a href="#nanny"> switch to that tab
+      if (bar.hasAttribute("data-hash")) window.addEventListener("hashchange", function () {
+        var k = location.hash.replace("#", "");
+        if (keys.indexOf(k) >= 0) { show(k, true); bar.scrollIntoView({ block: "start", behavior: "smooth" }); }
+      });
     });
   }
 

@@ -679,6 +679,20 @@
       "source_url": "https://jmc.my/assets/packages/files/Maternity_Package2025.pdf",
       "checked": "2026-11-26",
       "auto_check": false
+    },
+    {
+      "name": "Putra Medical Centre, Alor Setar",
+      "state": "Kedah",
+      "price_from_rm": 2199,
+      "from": true,
+      "csec_rm": 5200,
+      "csec_from": true,
+      "stay_en": "2 days 1 night · 4-bed room",
+      "stay_ms": "2 hari 1 malam · bilik 4 katil",
+      "note_en": "2-bed room RM2,399, deluxe RM2,799. Caesarean (3 days 2 nights): RM5,200 / RM5,700 / RM6,200. Price for Malaysians.",
+      "note_ms": "Bilik 2 katil RM2,399, deluxe RM2,799. Caesarean (3 hari 2 malam): RM5,200 / RM5,700 / RM6,200. Harga untuk warganegara.",
+      "source_url": "https://pmck.com.my/health_package/maternity-package/",
+      "checked": "2026-11-26"
     }
   ],
   "private_ask": [

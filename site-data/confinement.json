@@ -1,5 +1,5 @@
 {
-  "_note": "Choices for the confinement quote comparer. 'typical' = package types with typical 2026 prices (malaysia4u.com/confinement-guide). 'centres' = real centres with their own published prices; re-check every few months. Centres: only those publishing a price on their own site (10 of ~60 checked on 25 Nov 2026); every price re-confirmed on the centre's page that day.",
+  "_note": "Choices for the confinement quote comparer. 'typical' = package types with typical 2026 prices (malaysia4u.com/confinement-guide). 'centres' = real centres with their own published prices; re-check every few months. Centres: only those publishing a price on their own site (10 of ~60 checked on 25 Nov 2026); every price re-confirmed on the centre's page that day. 26 Nov 2026 second sweep of the other states (Penang, Kedah, Perlis, Perak, Kelantan, Terengganu, Pahang, N. Sembilan, Melaka, Johor, Putrajaya, Sabah, Sarawak, Labuan): no centre publishes a price on its own site; centres_ask = centres with a website but no price. home_care = home services with own-site prices (Suraya: 2026 PDFs per state).",
   "typical": [
     {
       "id": "t-nanny",
@@ -304,6 +304,88 @@
       "note_ms": "Penjaga pantang tinggal bersama: mandian herba, masakan pantang, sauna, tungku dan bengkung untuk ibu; mandi dan urut bayi; kemas rumah dan cuci pakaian. Pakej kedua dari RM1,900 untuk 7 hari. Caj pengangkutan tidak termasuk.",
       "source_url": "https://mamiconfinementcare.com/",
       "checked": "2026-11-26"
+    },
+    {
+      "name": "Suraya Mothercare - half day, comes to you",
+      "area_en": "Kedah, Perlis, Penang, Pahang, Melaka, N. Sembilan, Johor (also Selangor & KL)",
+      "area_ms": "Kedah, Perlis, P. Pinang, Pahang, Melaka, N. Sembilan, Johor (juga Selangor & KL)",
+      "price_from_rm": 4600,
+      "per_days": 28,
+      "note_en": "A confinement lady comes to your home for half a day and cooks pantang meals (lunch and dinner). Includes baby bath and urut, herbal baths, massage and bertungku for mum. 28 days: RM4,600 in Kedah, Perlis, Melaka and Johor; RM4,700 in Penang, Pahang and Negeri Sembilan. Shorter packages from 7 days (RM1,400 in Kedah). Full day (about 8 hours) in Johor: RM5,800 for 28 days. 2026 price lists (PDF) for each state are on their website.",
+      "note_ms": "Penjaga pantang datang ke rumah separuh hari dan memasak makanan pantang (makan tengah hari dan malam). Termasuk mandi dan urut bayi, mandian herba, urutan dan bertungku untuk ibu. 28 hari: RM4,600 di Kedah, Perlis, Melaka dan Johor; RM4,700 di P. Pinang, Pahang dan Negeri Sembilan. Pakej lebih pendek dari 7 hari (RM1,400 di Kedah). Sehari penuh (lebih kurang 8 jam) di Johor: RM5,800 untuk 28 hari. Senarai harga 2026 (PDF) bagi setiap negeri ada di laman web mereka.",
+      "source_url": "https://surayamothercare.com/confinement-packages/",
+      "checked": "2026-11-26",
+      "auto_check": false,
+      "name_ms": "Suraya Mothercare - separuh hari, datang ke rumah"
+    },
+    {
+      "name": "Suraya Mothercare - live-in",
+      "area_en": "Anywhere in Malaysia",
+      "area_ms": "Seluruh Malaysia",
+      "price_from_rm": 1900,
+      "per_days": 7,
+      "p28_rm": 5900,
+      "note_en": "A confinement lady stays at your home. Includes baby bath and urut, herbal baths, massage and bertungku for mum, pantang cooking (3 meals), basic cleaning and laundry for mum and baby. 7 days RM1,900; 14 days RM2,900; 28 days RM5,900; 44 days RM7,900 (2026 price list).",
+      "note_ms": "Penjaga pantang tinggal di rumah anda. Termasuk mandi dan urut bayi, mandian herba, urutan dan bertungku untuk ibu, masakan pantang (3 kali), kemas rumah asas serta cucian pakaian ibu dan bayi. 7 hari RM1,900; 14 hari RM2,900; 28 hari RM5,900; 44 hari RM7,900 (senarai harga 2026).",
+      "source_url": "https://surayamothercare.com/wp-content/uploads/2026/04/STAY-IN_MALAYSIA_2026.pdf",
+      "checked": "2026-11-26",
+      "auto_check": false,
+      "name_ms": "Suraya Mothercare - tinggal bersama"
+    },
+    {
+      "name": "Lavender Confinement Care",
+      "area_en": "Based in Semenyih, Selangor - says it serves all of Malaysia",
+      "area_ms": "Berpangkalan di Semenyih, Selangor - menyatakan berkhidmat di seluruh Malaysia",
+      "price_from_rm": 1300,
+      "per_days": 7,
+      "note_en": "Confinement lady at home from RM1,300 for 7 days. Also a confinement stay at a hotel from RM4,500 for 7 days. Ask about transport costs to your area.",
+      "note_ms": "Penjaga pantang di rumah dari RM1,300 untuk 7 hari. Juga pantang di hotel dari RM4,500 untuk 7 hari. Tanya kos pengangkutan ke kawasan anda.",
+      "source_url": "https://lavenderconfinementcare.com/services/",
+      "checked": "2026-11-26"
+    }
+  ],
+  "centres_ask": [
+    {
+      "name": "Spink Confinement (Penang)",
+      "area": "George Town",
+      "state": "Pulau Pinang",
+      "url": "https://spinkconfinement.com/penang-confinement-centre/"
+    },
+    {
+      "name": "Gloria Confinement Care",
+      "area": "George Town",
+      "state": "Pulau Pinang",
+      "url": "https://gloriaconfinement.com/"
+    },
+    {
+      "name": "Moon Garden Confinement Centre",
+      "area": "Bukit Mertajam",
+      "state": "Pulau Pinang",
+      "url": "https://moongarden.com.my/"
+    },
+    {
+      "name": "Amazing Postnatal Care",
+      "area": "Puteri Harbour",
+      "state": "Johor",
+      "url": "https://www.amazingpostnatal.com/"
+    },
+    {
+      "name": "Cheong Dam Postpartum Care",
+      "area": "Iskandar Puteri",
+      "state": "Johor",
+      "url": "https://cheongdam.my/room/"
+    },
+    {
+      "name": "Guoyi Tang Confinement Centre",
+      "area": "Iskandar Puteri",
+      "state": "Johor",
+      "url": "https://www.guoyitangconfinement.com/en/"
+    },
+    {
+      "name": "Q Lady",
+      "area": "Batu Pahat",
+      "state": "Johor",
+      "url": "https://qlady.com.my/en/"
     }
   ]
 }
