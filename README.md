@@ -23,7 +23,10 @@ Product photos on the prices page come from Shopee's image server; the chosen ph
 
 The "Prices / Harga" tab opens a drop-down (product groups + search); the prices page has a search box and a product-type filter (`?q=` and `#grp-<group>` work as links).
 
-The confinement quote comparer's drop-down reads `site-data/confinement.json`: typical package types plus real centres with their own published prices (source link + date checked). Re-check the centres every few months.
+The confinement quote comparer's drop-down reads `site-data/confinement.json`: typical package types plus real centres with their own published prices (source link + date checked).
+`.github/workflows/check-centres.yml` re-checks every centre's price on its own website every 3 months (25 Feb/May/Aug/Nov, or run it by hand from the Actions tab): prices still there get today's date; anything changed, gone or past its `valid_until` promo date opens a GitHub issue.
+
+Design: one menu button on the left (a `<details>` drop-down), ⓘ tips (`tip()` in build.py, `makeTip()` in app.js) for secondary notes, accordions for long lists. Safety information (warning signs, pantang safety) always stays visible.
 
 Nothing a visitor types leaves their phone: it's kept in the browser's local storage. There are no accounts and no server.
 

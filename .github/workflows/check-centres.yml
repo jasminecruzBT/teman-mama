@@ -1,0 +1,42 @@
+name: Check confinement centre prices
+# Every 3 months: open each centre's own website, confirm its published price is still there.
+# Still there -> the "checked" date moves to today and the site is republished.
+# Changed / page gone / promo ended -> a GitHub issue lists what a person needs to update.
+on:
+  schedule:
+    - cron: "0 2 25 2,5,8,11 *"   # 25 Feb, May, Aug, Nov at 10:00 Malaysia time
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install playwright && python -m playwright install --with-deps chromium
+      - id: check
+        run: python scripts/check_centres.py
+      - name: Save the new dates and republish the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "price-bot"
+          git config user.email "price-bot@users.noreply.github.com"
+          git add site-data/confinement.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Re-check confinement centre prices"
+            git push
+            gh workflow run deploy.yml
+          fi
+      - name: Open an issue for anything that needs a person
+        if: steps.check.outputs.problems != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Confinement centres to re-check ($(date -u +%Y-%m-%d))" --body-file centres-report.md

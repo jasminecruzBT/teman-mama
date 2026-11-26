@@ -120,6 +120,10 @@ JS_STR = {
         "showing": "Showing prices for: {area}", "fewShops": "Few shops in this area - prices may not be typical.",
         "nuTaska": "Taska in {area}", "nuTadika": "Tadika in {area}",
         "nuArea": "your area",
+        "qDays": "days", "qPerDay": "/day", "qOneMore": "Add one more quote to compare.",
+        "promoEnded": "(This promotion may have ended - check the current price.)", "moreInfo": "More info",
+        "bfNote": "Breast milk is the best food for babies - the Ministry of Health and WHO recommend only breast milk for the first 6 months. If you use formula, ask your doctor or nurse which type suits your baby. We don't sell or advertise infant formula.",
+        "online": "Check online prices (Google Shopping)",
         "noMatch": "No products match \"{q}\" here.", "clearSearch": "Show all products",
         "preTypical": "Typical packages (anywhere in Malaysia)", "preCentres": "Confinement centres - {state}", "qFrom": "from",
         "preCentreNote": "Published price for {d} days: {price}. Checked {date}. Prices change - confirm with the centre.",
@@ -175,6 +179,10 @@ JS_STR = {
         "showing": "Harga untuk: {area}", "fewShops": "Sedikit kedai di kawasan ini - harga mungkin tidak mewakili.",
         "nuTaska": "Taska di {area}", "nuTadika": "Tadika di {area}",
         "nuArea": "kawasan anda",
+        "qDays": "hari", "qPerDay": "/hari", "qOneMore": "Tambah satu lagi sebut harga untuk dibandingkan.",
+        "promoEnded": "(Promosi ini mungkin sudah tamat - semak harga terkini.)", "moreInfo": "Maklumat lanjut",
+        "bfNote": "Susu ibu ialah makanan terbaik untuk bayi - Kementerian Kesihatan dan WHO mengesyorkan susu ibu sahaja untuk 6 bulan pertama. Jika anda menggunakan susu formula, tanya doktor atau jururawat jenis yang sesuai. Kami tidak menjual atau mengiklankan susu formula bayi.",
+        "online": "Semak harga dalam talian (Google Shopping)",
         "noMatch": "Tiada produk sepadan dengan \"{q}\" di sini.", "clearSearch": "Tunjuk semua produk",
         "preTypical": "Pakej biasa (seluruh Malaysia)", "preCentres": "Pusat berpantang - {state}", "qFrom": "dari",
         "preCentreNote": "Harga yang diterbitkan untuk {d} hari: {price}. Disemak {date}. Harga boleh berubah - sahkan dengan pusat.",
@@ -303,6 +311,13 @@ def ad(name, x):
     return ""
 
 
+def tip(text, x, html_text=False):
+    """Small ⓘ that shows extra details on hover (computers) or tap (phones) - keeps pages uncluttered."""
+    body = text if html_text else esc(text)
+    return (f'<span class="tip"><button type="button" class="tip-btn" aria-label="{x("More info", "Maklumat lanjut")}" aria-expanded="false">i</button>'
+            f'<span class="tip-bubble" role="tooltip">{body}</span></span>')
+
+
 def shop(key, q, x):
     url = config.AFFILIATE_LINKS.get(key) or config.SHOP_SEARCH_URL.format(q=quote_plus(q))
     return (f'<a class="shop" href="{esc(url)}" target="_blank" rel="sponsored nofollow noopener">'
@@ -352,25 +367,34 @@ def write_page(lang, path, title, desc, body, data=None):
         ads = (f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='
                f'{esc(config.ADSENSE_CLIENT)}" crossorigin="anonymous"></script>')
 
-    nav = []
+    # Menu: one button on the left that drops down the list of sections (built on <details>, works without JS).
+    items, current = [], x("Menu", "Menu")
     for href, en, ms, ico, cls in NAV:
         active = href == path or (href == "weeks/index.html" and path.startswith("weeks/"))
+        label = x(en, ms) if href != "prices.html" else x("Prices", "Harga")
+        if active and href != "index.html":
+            current = label
         cur = ' aria-current="page"' if active else ""
-        if href == "prices.html":  # "Prices" opens a drop-down of product groups + search
-            nav.append(f'<a class="tab {cls} has-sub" href="{lroot}{href}"{cur} aria-haspopup="true" aria-expanded="false" '
-                       f'aria-controls="subnav-prices"><span aria-hidden="true">{ico}</span> {x("Prices", "Harga")}'
-                       f'<span class="caret" aria-hidden="true">▼</span></a>')
+        if href == "prices.html":  # "Prices" opens its own list of product groups + a search box
+            subs = "".join(
+                f'<li><a href="{lroot}prices.html#grp-{g}"><span class="mi-ico" aria-hidden="true">{GROUPS[g][0]}</span>'
+                f'{esc(x(GROUPS[g][1], GROUPS[g][2]))}</a></li>' for g in PRICE_GROUPS)
+            items.append(f"""<li><details class="menu-sub"{" open" if active else ""}>
+  <summary class="mi {cls}"{cur}><span class="mi-ico" aria-hidden="true">{ico}</span>{esc(label)}<span class="chev" aria-hidden="true"></span></summary>
+  <ul>
+    <li><a href="{lroot}prices.html"><span class="mi-ico" aria-hidden="true">📋</span>{x("All prices", "Semua harga")}</a></li>{subs}
+    <li><form class="search-row" action="{lroot}prices.html" method="get" role="search">
+      <input type="search" name="q" placeholder="{x("Search, e.g. Drypers", "Cari, cth. Drypers")}" aria-label="{x("Search products", "Cari produk")}">
+      <button type="submit" class="btn">{x("Search", "Cari")}</button></form></li>
+  </ul></details></li>""")
             continue
-        nav.append(f'<a class="tab {cls}" href="{lroot}{href}"{cur}><span aria-hidden="true">{ico}</span> {esc(x(en, ms))}</a>')
-    sub_links = "".join(
-        f'<a href="{lroot}prices.html#grp-{g}"><span aria-hidden="true">{GROUPS[g][0]}</span> {esc(x(GROUPS[g][1], GROUPS[g][2]))}</a>'
-        for g in PRICE_GROUPS)
-    subnav = f"""<div class="subnav" id="subnav-prices" hidden><div class="wrap subnav-inner">
-      <a href="{lroot}prices.html"><span aria-hidden="true">📋</span> {x("All prices", "Semua harga")}</a>{sub_links}
-      <form class="search-row" action="{lroot}prices.html" method="get" role="search">
-        <input type="search" name="q" placeholder="{x("Search products, e.g. Drypers", "Cari produk, cth. Drypers")}" aria-label="{x("Search products", "Cari produk")}">
-        <button type="submit" class="btn">{x("Search", "Cari")}</button>
-      </form></div></div>"""
+        items.append(f'<li><a class="mi {cls}" href="{lroot}{href}"{cur}><span class="mi-ico" aria-hidden="true">{ico}</span>{esc(label)}</a></li>')
+    extra = (f'<li class="menu-foot"><a href="{lroot}feedback.html">💬 {x("Suggest an improvement", "Hantar cadangan")}</a></li>'
+             if config.FEEDBACK_FORM_URL else "")
+    menu = f"""<details class="menu">
+      <summary class="menu-btn" aria-label="{x("Open menu", "Buka menu")}"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span><span class="menu-label">{esc(current)}</span></summary>
+      <nav class="menu-panel" aria-label="{x("Main", "Utama")}"><ul>{"".join(items)}{extra}</ul></nav>
+    </details>"""
 
     tm = {"lang": lang, "root": root, "s": JS_STR[lang],
           "wk": {n: wk.get(n, lang)["size"] for n in wk.W}}  # for the helper bot's week answers
@@ -397,22 +421,20 @@ def write_page(lang, path, title, desc, body, data=None):
 <a class="skip" href="#main">{x("Skip to content", "Langkau ke kandungan")}</a>
 <header class="top">
   <div class="wrap top-row">
-    <a class="brand" href="{lroot}index.html"><span class="logo" aria-hidden="true">🤰</span>{esc(site)}</a>
-    <a class="lang" href="{root}{other}/{path}" hreflang="{other}" lang="{other}">{"Bahasa Melayu" if other == "ms" else "English"}</a>
+    {menu}
+    <a class="brand" href="{lroot}index.html"><span class="logo" aria-hidden="true">🤰</span><span>{esc(site)}</span></a>
+    <a class="lang" href="{root}{other}/{path}" hreflang="{other}" lang="{other}" title="{"Bahasa Melayu" if other == "ms" else "English"}">{"BM" if other == "ms" else "EN"}</a>
   </div>
-  <nav class="nav" aria-label="{x("Main", "Utama")}"><div class="wrap nav-row">{"".join(nav)}</div></nav>
-  {subnav}
 </header>
 <main id="main" class="wrap">
 {body}
 </main>
 <footer class="foot"><div class="wrap">
-  <p>{x("General information only - not medical advice. Always follow your doctor, nurse or midwife.",
-        "Maklumat umum sahaja - bukan nasihat perubatan. Sentiasa ikut nasihat doktor, jururawat atau bidan anda.")}</p>
-  <p>{x("Some shop links are affiliate links: we may earn a small commission at no extra cost to you. We never earn from infant formula.",
-        "Sesetengah pautan kedai ialah pautan afiliasi: kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda. Kami tidak pernah mendapat komisen daripada susu formula bayi.")}</p>
-  <p class="foot-links"><a href="{lroot}about.html">{x("About", "Tentang kami")}</a> · <a href="{lroot}privacy.html">{x("Privacy", "Privasi")}</a>{f' · <a href="{lroot}feedback.html">{x("Suggest an improvement", "Hantar cadangan")}</a>' if config.FEEDBACK_FORM_URL else ""}</p>
-  <p class="small">© {TODAY.year} {esc(site)}</p>
+  <p class="foot-links"><a href="{lroot}about.html">{x("About", "Tentang kami")}</a><a href="{lroot}privacy.html">{x("Privacy", "Privasi")}</a>{f'<a href="{lroot}feedback.html">{x("Suggest an improvement", "Hantar cadangan")}</a>' if config.FEEDBACK_FORM_URL else ""}</p>
+  <p class="small">{x("General information only - not medical advice.", "Maklumat umum sahaja - bukan nasihat perubatan.")}
+  {tip(x("Always follow your doctor, nurse or midwife. Some shop links are affiliate links: we may earn a small commission at no extra cost to you. We never earn from infant formula.",
+         "Sentiasa ikut nasihat doktor, jururawat atau bidan anda. Sesetengah pautan kedai ialah pautan afiliasi: kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda. Kami tidak pernah mendapat komisen daripada susu formula bayi."), x)}
+  · © {TODAY.year} {esc(site)}</p>
 </div></footer>
 <script>window.TM={tm_json}</script>
 <script src="{root}assets/app.js?v={VER}" defer></script>
@@ -515,34 +537,26 @@ def p_home(lang):
     x = tr(lang)
     weeks_js = {n: [wk.W[n][0], wk.get(n, lang)["size"]] for n in wk.W}
     tools = [
-        ("weeks/index.html", "📅", "Week by week", "Minggu demi minggu",
-         "Your baby's size and growth, and what to do each week.", "Saiz dan perkembangan bayi, serta perkara yang perlu dibuat setiap minggu."),
-        ("pantang.html", "🍲", "Pantang planner", "Perancang pantang",
-         "A timeline for before and after the birth - Malay, Chinese or Indian tradition.", "Jadual sebelum dan selepas bersalin - tradisi Melayu, Cina atau India."),
-        ("confinement-cost.html", "🏠", "Confinement cost", "Kos berpantang",
-         "Typical prices and a simple way to compare quotes.", "Harga biasa dan cara mudah membandingkan sebut harga."),
-        ("hospital-bag.html", "👜", "Hospital bag checklist", "Senarai semak beg hospital",
-         "Tick off what you've packed for mum, baby and partner.", "Tandakan barang yang sudah disiapkan untuk ibu, bayi dan pasangan."),
-        ("leave.html", "🗓️", "Maternity leave calculator", "Kalkulator cuti bersalin",
-         "Work out your 98 days of maternity leave and 7 days of paternity leave.", "Kira 98 hari cuti bersalin dan 7 hari cuti paterniti."),
-        ("prices.html", "🍼", "Milk & diaper prices", "Harga susu & lampin",
-         "Official shop prices near you, updated from the government's price survey.", "Harga kedai rasmi berhampiran anda, daripada tinjauan harga kerajaan."),
-        ("nursery.html", "🧸", "Find a taska or tadika", "Cari taska atau tadika",
-         "Childcare and kindergartens near you, and what to check before you choose.", "Taska dan tadika berhampiran, serta perkara yang perlu disemak."),
+        ("weeks/index.html", "📅", "Week by week", "Minggu demi minggu", "Baby's size and growth", "Saiz dan perkembangan bayi", "t-weeks"),
+        ("pantang.html", "🍲", "Pantang planner", "Perancang pantang", "Your dated timeline", "Jadual bertarikh anda", "t-pantang"),
+        ("confinement-cost.html", "💰", "Confinement cost", "Kos berpantang", "Compare centres & nannies", "Banding pusat & pengasuh", "t-cost"),
+        ("hospital-bag.html", "👜", "Hospital bag", "Beg hospital", "What to pack", "Apa yang perlu dibawa", "t-bag"),
+        ("leave.html", "🗓️", "Maternity leave", "Cuti bersalin", "98 + 7 days, worked out", "98 + 7 hari, dikira", "t-leave"),
+        ("prices.html", "🍼", "Milk & diaper prices", "Harga susu & lampin", "Cheapest shops near you", "Kedai termurah berhampiran", "t-prices"),
+        ("nursery.html", "🧸", "Taska & tadika", "Taska & tadika", "Childcare near you", "Penjagaan anak berhampiran", "t-nursery"),
     ]
     cards = "".join(
-        f'<a class="tool-card" href="{h}"><span class="tool-ico" aria-hidden="true">{i}</span>'
+        f'<a class="tool-card {c}" href="{h}"><span class="tool-ico" aria-hidden="true">{i}</span>'
         f'<span><strong>{esc(x(te, tm))}</strong><span class="muted">{esc(x(de, dm))}</span></span></a>'
-        for h, i, te, tm, de, dm in tools)
+        for h, i, te, tm, de, dm, c in tools)
     body = f"""
 <section class="hero">
   {HERO_SVG}
   <h1>{x("Your pregnancy & pantang companion", "Teman kehamilan & berpantang anda")}</h1>
-  <p class="lead">{x("A week-by-week guide, pantang planner, confinement costs, baby milk prices and more - free, in English and Bahasa Melayu.",
-                     "Panduan minggu demi minggu, perancang pantang, kos berpantang, harga susu bayi dan banyak lagi - percuma, dalam Bahasa Melayu dan English.")}</p>
+  <p class="lead">{x("Free, simple tools for Malaysian families.", "Alat percuma dan mudah untuk keluarga Malaysia.")}</p>
 </section>
 <section class="card" id="due-tool">
-  <h2>{x("Which week am I?", "Minggu ke berapa saya?")}</h2>
+  <h2>{x("Which week am I?", "Minggu ke berapa saya?")} {tip(x("Your date is saved only on this phone. No sign-up.", "Tarikh anda disimpan dalam telefon ini sahaja. Tiada pendaftaran."), x)}</h2>
   <div class="seg" role="group" aria-label="{x("I know my", "Saya tahu")}">
     <button type="button" data-mode="due" aria-pressed="true">{x("Due date", "Tarikh jangkaan bersalin")}</button>
     <button type="button" data-mode="lmp" aria-pressed="false">{x("First day of last period", "Hari pertama haid terakhir")}</button>
@@ -551,13 +565,11 @@ def p_home(lang):
     <input type="date" id="due-input"></label>
   <button type="button" class="btn" id="due-go">{x("Show my week", "Tunjuk minggu saya")}</button>
   <div id="due-result" aria-live="polite"></div>
-  <p class="hint">{x("Your date is saved only on this phone. No sign-up.", "Tarikh anda disimpan dalam telefon ini sahaja. Tiada pendaftaran.")}</p>
 </section>
-{ad("in_content", x)}
 <section>
-  <h2>{x("Free tools", "Alat percuma")}</h2>
   <div class="tools">{cards}</div>
 </section>
+{ad("in_content", x)}
 """
     write_page(lang, "index.html", x("Pregnancy & pantang companion", "Teman kehamilan & berpantang"),
                x("Free week-by-week pregnancy guide, pantang planner, confinement cost comparer and baby milk prices for Malaysian families.",
@@ -630,11 +642,10 @@ def p_pantang(lang):
          "Common practices: warm home-cooked food with garlic and spices, herbal drinks, oil massage and herbal baths, and plenty of rest.",
          "Amalan biasa: makanan panas masakan rumah dengan bawang putih dan rempah, minuman herba, urutan minyak dan mandi herba, serta banyak berehat."),
     ]
-    cards = "".join(f'<div class="card"><h3>{esc(x(a, b))}</h3><p>{esc(x(c, d))}</p></div>' for a, b, c, d in trads)
+    cards = "".join(f'<details class="acc"><summary>{esc(x(a, b))}</summary><p>{esc(x(c, d))}</p></details>' for a, b, c, d in trads)
     body = f"""
 <h1>{x("Pantang planner", "Perancang pantang")}</h1>
-<p class="lead">{x("Get a simple timeline for before and after the birth, based on your family's tradition.",
-                   "Dapatkan jadual ringkas sebelum dan selepas bersalin, mengikut tradisi keluarga anda.")}</p>
+<p class="lead">{x("A dated timeline for before and after the birth.", "Jadual bertarikh sebelum dan selepas bersalin.")}</p>
 <section class="card" id="pantang-tool">
   <label class="field">{x("Tradition", "Tradisi")}
     <select id="p-trad">
@@ -654,9 +665,8 @@ def p_pantang(lang):
   <div id="p-result" aria-live="polite"></div>
 </section>
 {ad("in_content", x)}
-<section><h2>{x("Pantang traditions in Malaysia", "Tradisi berpantang di Malaysia")}</h2>
-<p>{x("Every family is different - these are common practices, not rules.", "Setiap keluarga berbeza - ini amalan biasa, bukan peraturan.")}</p>
-<div class="cards">{cards}</div></section>
+<section><h2>{x("Pantang traditions in Malaysia", "Tradisi berpantang di Malaysia")} {tip(x("Every family is different - these are common practices, not rules.", "Setiap keluarga berbeza - ini amalan biasa, bukan peraturan."), x)}</h2>
+<div class="acc-list">{cards}</div></section>
 <aside class="box note"><h2>{x("Stay safe during pantang", "Berpantang dengan selamat")}</h2><ul>
 <li>{x("Ask your doctor before urut, bertungku or a tight binder - especially after a caesarean, when the wound needs to heal first.",
        "Tanya doktor sebelum berurut, bertungku atau memakai bengkung yang ketat - terutama selepas pembedahan caesarean, kerana luka perlu sembuh dahulu.")}</li>
@@ -684,18 +694,24 @@ def p_cost(lang):
               ("laundry", "Laundry", "Dobi")]
     quotes = []
     for i in range(1, 5):
-        checks = "".join(f'<label class="check"><input type="checkbox" name="inc" value="{k}"> {esc(x(en, ms))}</label>' for k, en, ms in extras)
-        quotes.append(f"""<fieldset class="quote" data-q="{i}"><legend>{x("Quote", "Sebut harga")} {i}</legend>
-<label class="field">{x("Pick a centre or package (fills in the rest)", "Pilih pusat atau pakej (isi yang lain secara automatik)")}<select name="preset">
-<option value="">{x("- or type your own quote below -", "- atau taip sebut harga anda di bawah -")}</option></select></label>
-<p class="hint preset-note" hidden></p>
-<label class="field">{x("Name of centre or nanny", "Nama pusat atau pengasuh")}<input type="text" name="name" maxlength="60" autocomplete="off"></label>
-<div class="row3">
-<label class="field">{x("Total price (RM)", "Jumlah harga (RM)")}<input type="number" name="price" min="0" step="1" inputmode="decimal"></label>
-<label class="field">{x("Days", "Hari")}<input type="number" name="days" min="1" max="120" value="28" inputmode="numeric"></label>
-<label class="field">{x("Babies per nurse", "Bayi setiap jururawat")}<input type="number" name="ratio" min="1" max="20" inputmode="numeric"></label>
-</div>
-<div class="checks">{checks}</div></fieldset>""")
+        chips = "".join(f'<label class="chip"><input type="checkbox" name="inc" value="{k}"><span>{esc(x(en, ms))}</span></label>'
+                        for k, en, ms in extras)
+        quotes.append(f"""<div class="quote" data-q="{i}"{" hidden" if i > 2 else ""}>
+  <div class="q-head"><span class="q-num">{i}</span>
+    <select name="preset" aria-label="{x("Choose a centre or package", "Pilih pusat atau pakej")} {i}">
+      <option value="">{x("Choose a centre or package...", "Pilih pusat atau pakej...")}</option></select>
+    <span class="q-tip"></span></div>
+  <p class="q-sum" hidden></p>
+  <details class="q-edit"><summary>{x("Edit details / enter your own quote", "Ubah butiran / masukkan sebut harga sendiri")}</summary>
+    <div class="q-fields">
+      <label class="field q-name">{x("Name", "Nama")}<input type="text" name="name" maxlength="60" autocomplete="off"></label>
+      <label class="field">{x("Total (RM)", "Jumlah (RM)")}<input type="number" name="price" min="0" step="1" inputmode="decimal"></label>
+      <label class="field">{x("Days", "Hari")}<input type="number" name="days" min="1" max="120" value="28" inputmode="numeric"></label>
+      <label class="field">{x("Babies per nurse", "Bayi/jururawat")}<input type="number" name="ratio" min="1" max="20" inputmode="numeric"></label>
+    </div>
+    <div class="chips">{chips}</div>
+  </details>
+</div>""")
     questions_en = [
         "Is the centre registered with the authorities? Ask to see the licence.",
         "How many babies does each nurse look after - during the day and at night?",
@@ -715,33 +731,34 @@ def p_cost(lang):
         "Untuk pengasuh: adakah dia tinggal bersama, berapa jam bekerja, dan adakah dia memasak makanan pantang?",
     ]
     qs = "".join(f"<li>{esc(q)}</li>" for q in (questions_ms if lang == "ms" else questions_en))
+    maps_q = quote_plus(x("confinement centre near me", "pusat berpantang berhampiran"))
     body = f"""
-<h1>{x("Confinement cost: compare centres and nannies", "Kos berpantang: banding pusat dan pengasuh")}</h1>
-<p class="lead">{x("Confinement care is one of the biggest costs of having a baby. Here's what it typically costs, and a simple way to compare the quotes you get.",
-                   "Penjagaan berpantang ialah antara kos terbesar apabila mendapat bayi. Ini harga biasa, dan cara mudah membandingkan sebut harga yang anda terima.")}</p>
-<section><h2>{x("Typical prices for 28 days (2026)", "Harga biasa untuk 28 hari (2026)")}</h2>
-<div class="table-wrap"><table class="simple">
-<thead><tr><th>{x("Option", "Pilihan")}</th><th>{x("Typical price", "Harga biasa")}</th></tr></thead>
-<tbody>
-<tr><td>{x("Live-in confinement nanny", "Pengasuh berpantang (tinggal bersama)")}</td><td>RM5,000 – RM9,000</td></tr>
-<tr><td>{x("Confinement centre - mid-range", "Pusat berpantang - pertengahan")}</td><td>RM12,000 – RM18,000</td></tr>
-<tr><td>{x("Confinement centre - luxury", "Pusat berpantang - mewah")}</td><td>{x("up to RM40,000 or more", "sehingga RM40,000 atau lebih")}</td></tr>
-</tbody></table></div>
-<p class="small muted">{x("Rough ranges from 2026 price guides. Prices differ a lot by city and by what's included - always get a written quote.",
-                          "Anggaran daripada panduan harga 2026. Harga sangat berbeza mengikut bandar dan apa yang termasuk - sentiasa minta sebut harga bertulis.")}
-<a href="https://malaysia4u.com/confinement-guide" target="_blank" rel="noopener">{x("Source", "Sumber")}</a></p></section>
-{ad("in_content", x)}
-<section id="quote-tool"><h2>{x("Compare your quotes", "Banding sebut harga anda")}</h2>
-<p>{x("Pick a confinement centre or a typical package and we fill in the price, days and what's included - or type your own quote. Change anything to match what you were offered. We work out the price per day so you can compare fairly. Saved only on this phone.",
-       "Pilih pusat berpantang atau pakej biasa dan kami isi harga, bilangan hari dan apa yang termasuk - atau taip sebut harga anda sendiri. Ubah apa-apa supaya sama dengan tawaran anda. Kami kira harga sehari supaya anda boleh membandingkan dengan adil. Disimpan dalam telefon ini sahaja.")}</p>
-<div class="quotes">{"".join(quotes)}</div>
-<div id="q-result" aria-live="polite"></div>
-<button type="button" class="btn ghost small-btn" id="q-clear">{x("Clear all quotes", "Padam semua sebut harga")}</button>
+<h1>{x("Confinement cost", "Kos berpantang")}</h1>
+<p class="lead">{x("Compare centres and nannies by price per day.", "Banding pusat dan pengasuh mengikut harga sehari.")}</p>
+<section class="card" id="quote-tool">
+  <h2>{x("Compare quotes", "Banding sebut harga")} {tip(x("Pick a centre or a typical package and the rest fills in. Change anything to match what you were offered. Saved only on this phone.",
+                                                        "Pilih pusat atau pakej biasa dan yang lain diisi sendiri. Ubah apa-apa supaya sama dengan tawaran anda. Disimpan dalam telefon ini sahaja."), x)}</h2>
+  <div class="quotes">{"".join(quotes)}</div>
+  <div class="q-actions">
+    <button type="button" class="link-btn" id="q-add">+ {x("Add another quote", "Tambah sebut harga")}</button>
+    <button type="button" class="link-btn muted" id="q-clear">{x("Clear all", "Padam semua")}</button>
+  </div>
+  <div id="q-result" aria-live="polite"></div>
 </section>
-<section><h2>{x("Ask before you pay a deposit", "Tanya sebelum membayar deposit")}</h2><ol>{qs}</ol></section>
+<p class="maps-row"><a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query={maps_q}" target="_blank" rel="noopener">🔎 {x("More centres near you (Google Maps)", "Lagi pusat berhampiran (Google Maps)")} ↗</a>
+{tip(x("Smaller local centres are often cheaper but don't publish prices online. Ask them for a quote, then choose 'Edit details / enter your own quote' above.",
+       "Pusat kecil berhampiran selalunya lebih murah tetapi tidak menerbitkan harga dalam talian. Minta sebut harga, kemudian pilih 'Ubah butiran / masukkan sebut harga sendiri' di atas."), x)}</p>
+{ad("in_content", x)}
+<section><h2>{x("Typical prices for 28 days", "Harga biasa untuk 28 hari")} {tip(x("Rough 2026 ranges from price guides (malaysia4u.com). Prices differ a lot by city and by what's included - always get a written quote.",
+                                                                              "Anggaran julat 2026 daripada panduan harga (malaysia4u.com). Harga sangat berbeza mengikut bandar dan apa yang termasuk - sentiasa minta sebut harga bertulis."), x)}</h2>
+<ul class="price-list">
+  <li><span>{x("Live-in nanny", "Pengasuh tinggal bersama")}</span><strong>RM5,000 – 9,000</strong></li>
+  <li><span>{x("Centre - mid-range", "Pusat - pertengahan")}</span><strong>RM12,000 – 18,000</strong></li>
+  <li><span>{x("Centre - luxury", "Pusat - mewah")}</span><strong>{x("RM20,000 – 40,000+", "RM20,000 – 40,000+")}</strong></li>
+</ul></section>
+<details class="acc"><summary>{x("Ask before you pay a deposit", "Tanya sebelum membayar deposit")}</summary><ol>{qs}</ol></details>
 {contact_cta(x, "Run a confinement centre or work as a confinement nanny? Ask us about being listed here.",
              "Mengusahakan pusat berpantang atau bekerja sebagai pengasuh berpantang? Tanya kami tentang penyenaraian di sini.")}
-<p><a class="btn ghost" href="pantang.html">{x("Make a pantang timeline →", "Buat jadual pantang →")}</a></p>
 """
     write_page(lang, "confinement-cost.html", x("Confinement centre & nanny cost in Malaysia", "Kos pusat berpantang & pengasuh di Malaysia"),
                x("How much a confinement centre or confinement nanny costs in Malaysia, questions to ask, and a free tool to compare quotes per day.",
@@ -798,16 +815,13 @@ def p_bag(lang):
             f'{shop(k, q, x) if q else ""}</li>' for k, en, ms, q in items)
         secs.append(f'<section class="card"><h2>{esc(x(te, tm))}</h2><ul class="checklist">{lis}</ul></section>')
     body = f"""
-<h1>{x("Hospital bag checklist", "Senarai semak beg hospital")}</h1>
-<p class="lead">{x("Pack your bag by about 36 weeks. Tick things off as you go - your list is saved on this phone.",
-                   "Siapkan beg sebelum lebih kurang 36 minggu. Tandakan barang yang sudah siap - senarai disimpan dalam telefon ini.")}</p>
+<h1>{x("Hospital bag checklist", "Senarai semak beg hospital")} {tip(x("Pack by about 36 weeks. Your ticks are saved on this phone. 'Shop' links open Shopee - some are affiliate links, so we may earn a small commission at no extra cost to you.",
+                                                                       "Siapkan sebelum lebih kurang 36 minggu. Tanda anda disimpan dalam telefon ini. Pautan 'Beli' membuka Shopee - sesetengahnya pautan afiliasi, jadi kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda."), x)}</h1>
 <p class="pill" id="bag-progress" aria-live="polite"></p>
 {secs[0]}
 {ad("in_content", x)}
 {"".join(secs[1:])}
-<p class="small muted">{x("'Shop' links open Shopee. Some may be affiliate links - we may earn a small commission at no extra cost to you.",
-                          "Pautan 'Beli' membuka Shopee. Sesetengahnya mungkin pautan afiliasi - kami mungkin mendapat komisen kecil tanpa kos tambahan kepada anda.")}</p>
-<button type="button" class="btn ghost small-btn" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button>
+<button type="button" class="link-btn muted" id="bag-reset">{x("Untick everything", "Buang semua tanda")}</button>
 """
     write_page(lang, "hospital-bag.html", x("Hospital bag checklist for Malaysian mums", "Senarai semak beg hospital untuk ibu"),
                x("What to pack in your hospital bag for giving birth in Malaysia: documents, mum, baby and partner - a free checklist that saves on your phone.",
@@ -818,8 +832,8 @@ def p_bag(lang):
 def p_leave(lang):
     x = tr(lang)
     body = f"""
-<h1>{x("Maternity & paternity leave calculator", "Kalkulator cuti bersalin & paterniti")}</h1>
-<p class="lead">{x("Work out when your leave starts and ends.", "Kira bila cuti anda bermula dan berakhir.")}</p>
+<h1>{x("Maternity leave", "Cuti bersalin")}</h1>
+<p class="lead">{x("When your 98 days (and dad's 7 days) start and end.", "Bila 98 hari anda (dan 7 hari bapa) bermula dan berakhir.")}</p>
 <section class="card" id="leave-tool">
   <label class="field">{x("Baby's birth date (or due date)", "Tarikh lahir bayi (atau tarikh jangkaan)")}<input type="date" id="lv-birth"></label>
   <label class="field">{x("Maternity leave starts on (leave empty = birth date)", "Cuti bersalin bermula pada (biar kosong = tarikh lahir)")}<input type="date" id="lv-mstart"></label>
@@ -828,7 +842,7 @@ def p_leave(lang):
   <div id="lv-result" aria-live="polite"></div>
 </section>
 {ad("in_content", x)}
-<section><h2>{x("The rules in short", "Peraturan secara ringkas")}</h2><ul>
+<details class="acc"><summary>{x("The rules in short", "Peraturan secara ringkas")}</summary><ul>
 <li>{x("Under the Employment Act 1955 (as amended in 2023), mothers get 98 consecutive days of paid maternity leave.",
        "Di bawah Akta Kerja 1955 (dipinda pada 2023), ibu layak mendapat 98 hari berturut-turut cuti bersalin bergaji.")}</li>
 <li>{x("Maternity leave can start up to 30 days before the birth, and no later than the day after.",
@@ -837,7 +851,7 @@ def p_leave(lang):
        "Bapa yang berkahwin layak mendapat 7 hari berturut-turut cuti paterniti bergaji. Syarat dikenakan - contohnya, bekerja sekurang-kurangnya 12 bulan dengan majikan dan memaklumkan awal.")}</li>
 <li>{x("Civil servants, and workers in Sabah and Sarawak, have their own rules. Check with your HR department.",
        "Penjawat awam, serta pekerja di Sabah dan Sarawak, mempunyai peraturan sendiri. Semak dengan bahagian sumber manusia (HR).")}</li>
-</ul></section>
+</ul></details>
 """
     write_page(lang, "leave.html", x("Maternity leave calculator Malaysia (98 days)", "Kalkulator cuti bersalin Malaysia (98 hari)"),
                x("Calculate your 98 days of maternity leave and 7 days of paternity leave under Malaysia's Employment Act.",
@@ -848,31 +862,24 @@ def p_leave(lang):
 def p_prices(lang):
     x = tr(lang)
     body = f"""
-<h1>{x("Baby milk & diaper prices near you", "Harga susu bayi & lampin berhampiran anda")}</h1>
-<p class="lead">{x("Shop prices from the government's price survey (KPDN PriceCatcher). Choose your state and district to see prices near you, and the cheapest shops.",
-                   "Harga kedai daripada tinjauan harga kerajaan (KPDN PriceCatcher). Pilih negeri dan daerah untuk melihat harga berhampiran, dan kedai yang paling murah.")}</p>
-<section class="card">
+<h1>{x("Milk & diaper prices", "Harga susu & lampin")} {tip(x("Shop prices from the government's price survey: PriceCatcher by KPDN, published on data.gov.my. Typical = the middle price across shops. From = 1 in 10 shops charge this or less. Prices change often - check in store.",
+                                                                         "Harga kedai daripada tinjauan harga kerajaan: PriceCatcher oleh KPDN, diterbitkan di data.gov.my. Biasa = harga pertengahan di semua kedai. Dari = 1 daripada 10 kedai mengenakan harga ini atau lebih rendah. Harga sering berubah - semak di kedai."), x)}</h1>
+<p class="lead" id="pr-updated">{x("Official shop prices near you.", "Harga kedai rasmi berhampiran anda.")}</p>
+<section class="filters">
   <form class="search-row" id="pr-search" role="search">
-    <input type="search" id="pr-q" placeholder="{x("Search products, e.g. Drypers or Dutch Lady", "Cari produk, cth. Drypers atau Dutch Lady")}" aria-label="{x("Search products", "Cari produk")}">
+    <input type="search" id="pr-q" placeholder="{x("Search, e.g. Drypers or Dutch Lady", "Cari, cth. Drypers atau Dutch Lady")}" aria-label="{x("Search products", "Cari produk")}">
     <button type="submit" class="btn">{x("Search", "Cari")}</button>
   </form>
-  <div class="area-pick" style="margin-top:12px">
-    <label class="field full">{x("Product type", "Jenis produk")}<select id="pr-group">
+  <div class="filter-row">
+    <select id="pr-group" aria-label="{x("Product type", "Jenis produk")}">
       <option value="">{x("All products", "Semua produk")}</option>
       {"".join(f'<option value="{g}">{GROUPS[g][0]} {esc(x(GROUPS[g][1], GROUPS[g][2]))}</option>' for g in PRICE_GROUPS)}
-    </select></label>
-    <label class="field">{x("State", "Negeri")}<select id="pr-state"></select></label>
-    <label class="field">{x("District", "Daerah")}<select id="pr-district" disabled></select></label>
+    </select>
+    <select id="pr-state" aria-label="{x("State", "Negeri")}"></select>
+    <select id="pr-district" aria-label="{x("District", "Daerah")}" disabled></select>
   </div>
 </section>
-<p class="small muted" id="pr-updated"></p>
-<aside class="box note"><p>{x("Breast milk is the best food for babies. The Ministry of Health and WHO recommend only breast milk for the first 6 months. If you use formula, ask your doctor or nurse which type suits your baby. We don't sell or advertise infant formula.",
-                              "Susu ibu ialah makanan terbaik untuk bayi. Kementerian Kesihatan dan WHO mengesyorkan susu ibu sahaja untuk 6 bulan pertama. Jika anda menggunakan susu formula, tanya doktor atau jururawat jenis yang sesuai. Kami tidak menjual atau mengiklankan susu formula bayi.")}</p></aside>
-<div id="pr-tables" aria-live="polite"><p>{x("Loading prices...", "Memuatkan harga...")}</p></div>
-<p class="small muted">{x("Typical = the middle price across shops. From = 1 in 10 shops charge this or less. Prices change often - check in store.",
-                          "Biasa = harga pertengahan di semua kedai. Dari = 1 daripada 10 kedai mengenakan harga ini atau lebih rendah. Harga sering berubah - semak di kedai.")}</p>
-<p class="small muted">{x("Source: PriceCatcher, Ministry of Domestic Trade and Cost of Living (KPDN), via", "Sumber: PriceCatcher, Kementerian Perdagangan Dalam Negeri dan Kos Sara Hidup (KPDN), melalui")}
-<a href="https://data.gov.my" target="_blank" rel="noopener">data.gov.my</a>.</p>
+<div id="pr-tables" aria-live="polite"><p class="muted">{x("Loading prices...", "Memuatkan harga...")}</p></div>
 {ad("bottom", x)}
 """
     write_page(lang, "prices.html", x("Baby milk & diaper prices in Malaysia", "Harga susu bayi & lampin di Malaysia"),
@@ -894,7 +901,7 @@ def p_nursery(lang):
          "KEMAS and PERPADUAN tabika, and preschool classes (prasekolah) in government schools - usually with low fees.",
          "Tabika KEMAS dan PERPADUAN, serta kelas prasekolah di sekolah kerajaan - biasanya yuran rendah."),
     ]
-    cards = "".join(f'<div class="card"><h3>{esc(x(a, b))}</h3><p>{esc(x(c, d))}</p></div>' for a, b, c, d in kinds)
+    cards = "".join(f'<details class="acc"><summary>{esc(x(a, b))}</summary><p>{esc(x(c, d))}</p></details>' for a, b, c, d in kinds)
     checks_en = [
         "Is it registered? A registered taska shows its JKM certificate and registration plaque - ask to see them.",
         "Are the carers trained (for example JKM's basic childcare course, KAAK)?",
@@ -921,20 +928,17 @@ def p_nursery(lang):
     near_taska = "https://www.google.com/maps/search/?api=1&query=" + quote_plus("taska near me")
     near_tadika = "https://www.google.com/maps/search/?api=1&query=" + quote_plus("tadika near me")
     body = f"""
-<h1>{x("Find a taska or tadika near you", "Cari taska atau tadika berhampiran anda")}</h1>
-<p class="lead">{x("Childcare centres and kindergartens near you, and what to check before you choose.",
-                   "Taska dan tadika berhampiran anda, serta perkara yang perlu disemak sebelum memilih.")}</p>
+<h1>{x("Taska & tadika", "Taska & tadika")}</h1>
+<p class="lead">{x("Childcare and kindergartens near you.", "Taska dan tadika berhampiran anda.")}</p>
 <section class="card" id="nursery-tool">
-  <h2>{x("Search near you", "Cari berhampiran")}</h2>
   <div class="btn-row">
-    <a class="btn" id="nu-near-taska" href="{near_taska}" target="_blank" rel="noopener">{x("Taska near my location", "Taska berhampiran lokasi saya")}</a>
-    <a class="btn" id="nu-near-tadika" href="{near_tadika}" target="_blank" rel="noopener">{x("Tadika near my location", "Tadika berhampiran lokasi saya")}</a>
+    <a class="btn" id="nu-near-taska" href="{near_taska}" target="_blank" rel="noopener">📍 {x("Taska near me", "Taska berhampiran")}</a>
+    <a class="btn" id="nu-near-tadika" href="{near_tadika}" target="_blank" rel="noopener">📍 {x("Tadika near me", "Tadika berhampiran")}</a>
+    {tip(x("Opens Google Maps, which uses your phone's location.", "Membuka Google Maps, yang menggunakan lokasi telefon anda."), x)}
   </div>
-  <p class="small muted">{x("Opens Google Maps, which uses your phone's location.", "Membuka Google Maps, yang menggunakan lokasi telefon anda.")}</p>
-  <p><strong>{x("Or choose an area", "Atau pilih kawasan")}</strong></p>
-  <div class="area-pick">
-    <label class="field">{x("State", "Negeri")}<select id="nu-state"></select></label>
-    <label class="field">{x("District", "Daerah")}<select id="nu-district" disabled></select></label>
+  <div class="filter-row">
+    <select id="nu-state" aria-label="{x("State", "Negeri")}"></select>
+    <select id="nu-district" aria-label="{x("District", "Daerah")}" disabled></select>
   </div>
   <div class="btn-row" id="nu-area-links" hidden>
     <a class="btn ghost" id="nu-taska" href="#" target="_blank" rel="noopener"></a>
@@ -942,16 +946,18 @@ def p_nursery(lang):
   </div>
 </section>
 {ad("in_content", x)}
-<section><h2>{x("Taska, tadika or preschool?", "Taska, tadika atau prasekolah?")}</h2><div class="cards">{cards}</div></section>
-<section><h2>{x("Check before you choose", "Semak sebelum memilih")}</h2><ol>{ql}</ol></section>
-<aside class="box note"><ul>
+<div class="acc-list">
+{cards}
+<details class="acc"><summary>{x("Check before you choose", "Semak sebelum memilih")}</summary><ol>{ql}</ol></details>
+<details class="acc"><summary>{x("Registration, complaints & tax relief", "Pendaftaran, aduan & pelepasan cukai")}</summary><ul>
 <li>{x("The government's official list of registered taska:", "Senarai rasmi taska berdaftar:")}
 <a href="https://www.malaysia.gov.my/my/personas/ibu-bapa-kepada-anak-kecil-0-6-tahun/menghantar-anak-ke-pusat-jagaan/taman-asuhan-kanak-kanak-taska" target="_blank" rel="noopener">MyGOV</a>.</li>
 <li>{x("To report an unregistered taska, call Talian Kasih 15999 or your nearest welfare office.",
        "Untuk melaporkan taska tidak berdaftar, hubungi Talian Kasih 15999 atau pejabat kebajikan masyarakat terdekat.")}</li>
 <li>{x("Fees paid to a registered taska or tadika for a child aged 6 or below can get income tax relief (up to RM3,000 a year - check LHDN for the current rules).",
        "Yuran taska atau tadika berdaftar untuk anak berumur 6 tahun ke bawah boleh mendapat pelepasan cukai pendapatan (sehingga RM3,000 setahun - semak peraturan terkini dengan LHDN).")}</li>
-</ul></aside>
+</ul></details>
+</div>
 {contact_cta(x, "Run a taska or tadika? Ask us about being listed here.", "Mengusahakan taska atau tadika? Tanya kami tentang penyenaraian di sini.")}
 """
     write_page(lang, "nursery.html", x("Find a taska or tadika near you", "Cari taska atau tadika berhampiran"),

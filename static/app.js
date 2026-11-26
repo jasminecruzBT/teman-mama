@@ -143,42 +143,45 @@
     if (st.date) run();
   }
 
-  // ---------- confinement quotes
+  // ---------- confinement quotes: compact cards (pick a centre -> summary line; details folded away)
   function quotes() {
     var box = $("#quote-tool"); if (!box) return;
-    var cards = $$(".quote", box), out = $("#q-result");
-    var saved = get("tm_quotes", []);
+    var cards = $$(".quote", box), out = $("#q-result"), addBtn = $("#q-add");
+    var saved = get("tm_quotes", []), presets = {};
+    function val(c, n) { return c.querySelector('[name="' + n + '"]'); }
     cards.forEach(function (c, i) {
       var q = saved[i] || {};
-      ["name", "price", "days", "ratio"].forEach(function (k) { if (q[k] !== undefined && q[k] !== "") c.querySelector('[name="' + k + '"]').value = q[k]; });
+      ["name", "price", "days", "ratio"].forEach(function (k) { if (q[k] !== undefined && q[k] !== "") val(c, k).value = q[k]; });
       $$('input[name="inc"]', c).forEach(function (cb) { cb.checked = (q.inc || []).indexOf(cb.value) >= 0; });
+      if (q.price || q.name) c.hidden = false;
     });
-    // Drop-down of typical packages + real centres; picking one fills in the card (still editable).
-    var presets = {};
-    function showNote(c, p) {
-      var note = $(".preset-note", c);
-      if (!p) { note.hidden = true; return; }
-      if (p.kind === "typical") {
-        note.textContent = (LANG === "ms" ? p.note_ms : p.note_en) + " " + S.preTypicalNote;
-      } else {
-        var price = rm(p.price_from_rm).replace(".00", "") + (p.price_to_rm ? " - " + rm(p.price_to_rm).replace(".00", "") : "");
-        var cav = p["caveat_" + LANG] || p.caveat_en || "";
-        note.innerHTML = esc(fill(p.days_unstated ? S.preCentreNoteNoDays : S.preCentreNote, { d: p.days, price: price, date: fmt(parseDate(p.checked)) })) +
-          (cav ? " <strong>" + esc(cav) + "</strong>" : "") +
-          ' <a href="' + esc(p.source_url) + '" target="_blank" rel="noopener">' + esc(S.preSource) + " ↗</a>";
-      }
-      note.hidden = false;
+    function noteFor(p) {
+      if (!p) return "";
+      if (p.kind === "typical") return esc((LANG === "ms" ? p.note_ms : p.note_en) + " " + S.preTypicalNote);
+      var price = rm(p.price_from_rm).replace(".00", "") + (p.price_to_rm ? " - " + rm(p.price_to_rm).replace(".00", "") : "");
+      var cav = p["caveat_" + LANG] || p.caveat_en || "";
+      var expired = p.valid_until && iso(today()) > p.valid_until ? " " + S.promoEnded : "";
+      return esc(fill(p.days_unstated ? S.preCentreNoteNoDays : S.preCentreNote, { d: p.days, price: price, date: fmt(parseDate(p.checked)) })) +
+        (cav ? " <strong>" + esc(cav + expired) + "</strong>" : "") +
+        ' <a href="' + esc(p.source_url) + '" target="_blank" rel="noopener">' + esc(S.preSource) + " ↗</a>";
+    }
+    function summary(c) {
+      var p = parseFloat(val(c, "price").value), d = parseInt(val(c, "days").value, 10), sum = $(".q-sum", c);
+      if (p > 0 && d > 0) {
+        sum.innerHTML = "<strong>" + rm(p).replace(".00", "") + "</strong> · " + d + " " + esc(S.qDays) + " · <strong>" + rm(p / d).replace(".00", "") + "</strong>" + esc(S.qPerDay);
+        sum.hidden = false;
+      } else sum.hidden = true;
     }
     function applyPreset(c, p) {
-      c.querySelector('[name="name"]').value = p.kind === "typical" ? (LANG === "ms" ? p.ms : p.en) : p.name;
-      c.querySelector('[name="price"]').value = p.kind === "typical" ? p.price : p.price_from_rm;
-      c.querySelector('[name="days"]').value = p.days || 28;
+      val(c, "name").value = p.kind === "typical" ? (LANG === "ms" ? p.ms : p.en) : p.name;
+      val(c, "price").value = p.kind === "typical" ? p.price : p.price_from_rm;
+      val(c, "days").value = p.days || 28;
       var ratio = p.kind === "typical" ? p.ratio : p.babies_per_nurse;
-      c.querySelector('[name="ratio"]').value = ratio || "";
+      val(c, "ratio").value = ratio || "";
       var inc = (p.kind === "typical" ? p.inc : p.includes) || {};
       $$('input[name="inc"]', c).forEach(function (cb) { cb.checked = inc[cb.value] === true; });
-      showNote(c, p);
     }
+    function setTip(c, p) { $(".q-tip", c).innerHTML = p ? makeTip(noteFor(p)) : ""; }
     fetch(TM.root + "data/confinement.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       if (!d) return;
       var html = '<optgroup label="' + esc(S.preTypical) + '">' + d.typical.map(function (t) {
@@ -189,19 +192,21 @@
       (d.centres || []).forEach(function (c, i) {
         var id = "c" + i;
         presets[id] = Object.assign({ kind: "centre" }, c);
-        (byState[c.state] = byState[c.state] || []).push(
-          '<option value="' + id + '">' + esc(c.name + " (" + c.area + ") - " + S.qFrom + " " + rm(c.price_from_rm).replace(".00", "")) + "</option>");
+        (byState[c.state] = byState[c.state] || []).push('<option value="' + id + '">' +
+          esc(c.name + " · " + S.qFrom + " " + rm(c.price_from_rm).replace(".00", "")) + "</option>");
       });
       Object.keys(byState).sort().forEach(function (st) {
         html += '<optgroup label="' + esc(fill(S.preCentres, { state: st })) + '">' + byState[st].join("") + "</optgroup>";
       });
       cards.forEach(function (c, i) {
-        var sel = c.querySelector('[name="preset"]');
+        var sel = val(c, "preset");
         sel.insertAdjacentHTML("beforeend", html);
         var q = saved[i] || {};
-        if (q.preset && presets[q.preset]) { sel.value = q.preset; showNote(c, presets[q.preset]); }
+        if (q.preset && presets[q.preset]) { sel.value = q.preset; setTip(c, presets[q.preset]); }
         sel.addEventListener("change", function () {
-          if (presets[sel.value]) applyPreset(c, presets[sel.value]); else showNote(c, null);
+          var p = presets[sel.value];
+          if (p) applyPreset(c, p);
+          setTip(c, p);
           render();
         });
       });
@@ -209,11 +214,8 @@
     function read() {
       return cards.map(function (c) {
         return {
-          preset: c.querySelector('[name="preset"]').value,
-          name: c.querySelector('[name="name"]').value.trim(),
-          price: c.querySelector('[name="price"]').value,
-          days: c.querySelector('[name="days"]').value,
-          ratio: c.querySelector('[name="ratio"]').value,
+          preset: val(c, "preset").value, name: val(c, "name").value.trim(), price: val(c, "price").value,
+          days: val(c, "days").value, ratio: val(c, "ratio").value,
           inc: $$('input[name="inc"]:checked', c).map(function (cb) { return cb.value; })
         };
       });
@@ -221,36 +223,36 @@
     function render() {
       var qs = read();
       set("tm_quotes", qs);
+      cards.forEach(summary);
+      addBtn.hidden = cards.every(function (c) { return !c.hidden; });
       var rows = [];
       qs.forEach(function (q, i) {
         var p = parseFloat(q.price), d = parseInt(q.days, 10);
-        if (p > 0 && d > 0) rows.push({ i: i, name: q.name || fill(S.qQuote, { n: i + 1 }), price: p, days: d, per: p / d, ratio: parseInt(q.ratio, 10), inc: q.inc.length });
+        if (p > 0 && d > 0) rows.push({ name: q.name || fill(S.qQuote, { n: i + 1 }), price: p, days: d, per: p / d, ratio: parseInt(q.ratio, 10) });
       });
-      if (!rows.length) { out.innerHTML = '<p class="hint">' + esc(S.qNone) + "</p>"; return; }
+      if (rows.length < 2) { out.innerHTML = rows.length ? '<p class="hint">' + esc(S.qOneMore) + "</p>" : ""; return; }
       rows.sort(function (a, b) { return a.per - b.per; });
-      var H = S.qHead;
-      var h = '<div class="table-wrap"><table><thead><tr><th>' + esc(H[0]) + '</th><th class="num">' + esc(H[1]) +
-        '</th><th class="num hide-sm">' + esc(H[2]) + '</th><th class="num">' + esc(H[3]) + '</th><th class="num hide-sm">' + esc(H[4]) +
-        '</th><th class="num hide-sm">' + esc(H[5]) + "</th></tr></thead><tbody>";
-      rows.forEach(function (r, k) {
-        var best = k === 0 && rows.length > 1;
-        h += '<tr class="' + (best ? "best" : "") + '"><td>' + esc(r.name) +
-          (best ? '<span class="flag" style="color:var(--accent)">' + esc(S.qLowest) + "</span>" : "") +
+      out.innerHTML = '<ol class="rank">' + rows.map(function (r, k) {
+        return '<li class="' + (k === 0 ? "best" : "") + '"><span class="rank-name">' + esc(r.name) +
+          (k === 0 ? ' <span class="badge">' + esc(S.qLowest) + "</span>" : "") +
           (r.ratio > 4 ? '<span class="flag">⚠ ' + esc(S.qWarn) + "</span>" : "") +
-          '</td><td class="num">' + rm(r.price) + '</td><td class="num hide-sm">' + r.days + '</td><td class="num"><strong>' + rm(r.per) +
-          '</strong></td><td class="num hide-sm">' + (r.ratio > 0 ? "1 : " + r.ratio : "-") + '</td><td class="num hide-sm">' + r.inc + "/5</td></tr>";
-      });
-      out.innerHTML = h + "</tbody></table></div>";
+          '</span><span class="rank-per"><strong>' + rm(r.per).replace(".00", "") + "</strong>" + esc(S.qPerDay) + "</span></li>";
+      }).join("") + "</ol>";
     }
     box.addEventListener("input", render);
     box.addEventListener("change", render);
+    addBtn.addEventListener("click", function () {
+      var next = cards.find(function (c) { return c.hidden; });
+      if (next) { next.hidden = false; val(next, "preset").focus(); }
+      render();
+    });
     $("#q-clear").addEventListener("click", function () {
-      cards.forEach(function (c) {
-        $$('input[type="text"], input[name="price"], input[name="ratio"]', c).forEach(function (i) { i.value = ""; });
-        c.querySelector('[name="days"]').value = 28;
-        c.querySelector('[name="preset"]').value = "";
-        showNote(c, null);
+      cards.forEach(function (c, i) {
+        ["name", "price", "ratio"].forEach(function (n) { val(c, n).value = ""; });
+        val(c, "days").value = 28; val(c, "preset").value = ""; setTip(c, null);
         $$('input[type="checkbox"]', c).forEach(function (cb) { cb.checked = false; });
+        $(".q-edit", c).open = false;
+        c.hidden = i > 1;
       });
       render();
     });
@@ -340,7 +342,7 @@
         var key = district ? "D|" + state + "|" + district : (state ? "S|" + state : "MY");
         var area = data.areas[key] || {};
         var areaName = district ? district + ", " + state : (state || S.allMy);
-        var html = '<p class="pill">' + esc(fill(S.showing, { area: areaName })) + "</p>";
+        var html = "";  // the area is already visible in the drop-downs
         ["mum", "infant", "followon", "growing", "diaper", "food"].forEach(function (g) {
           var codes = Object.keys(data.items).filter(function (c) { return data.items[c].g === g && area[c]; });
           if (!codes.length) return;
@@ -349,7 +351,8 @@
             it._unit = it.gr ? a[0] / it.gr * 100 : (it.pc ? a[0] / it.pc : 0);
           });
           codes.sort(function (x, y) { return data.items[x]._unit - data.items[y]._unit; });
-          html += '<section class="price-group" id="grp-' + g + '" data-g="' + g + '"><h2>' + esc(S.grp[g]) + '</h2><div class="table-wrap"><table><thead><tr><th>' + esc(S.cProduct) +
+          html += '<section class="price-group" id="grp-' + g + '" data-g="' + g + '"><h2>' + esc(S.grp[g]) +
+            ((g === "infant" || g === "followon") ? " " + makeTip(esc(S.bfNote)) : "") + '</h2><div class="table-wrap"><table><thead><tr><th>' + esc(S.cProduct) +
             '</th><th class="num">' + esc(S.cTypical) + '</th><th class="num hide-sm">' + esc(S.cFrom) + '</th><th class="num">' + esc(S.cUnit) +
             '</th><th class="num hide-sm">' + esc(S.cShops) + "</th></tr></thead><tbody>";
           codes.forEach(function (c) {
@@ -417,8 +420,12 @@
         tr.after(row);
         btn.textContent = S.hide;
         var cell = row.firstChild;
-        if (!cur.state) { cell.textContent = S.chooseState; return; }
         var code = tr.getAttribute("data-code"), st = cur.state, di = cur.district;
+        var it0 = data.items[code];
+        // Online prices (Shopee, Lazada, pharmacies) are often cheaper than shop shelves - Google Shopping lists them.
+        var online = '<a class="online" href="https://www.google.com/search?tbm=shop&amp;q=' + encodeURIComponent(it0.n + " " + it0.u) +
+          '" target="_blank" rel="noopener">' + esc(S.online) + " ↗</a>";
+        if (!cur.state) { cell.innerHTML = esc(S.chooseState) + "<br>" + online; return; }
         var p = shopCache[st] || fetch(TM.root + "data/shops/" + slug(st) + ".json").then(function (r) { if (!r.ok) throw 0; return r.json(); });
         shopCache[st] = p;
         p.then(function (sd) {
@@ -429,12 +436,12 @@
           });
           list.sort(function (a, b) { return a[1] - b[1]; });
           list = list.slice(0, 5);
-          if (!list.length) { cell.textContent = S.noShops; return; }
+          if (!list.length) { cell.innerHTML = esc(S.noShops) + "<br>" + online; return; }
           cell.innerHTML = '<ul class="shop-list">' + list.map(function (x) {
             var s = sd.p[x[0]] || ["?", "", ""];
             return "<li><strong>" + rm(x[1]) + "</strong> · " + esc(s[0]) + ' <span class="muted">(' + esc(s[1]) + ")</span>" +
               '<span class="addr">' + esc(s[2]) + " · " + esc(fmt(parseDate(x[2]))) + "</span></li>";
-          }).join("") + "</ul>";
+          }).join("") + "</ul>" + online;
         }).catch(function () { delete shopCache[st]; cell.textContent = S.loadFail; });
       });
 
@@ -458,27 +465,38 @@
     }).catch(function () { /* near-me buttons still work */ });
   }
 
-  // ---------- keep the current menu tab in view on small screens (phones scroll the menu sideways)
-  function navScroll() {
-    var nav = $(".nav"), cur = $('.nav [aria-current="page"]');
-    if (nav && cur && nav.scrollWidth > nav.clientWidth + 2) nav.scrollLeft = cur.offsetLeft - (nav.clientWidth - cur.offsetWidth) / 2;
-    else if (nav) nav.scrollLeft = 0;
+  // ---------- menu (a <details> drop-down on the left): close on outside click, Escape or after picking
+  function menu() {
+    var m = $("details.menu"); if (!m) return;
+    document.addEventListener("click", function (e) { if (m.open && !m.contains(e.target)) m.open = false; });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && m.open) { m.open = false; $("summary", m).focus(); } });
+    $$(".menu-panel a", m).forEach(function (a) { a.addEventListener("click", function () { m.open = false; }); });
   }
 
-  // ---------- "Prices" tab opens its drop-down instead of jumping straight to the page
-  function subnav() {
-    var tab = $(".tab.has-sub"), panel = $("#subnav-prices");
-    if (!tab || !panel) return;
-    tab.addEventListener("click", function (e) {
-      e.preventDefault();
-      var open = panel.hidden;
-      panel.hidden = !open;
-      tab.setAttribute("aria-expanded", open ? "true" : "false");
-      if (open) { var f = $("input", panel); if (f && window.innerWidth >= 700) f.focus(); }
+  // ---------- ⓘ tips: hover on computers, tap on phones; one open at a time, kept on screen
+  function makeTip(htmlText) {
+    return '<span class="tip"><button type="button" class="tip-btn" aria-label="' + esc(S.moreInfo) + '" aria-expanded="false">i</button>' +
+      '<span class="tip-bubble" role="tooltip">' + htmlText + "</span></span>";
+  }
+  function place(t) {
+    var b = $(".tip-bubble", t); b.style.marginLeft = "0px";
+    var r = b.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+    if (r.right > vw - 8) b.style.marginLeft = -(r.right - vw + 8) + "px";
+    else if (r.left < 8) b.style.marginLeft = (8 - r.left) + "px";
+  }
+  function tips() {
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest(".tip-btn");
+      $$(".tip.open").forEach(function (t) { if (!btn || !t.contains(btn)) { t.classList.remove("open"); $(".tip-btn", t).setAttribute("aria-expanded", "false"); } });
+      if (btn) {
+        e.preventDefault(); e.stopPropagation();
+        var t = btn.parentNode, on = !t.classList.contains("open");
+        t.classList.toggle("open", on); btn.setAttribute("aria-expanded", on ? "true" : "false");
+        if (on) place(t);
+      }
     });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) { panel.hidden = true; tab.setAttribute("aria-expanded", "false"); tab.focus(); } });
-    // on the prices page the drop-down's group links only change the filter, so close it after a pick
-    $$("a", panel).forEach(function (a) { a.addEventListener("click", function () { panel.hidden = true; tab.setAttribute("aria-expanded", "false"); }); });
+    document.addEventListener("mouseover", function (e) { var t = e.target.closest(".tip"); if (t) place(t); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") $$(".tip.open").forEach(function (t) { t.classList.remove("open"); }); });
   }
 
   // ---------- helper bot: keyword matching over a small list of topics, no AI, nothing leaves the phone
@@ -553,6 +571,5 @@
     $(".chat-form", panel).addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); input.value = ""; });
   }
 
-  dueTool(); weekMarkers(); pantang(); quotes(); bag(); leave(); prices(); nursery(); navScroll(); subnav(); bot();
-  window.addEventListener("resize", navScroll);
+  tips(); menu(); dueTool(); weekMarkers(); pantang(); quotes(); bag(); leave(); prices(); nursery(); bot();
 })();
