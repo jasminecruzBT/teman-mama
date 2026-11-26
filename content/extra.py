@@ -297,22 +297,38 @@ KOREAN_NAMES = [
 
 # Iban meanings: Anthony Richards, An Iban-English Dictionary (Oxford, 1981) - each word is also listed there as a
 # personal name (archive.org/details/AnIbanEnglishDictionaryByAnthonyRichards, checked 26 Nov 2026).
-# Huminodun: Sabah State Library, "Kaamatan Festival". Kadazan-Dusun word lists online could not be reached, so only
-# names with a reliable source are included.
+# Huminodun: Sabah State Library, "Kaamatan Festival". Other Kadazan-Dusun words: Kadazan Dictionary (webonary.org/kadazan).
 BORNEO_NAMES = [
-    ("Keling", "m", "legendary Iban hero - handsome, strong and brave", "wira legenda Iban - kacak, kuat dan berani"),
-    ("Kumang", "f", "the ideal woman; Iban goddess of beauty", "wanita idaman; dewi kecantikan Iban"),
-    ("Rentap", "m", "name of the Iban warrior who fought the Brooke Rajah", "nama pahlawan Iban yang menentang Rajah Brooke"),
-    ("Awan", "m", "cloud", "awan di langit"),
-    ("Belayong", "m", "very strong, like the warriors of old", "sangat kuat, seperti pahlawan zaman dahulu"),
-    ("Laju", "m", "swift, fast", "pantas, laju"),
-    ("Dayang", "f", "maiden; a title of honour for women", "gadis; gelaran hormat untuk wanita"),
-    ("Madu", "f", "honey", "madu"),
-    ("Jereni", "f", "clear, like clean water", "jernih, seperti air bersih"),
-    ("Siti", "f", "a title of honour for women", "gelaran hormat untuk wanita"),
-    ("Ina", "f", "mother", "ibu"),
-    ("Mula", "u", "beginning, origin", "permulaan, asal usul"),
+    # Iban (Richards' Iban-English Dictionary - each word is also listed there as a personal name)
+    ("Kumang", "f", "the ideal woman; Iban goddess of beauty (Iban)", "wanita idaman; dewi kecantikan Iban (Iban)"),
+    ("Rentap", "m", "name of the Iban warrior who fought the Brooke Rajah (Iban)", "nama pahlawan Iban yang menentang Rajah Brooke (Iban)"),
+    ("Awan", "m", "cloud (Iban)", "awan di langit (Iban)"),
+    ("Belayong", "m", "very strong, like the warriors of old (Iban)", "sangat kuat, seperti pahlawan zaman dahulu (Iban)"),
+    ("Laju", "m", "swift, fast (Iban)", "pantas, laju (Iban)"),
+    ("Dayang", "f", "maiden; a title of honour for women (Iban)", "gadis; gelaran hormat untuk wanita (Iban)"),
+    ("Madu", "f", "honey (Iban)", "madu (Iban)"),
+    ("Jereni", "f", "clear, like clean water (Iban)", "jernih, seperti air bersih (Iban)"),
+    ("Siti", "f", "a title of honour for women (Iban)", "gelaran hormat untuk wanita (Iban)"),
+    ("Ina", "f", "mother (Iban)", "ibu (Iban)"),
+    ("Mula", "u", "beginning, origin (Iban)", "permulaan, asal usul (Iban)"),
+    # Kadazan-Dusun: Huminodun from the Sabah State Library; the rest are Kadazan words with lovely meanings,
+    # meanings from the Kadazan Dictionary (webonary.org/kadazan, checked 26 Nov 2026). Words aren't gendered -> 'u'.
     ("Huminodun", "f", "maiden of the Kaamatan legend, honoured at the harvest festival (Kadazan-Dusun)", "gadis dalam legenda Kaamatan, diraikan pada Pesta Menuai (Kadazan-Dusun)"),
+    ("Navau", "u", "clear day, dawn, bright (Kadazan-Dusun)", "cuaca cerah, subuh, terang (Kadazan-Dusun)"),
+    ("Vanus", "u", "beautiful, pretty, lovely (Kadazan-Dusun)", "cantik, jelita (Kadazan-Dusun)"),
+    ("Tavang", "u", "full moon (Kadazan-Dusun)", "bulan mengambang (Kadazan-Dusun)"),
+    ("Vuhan", "u", "moon (Kadazan-Dusun)", "bulan (Kadazan-Dusun)"),
+    ("Bohobou", "u", "dew (Kadazan-Dusun)", "embun (Kadazan-Dusun)"),
+    ("Alus", "u", "fine, smooth, beautiful (Kadazan-Dusun)", "halus, cantik (Kadazan-Dusun)"),
+    ("Unsikou", "u", "glad, happy, rejoicing (Kadazan-Dusun)", "suka hati, riang (Kadazan-Dusun)"),
+    ("Bohuntung", "u", "rainbow (Kadazan-Dusun)", "pelangi (Kadazan-Dusun)"),
+    ("Amas", "u", "gold (Kadazan-Dusun)", "emas (Kadazan-Dusun)"),
+    ("Tadau", "u", "sun; day (Kadazan-Dusun)", "matahari; hari (Kadazan-Dusun)"),
+    ("Tavan", "u", "sky (Kadazan-Dusun)", "langit (Kadazan-Dusun)"),
+    ("Suvab", "u", "morning (Kadazan-Dusun)", "pagi (Kadazan-Dusun)"),
+    ("Tama", "u", "brave, bold (Kadazan-Dusun)", "berani (Kadazan-Dusun)"),
+    ("Hansan", "u", "trust, hope (Kadazan-Dusun)", "percaya, harapan (Kadazan-Dusun)"),
+    ("Vasi", "u", "kind, good (Kadazan-Dusun)", "baik, bagus (Kadazan-Dusun)"),
 ]
 
 NAMES = ([n + ("malay",) for n in MALAY_NAMES] + [n + ("chinese",) for n in CHINESE_NAMES]
