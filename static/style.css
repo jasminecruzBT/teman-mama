@@ -758,3 +758,4 @@ html.pinned .chat-panel { right: 24px; }
 .az-bar button { min-width: 34px; height: 34px; border: 0; border-radius: 10px; background: var(--faint); color: var(--ink); font: inherit; font-weight: 700; font-size: .85rem; cursor: pointer; padding: 0 8px; }
 .az-bar button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
 .nm-list li.nm-letter { grid-column: 1 / -1; background: none; padding: 10px 2px 0; font-weight: 800; font-size: 1.1rem; color: var(--brand); border: 0; }
+.card-sort { margin: 6px 0 2px; }

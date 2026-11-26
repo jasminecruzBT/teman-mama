@@ -459,15 +459,24 @@ def tabpanel(group, key, html):
             f'data-group="{group}" data-tab="{key}">{html}</div>')
 
 
-def pcard(x, kind, ico, name, loc, meta, price_html, body, state="", extra_cls=""):
+def pcard(x, kind, ico, name, loc, meta, price_html, body, state="", extra_cls="", sort=None):
     """Listing card like a directory: name, place, 'from' price; tap opens the details underneath."""
-    return (f'<details class="pcard{(" " + extra_cls) if extra_cls else ""}" data-state="{esc(state)}"><summary>'
+    sk = "".join(f' data-s-{k}="{esc(v)}"' for k, v in (sort or {}).items())
+    return (f'<details class="pcard{(" " + extra_cls) if extra_cls else ""}" data-state="{esc(state)}"{sk}><summary>'
             f'<span class="pc-band" aria-hidden="true">{ico}</span>'
             f'<span class="pc-kind">{esc(kind)}</span><strong class="pc-name">{esc(name)}</strong>'
             f'<span class="pc-loc">📍 {esc(loc)}</span>'
             f'<span class="pc-foot"><span class="pc-meta">{meta}</span><span class="pc-price">{price_html}</span></span>'
             f'<span class="pc-more"><span class="pc-open">{x("View details", "Lihat butiran")}</span><span class="pc-close">{x("Hide details", "Tutup butiran")}</span></span>'
             f'</summary><div class="pc-body">{body}</div></details>')
+
+
+def sort_select(x, target, options):
+    """A 'Sort by' drop-down that reorders the cards inside #target by their data-s-<key>.
+    options: [(value 'key:asc|desc', English, Malay)]; the first one is the default."""
+    opts = "".join(f'<option value="{v}">{esc(x(en, ms))}</option>' for v, en, ms in options)
+    return (f'<label class="sort-row card-sort"><span>⇅ {x("Sort by", "Susun ikut")}</span>'
+            f'<select data-sort-for="{target}">{opts}</select></label>')
 
 
 def state_chips(x, target, states):
@@ -1472,9 +1481,10 @@ def p_cost(lang):
                  + f'<p class="pc-actions"><button type="button" class="btn" data-compare="c{i}">+ {x("Add to comparison", "Tambah ke perbandingan")}</button>'
                    f'<a class="btn ghost" href="{esc(c["source_url"])}" target="_blank" rel="noopener">{x("Centre website", "Laman pusat")} ↗</a>'
                    f'<span class="small muted">{x("checked", "disemak")} {_dmy(c["checked"], lang)}</span></p>')
+        csort = {"price": c["price_from_rm"], "perday": per_day, "name": c["name"].lower(), "state": c["state"].lower()}
         centre_cards.append(pcard(x, x("Confinement centre", "Pusat berpantang"), "🏨", c["name"], f'{c["area"]}, {c["state"]}',
                                   x("days not stated", "tempoh tidak dinyatakan") if c.get("days_unstated") else f'{days} {x("days", "hari")}',
-                                  f'{x("From", "Dari")} {_rm(c["price_from_rm"])}<small>{_rm(per_day)}{x("/day", "/hari")}</small>', body_, state=c["state"]))
+                                  f'{x("From", "Dari")} {_rm(c["price_from_rm"])}<small>{_rm(per_day)}{x("/day", "/hari")}</small>', body_, state=c["state"], sort=csort))
     c_states = sorted({c["state"] for c in CD["centres"]})
     c_min = min(c["price_from_rm"] for c in CD["centres"])
     typ = {t["id"]: t for t in CD["typical"]}
@@ -1515,6 +1525,8 @@ def p_cost(lang):
 <p class="dp-intro">{x("Centres that publish a price on their own website, cheapest first. Tap a card for details, or add it to your comparison.",
                        "Pusat yang menyiarkan harga di laman web sendiri, paling murah dahulu. Tekan kad untuk butiran, atau tambah ke perbandingan anda.")}</p>
 {state_chips(x, "centre-list", c_states)}
+{sort_select(x, "centre-list", [("price:asc", "Cheapest first", "Paling murah dahulu"), ("price:desc", "Most expensive first", "Paling mahal dahulu"),
+                                 ("perday:asc", "Cheapest per day", "Sehari paling murah"), ("name:asc", "Name A-Z", "Nama A-Z"), ("state:asc", "State", "Negeri")])}
 <div class="pgrid" id="centre-list">{"".join(centre_cards)}</div>
 <section><h2>{x("Typical prices for 28 days", "Harga biasa untuk 28 hari")} {tip(x("Rough 2026 ranges from price guides (malaysia4u.com). Prices differ a lot by city and by what's included - always get a written quote.",
                                                                               "Anggaran julat 2026 daripada panduan harga (malaysia4u.com). Harga sangat berbeza mengikut bandar dan apa yang termasuk - sentiasa minta sebut harga bertulis."), x)}</h2>
@@ -1751,11 +1763,16 @@ def p_nursery(lang):
                  + (f'<a class="btn ghost" href="{esc(o["apply_url"])}" target="_blank" rel="noopener">{x("Apply", "Mohon")} ↗</a>' if o.get("apply_url") else "")
                  + f'<span class="small muted">{x("checked", "disemak")} {_dmy(o["checked"], lang)}</span></p>')
         kind = x("Government tadika", "Tadika kerajaan") if o["kind"] == "tadika" else x("Government taska", "Taska kerajaan")
+        year = (o["fee"] * 12 + (o["reg"] or 0)) if o["fee"] is not None else 999999
+        nsort = {"year": year, "name": o["name"].lower(), "age": int(o["ages"].split("-")[0])}
         nu_dir.append(pcard(x, kind, o["icon"], o["name"], x("All over Malaysia", "Seluruh Malaysia"),
-                            f'{x("Ages", "Umur")} {esc(o["ages"])}', esc(nu_fee(o)) + (f'<small>{x("a month", "sebulan")}</small>' if o["fee"] else ""), body_))
+                            f'{x("Ages", "Umur")} {esc(o["ages"])}', esc(nu_fee(o)) + (f'<small>{x("a month", "sebulan")}</small>' if o["fee"] else ""), body_,
+                            sort=nsort))
     nu_compare = f"""<p class="dp-intro">{x("Government taska and tadika publish their fees, so you can add them straight to your comparison. Private ones don't - visit them, then enter their quote.",
                                          "Taska dan tadika kerajaan menyiarkan yuran mereka, jadi anda boleh terus menambahnya ke perbandingan. Yang swasta tidak - lawat dahulu, kemudian masukkan sebut harga mereka.")}</p>
-<div class="pgrid">{"".join(nu_dir)}</div>
+{sort_select(x, "nu-list", [("year:asc", "Cheapest first", "Paling murah dahulu"), ("age:asc", "Youngest age first", "Umur paling muda dahulu"),
+                            ("name:asc", "Name A-Z", "Nama A-Z")])}
+<div class="pgrid" id="nu-list">{"".join(nu_dir)}</div>
 <section class="card" id="nu-compare">
   <h2>{x("Compare taska & tadika", "Banding taska & tadika")} {tip(x("Pick a government option or enter what a centre told you. We rank them by first-year cost (12 months of fees plus registration and deposit). Saved only on this phone.",
                                                                    "Pilih pilihan kerajaan atau masukkan apa yang pusat beritahu anda. Kami susun mengikut kos tahun pertama (12 bulan yuran serta pendaftaran dan deposit). Disimpan dalam telefon ini sahaja."), x)}</h2>

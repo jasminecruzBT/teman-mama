@@ -499,6 +499,28 @@
     });
   }
 
+  // ---------- "Sort by" drop-downs for card lists (confinement centres, taska/tadika): reorder by data-s-<key>
+  function cardSort() {
+    $$("select[data-sort-for]").forEach(function (sel) {
+      var list = document.getElementById(sel.getAttribute("data-sort-for")); if (!list) return;
+      var key = "tm_sort_" + list.id;
+      function apply() {
+        var v = sel.value.split(":"), k = "data-s-" + v[0], dir = v[1] === "desc" ? -1 : 1;
+        var cards = $$(":scope > [" + k + "]", list);
+        cards.sort(function (a, b) {
+          var x = a.getAttribute(k), y = b.getAttribute(k), nx = parseFloat(x), ny = parseFloat(y);
+          var c = !isNaN(nx) && !isNaN(ny) ? nx - ny : x.localeCompare(y);
+          return c * dir || a.getAttribute("data-s-name").localeCompare(b.getAttribute("data-s-name"));
+        });
+        cards.forEach(function (c) { list.appendChild(c); });
+      }
+      var saved = get(key, "");
+      if (saved && $('option[value="' + saved + '"]', sel)) sel.value = saved;
+      sel.addEventListener("change", function () { set(key, sel.value); apply(); });
+      apply();
+    });
+  }
+
   // ---------- big tabs on many pages: only the chosen panel shows, so there's little to scroll.
   // Remembers the choice per group; data-hash groups also read/write #key; data-count tabs show ticked/total.
   function tabGroups() {
@@ -1031,5 +1053,5 @@
   }
 
   freshness(); tips(); menu(); dueTool(); homeTabs(); weekMarkers(); pantang(); quotes(); nurseryCompare(); bag(); leave(); prices(); nursery();
-  themeSwitch(); vaccines(); afterBirth(); deliveryCost(); stateChips(); tabGroups(); milk(); names(); fertility(); labour(); bot();
+  themeSwitch(); vaccines(); afterBirth(); deliveryCost(); stateChips(); cardSort(); tabGroups(); milk(); names(); fertility(); labour(); bot();
 })();
