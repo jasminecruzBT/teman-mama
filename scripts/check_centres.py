@@ -21,7 +21,7 @@ from playwright.sync_api import sync_playwright
 HERE = os.path.dirname(os.path.abspath(__file__))
 # (file in site-data/, list keys inside it) - every entry needs name, source_url and price_from_rm.
 # delivery.json entries with "auto_check": false (price only in a scanned PDF) are skipped.
-SOURCES = [("confinement.json", ["centres"]), ("delivery.json", ["private", "university"])]
+SOURCES = [("confinement.json", ["centres", "home_care"]), ("delivery.json", ["private", "university"])]
 REPORT = os.path.join(HERE, "..", "centres-report.md")
 TODAY = datetime.date.today().isoformat()
 

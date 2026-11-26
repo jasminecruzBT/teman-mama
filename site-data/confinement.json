@@ -292,5 +292,18 @@
       "caveat_en": "Stay length isn't stated on the price page - confirm it. Dad can stay overnight in every room except the cheapest.",
       "caveat_ms": "Tempoh tidak dinyatakan di halaman harga - sahkan. Bapa boleh bermalam di semua bilik kecuali yang termurah."
     }
+  ],
+  "home_care": [
+    {
+      "name": "Mami Confinement Care",
+      "area_en": "Malaysia - ask if they cover your area",
+      "area_ms": "Malaysia - tanya sama ada kawasan anda diliputi",
+      "price_from_rm": 1600,
+      "per_days": 7,
+      "note_en": "Live-in pantang carer: herbal baths, pantang cooking, sauna, tungku and binder for mum; baby bath and massage; housework and laundry. A second package is from RM1,900 per 7 days. Transport is extra.",
+      "note_ms": "Penjaga pantang tinggal bersama: mandian herba, masakan pantang, sauna, tungku dan bengkung untuk ibu; mandi dan urut bayi; kemas rumah dan cuci pakaian. Pakej kedua dari RM1,900 untuk 7 hari. Caj pengangkutan tidak termasuk.",
+      "source_url": "https://mamiconfinementcare.com/",
+      "checked": "2026-11-26"
+    }
   ]
 }

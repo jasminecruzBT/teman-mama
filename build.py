@@ -1470,6 +1470,19 @@ def p_cost(lang):
     def typ_row(tid, en, ms, rng):
         return (f'<li><span>{esc(x(en, ms))}</span><strong>{rng}</strong>'
                 f'<button type="button" class="link-btn" data-compare="{tid}">+ {x("Compare", "Banding")}</button></li>')
+    home_cards = []
+    for h in CD.get("home_care", []):
+        per = h.get("per_days", 7)
+        body_ = (f'<div class="pc-rows"><div>{x("Price", "Harga")}<strong>{x("from", "dari")} {_rm(h["price_from_rm"])}</strong></div>'
+                 f'<div>{x("For", "Untuk")}<strong>{per} {x("days", "hari")}</strong></div>'
+                 f'<div>{x("28 days at this rate", "28 hari pada kadar ini")}<strong>~{_rm(round(h["price_from_rm"] * 28 / per))}</strong></div></div>'
+                 f'<p>{esc(x(h["note_en"], h["note_ms"]))}</p>'
+                 f'<p class="pc-actions"><a class="btn" href="{esc(h["source_url"])}" target="_blank" rel="noopener">{x("Their website", "Laman web mereka")} ↗</a>'
+                 f'<span class="small muted">{x("checked", "disemak")} {_dmy(h["checked"], lang)}</span></p>')
+        home_cards.append(pcard(x, x("Pantang carer at home", "Penjaga pantang di rumah"), "👩‍🍼", h["name"], x(h["area_en"], h["area_ms"]),
+                                f'{per} {x("days", "hari")}', f'{x("From", "Dari")} {_rm(h["price_from_rm"])}<small>{x("per", "untuk")} {per} {x("days", "hari")}</small>', body_))
+    home_html = (f'<h2 class="sv-head">{x("Home pantang services with a published price", "Perkhidmatan pantang di rumah dengan harga diterbitkan")}</h2>'
+                 f'<div class="pgrid">{"".join(home_cards)}</div>') if home_cards else ""
     cost_tabs = tabbar(x, "cost", [
         ("centres", "🏨", "Centres", "Pusat berpantang", f'{x("from", "dari")} {_rm(c_min)}', f"{len(CD['centres'])} centres with published prices", f"{len(CD['centres'])} pusat dengan harga diterbitkan", False),
         ("nanny", "👩‍🍼", "Nanny at home", "Pengasuh di rumah", "RM5,000 – 9,000", "typical, live-in, 28 days", "biasa, tinggal bersama, 28 hari", False),
@@ -1512,6 +1525,7 @@ def p_cost(lang):
   <p class="small muted">{x("Typical 2026 range from price guides (malaysia4u.com) - agencies and freelance nannies vary a lot.", "Julat biasa 2026 daripada panduan harga (malaysia4u.com) - agensi dan pengasuh bebas sangat berbeza.")}</p>
   <p class="pc-actions"><button type="button" class="btn" data-compare="t-nanny">+ {x("Add a typical nanny to comparison", "Tambah pengasuh biasa ke perbandingan")}</button>
   <a class="btn ghost" href="https://www.happypreggie.com/listing/pantang" target="_blank" rel="noopener">{x("Find pantang carers (HappyPreggie)", "Cari penjaga pantang (HappyPreggie)")} ↗</a></p></div>
+{home_html}
 <details class="acc" open><summary>{x("Ask a nanny before you book", "Tanya pengasuh sebelum menempah")}</summary><ol>{"".join(f"<li>{esc(q)}</li>" for q in nanny_qs)}</ol></details>
 """)}
 {tabpanel("cost", "compare", f"""
