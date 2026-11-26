@@ -55,7 +55,7 @@ ESSENTIALS = [
         ("sleepsuit", "Sleepsuits or light swaddles", "Baju tidur atau kain bedung nipis", "newborn_clothes"),
     ]),
     ("Feeding", "Menyusu", [
-        ("pump", "Breast pump (if you'll express milk)", "Pam susu (jika akan memerah)", "nipple_cream"),
+        ("pump", "Breast pump if you'll express milk (e.g. Philips Avent, Medela, Spectra, Pigeon)", "Pam susu jika akan memerah (cth. Philips Avent, Medela, Spectra, Pigeon)", "nipple_cream"),
         ("storage_bags", "Breast milk storage bags", "Beg simpanan susu ibu", "nipple_cream"),
         ("nursing_pillow", "Nursing pillow", "Bantal menyusu", "nipple_cream"),
         ("burp", "Burp cloths / small towels", "Kain lampin / tuala kecil", "newborn_clothes"),

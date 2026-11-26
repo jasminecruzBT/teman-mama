@@ -857,7 +857,8 @@
         var none = $("#pr-none");
         if (none) {
           none.hidden = shown > 0;
-          none.innerHTML = esc(fill(S.noMatch, { q: qIn.value })) + ' <button type="button" class="where-btn" id="pr-clear">' + esc(S.clearSearch) + "</button>";
+          none.innerHTML = esc(fill(S.noMatch, { q: qIn.value })) + (/avent|pigeon|tommee|medela|spectra|botol|bottle|puting|teat|pam|pump|steril/i.test(qIn.value) ? " " + esc(S.noMatchFeed) : "") +
+            ' <button type="button" class="where-btn" id="pr-clear">' + esc(S.clearSearch) + "</button>";
         }
       }
       var params = new URLSearchParams(location.search);
