@@ -420,6 +420,26 @@ INDIAN_NAMES += [
     ('Nalini', 'f', 'lotus (Malayalam)', 'teratai (Malayalam)'),
     ('Namrata', 'f', 'humility (Malayalam)', 'rendah diri (Malayalam)'),
 ]
+BORNEO_NAMES += [
+    # Kenyah (Lebo' Vo'): Borneo Dictionary (borneodictionary.com/kenyah-lebo-vo). Melanau (Mukah / Central Melanau):
+    # Austronesian Basic Vocabulary Database (abvd.clld.org/languages/90) and Wiktionary's Central Melanau entries.
+    ("Leliwa", "u", "rainbow (Kenyah)", "pelangi (Kenyah)"),
+    ("Katah", "u", "sunshine (Kenyah)", "cahaya matahari (Kenyah)"),
+    ("Betuen", "u", "star in the night sky (Kenyah)", "bintang di langit malam (Kenyah)"),
+    ("Jimah", "u", "dew (Kenyah)", "embun (Kenyah)"),
+    ("Belevang", "u", "butterfly (Kenyah)", "rama-rama (Kenyah)"),
+    ("Bunyem", "u", "to smile (Kenyah)", "tersenyum (Kenyah)"),
+    ("Manyi", "u", "happy (Kenyah)", "gembira (Kenyah)"),
+    ("Saga", "u", "dance (Kenyah)", "tarian (Kenyah)"),
+    ("Bango", "u", "glow (Kenyah)", "sinar (Kenyah)"),
+    ("Pejai", "u", "a gift (Kenyah)", "hadiah (Kenyah)"),
+    ("Ino", "u", "beads (Kenyah)", "manik (Kenyah)"),
+    ("Biten", "u", "star (Melanau)", "bintang (Melanau)"),
+    ("Pangai", "u", "wind (Melanau)", "angin (Melanau)"),
+    ("Tina", "f", "mother (Melanau)", "ibu (Melanau)"),
+    ("Maih", "u", "gold (Melanau)", "emas (Melanau)"),
+    ("Pirek", "u", "silver; a flash of light (Melanau)", "perak; kilauan cahaya (Melanau)"),
+]
 ORANG_ASLI_NAMES = [
     ('Perloi', 'u', 'star (Semai)', 'bintang (Semai)'),
     ('Cedau', 'u', 'rainbow (Semai)', 'pelangi (Semai)'),
