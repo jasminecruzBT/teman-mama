@@ -927,14 +927,26 @@
   }
 
   // ---------- freshness: GitHub Pages lets browsers keep pages ~10 min; if this page is an old saved copy, reload once
+  // An old saved copy of a page (browser cache, or "back") gets swapped for the new one.
+  // Checked on every page and every time a page is shown again; at most one reload per page per new version.
   function freshness() {
     if (!TM.ver || !window.fetch) return;
-    fetch(TM.root + "version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      if (!j || !j.v || j.v === TM.ver) return;
-      var key = "tm_reloaded_" + j.v;
-      try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, "1"); } catch (e) { return; }
-      location.reload();
-    }).catch(function () { /* offline: keep the saved copy */ });
+    try {  // tidy the address bar after a refresh (drop the ?v= we added)
+      var u0 = new URL(location.href);
+      if (u0.searchParams.has("v")) { u0.searchParams.delete("v"); history.replaceState(null, "", u0.pathname + u0.search + u0.hash); }
+    } catch (e) { /* old browser */ }
+    function check() {
+      fetch(TM.root + "version.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        if (!j || !j.v || j.v === TM.ver) return;
+        var key = "tm_reloaded_" + j.v + "_" + location.pathname;
+        try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, "1"); } catch (e) { return; }
+        try {  // a new address makes the browser fetch the page again instead of reusing its saved copy
+          var u = new URL(location.href); u.searchParams.set("v", j.v); location.replace(u.toString());
+        } catch (e) { location.reload(); }
+      }).catch(function () { /* offline: keep the saved copy */ });
+    }
+    check();
+    window.addEventListener("pageshow", function (e) { if (e.persisted) check(); });
   }
 
   // ---------- menu (a <details> drop-down on the left): close on outside click, Escape or after picking
